@@ -5,7 +5,13 @@ import java.util.ArrayList;
 
 public class Decoder {
 
+
     public static int decodeString(String src) {
+        /**
+         * initialized ram
+         */
+        Ram ram = new Ram();
+        System.out.println(Integer.toBinaryString(ram.getStatus()));
 
 
         //LSTFileReader file = new LSTFileReader();
@@ -41,7 +47,6 @@ public class Decoder {
 
 
         //System.out.println(iSizeOfDecodedList);
-
         return 1;
     }
 
@@ -103,6 +108,10 @@ public class Decoder {
      * @param i
      */
     public static void iorLW(Integer i) {
+        Ram.wRegister = ALU.or(Ram.wRegister, i);
+        if (Ram.wRegister == 0) {
+            Ram.setZeroBit(true);
+        }
         System.out.println("iorlw");
     }
 
