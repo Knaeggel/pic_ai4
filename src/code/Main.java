@@ -1,17 +1,20 @@
 package code;
 import gui.MainFrame;
 
+
 import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
 
         MainFrame myFrame = new MainFrame();
+
         //LSTFileReader.read(".\\res\\Sim1.txt");
         
         if ((Decoder.decodeString(".\\res\\Sim1.txt")) == 1) {
-            //Memory.printStack();
+            //Stack.printStack();
             //System.out.println(Memory.wRegister);
+
             System.out.println("Main decoding done");
         }
 

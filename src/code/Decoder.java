@@ -2,11 +2,10 @@ package code;
 
 import java.util.ArrayList;
 
+
 public class Decoder {
 
     public static int decodeString(String src) {
-
-
 
 
         //LSTFileReader file = new LSTFileReader();
@@ -16,20 +15,6 @@ public class Decoder {
             //System.out.println(e);
             e.printStackTrace();
         }
-
-
-
-
-        int iSizeOfDecodedList = LSTFileReader.getDecodeList().size();
-
-        for (int i = 0; i < iSizeOfDecodedList; i++) {
-
-
-            functionCalls(i);
-
-            //System.out.println(String.format("0x%02X",Memory.stack[i]));
-        }
-
 
         /**
          * initializes memory to remember the programCounter
@@ -44,6 +29,15 @@ public class Decoder {
         }
 
 
+        int iSizeOfDecodedList = LSTFileReader.getDecodeList().size();
+
+        for (int i = 0; i < iSizeOfDecodedList; i++) {
+
+
+            functionCalls(i);
+
+            //System.out.println(String.format("0x%02X",Memory.stack[i]));
+        }
 
 
         //System.out.println(iSizeOfDecodedList);
@@ -55,6 +49,7 @@ public class Decoder {
      * makes the function calls
      */
     public static void functionCalls(Integer i) {
+
         ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
         ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
 
@@ -66,6 +61,9 @@ public class Decoder {
 
         //System.out.println(String.format("0x%02X",iOpValue));
         Stack.pushOnStack(iOpCode);
+
+
+
         switch (iHexOpcode) {
             case 0b00110000 -> movLW(iOpValue);
             case 0b00111001 -> andLW(iOpValue);
@@ -101,6 +99,7 @@ public class Decoder {
      * The contents of the W register is
      * OR’ed with the eight bit literal 'i'. The
      * result is placed in the W register.
+     *
      * @param i
      */
     public static void iorLW(Integer i) {
@@ -127,6 +126,7 @@ public class Decoder {
         Ram.wRegister += i;
         System.out.println("addlw");
     }
+
 
     public static void goTO(Integer i) {
 

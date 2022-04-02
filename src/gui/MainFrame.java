@@ -58,6 +58,7 @@ public class MainFrame extends JFrame {
     private JCheckBox pinB7;
 
 
+
     public MainFrame() {
         setContentPane(panel1);
         setTitle("PIC GUI");
