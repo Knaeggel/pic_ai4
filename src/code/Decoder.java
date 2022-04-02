@@ -16,53 +16,66 @@ public class Decoder {
             //System.out.println(e);
             e.printStackTrace();
         }
+
+
+
+
         int iSizeOfDecodedList = LSTFileReader.getDecodeList().size();
 
-        ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
-        ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
-
-        /**
-         * initializes memory to remember the programCounter
-         */
-        var pcList = LSTFileReader.getPcList();
-        for (Integer integer : pcList) {
-
-            int i = 0;
-            ProgrammMemory.memory[i] = integer;
-            i++;
-        }
-
-        /**
-         * decodes and makes the function calls
-         */
         for (int i = 0; i < iSizeOfDecodedList; i++) {
-            int iOpCode = LSTFileReader.getOpcode(i);
 
-            int iHexOpcode = opCodeList.get(i);
 
-            int iOpValue = opVal.get(i);
-
-            //System.out.println(String.format("0x%02X",iOpValue));
-            Stack.pushOnStack(iOpCode);
-            switch (iHexOpcode) {
-                case 0b00110000 -> movLW(iOpValue);
-                case 0b00111001 -> andLW(iOpValue);
-                case 0b00111000 -> iorLW(iOpValue);
-                case 0b00111100 -> subLW();
-                case 0b00111010 -> xorLW();
-                case 0b00111110 -> addLW(iOpValue);
-                case 0b00101000 -> goTO();
-
-            }
-
+            functionCalls(i);
 
             //System.out.println(String.format("0x%02X",Memory.stack[i]));
         }
 
 
+        /**
+         * initializes memory to remember the programCounter
+         */
+        var decodeList = LSTFileReader.getDecodeList();
+        for (Integer integer : decodeList) {
+
+            int i = 0;
+            //ProgrammMemory.memory[i] = integer;
+            ProgrammMemory.memory.add(integer);
+            i++;
+        }
+
+
+
+
         //System.out.println(iSizeOfDecodedList);
 
         return 1;
+    }
+
+    /**
+     * makes the function calls
+     */
+    public static void functionCalls(Integer i) {
+        ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
+        ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
+
+        int iOpCode = LSTFileReader.getOpcode(i);
+
+        int iHexOpcode = opCodeList.get(i);
+
+        int iOpValue = opVal.get(i);
+
+        //System.out.println(String.format("0x%02X",iOpValue));
+        Stack.pushOnStack(iOpCode);
+        switch (iHexOpcode) {
+            case 0b00110000 -> movLW(iOpValue);
+            case 0b00111001 -> andLW(iOpValue);
+            case 0b00111000 -> iorLW(iOpValue);
+            case 0b00111100 -> subLW();
+            case 0b00111010 -> xorLW();
+            case 0b00111110 -> addLW(iOpValue);
+            case 0b00101000 -> goTO(iOpValue);
+
+        }
     }
 
     /**
@@ -115,7 +128,17 @@ public class Decoder {
         System.out.println("addlw");
     }
 
-    public static void goTO() {
+    public static void goTO(Integer i) {
+
+        ProgrammMemory.stopStackoverflow++;
+
+
+        /**
+         * loop to create artificial endless loop
+         */
+        if (ProgrammMemory.stopStackoverflow != 10) {
+            functionCalls(i);
+        }
         System.out.println("goto");
 
     }
