@@ -76,8 +76,8 @@ public class Decoder {
             case 0b00110000 -> movLW(iOpValue);
             case 0b00111001 -> andLW(iOpValue);
             case 0b00111000 -> iorLW(iOpValue);
-            case 0b00111100 -> subLW();
-            case 0b00111010 -> xorLW();
+            case 0b00111100 -> subLW(iOpValue);
+            case 0b00111010 -> xorLW(iOpValue);
             case 0b00111110 -> addLW(iOpValue);
             case 0b00101000 -> goTO(iOpValue);
 
@@ -108,47 +108,92 @@ public class Decoder {
      * OR’ed with the eight bit literal 'i'. The
      * result is placed in the W register.
      *
-     * @param i
+     * @param i 8 bit literal
      */
     public void iorLW(Integer i) {
 
         Ram.wRegister = obj.alu.or(Ram.wRegister, i);
         if (Ram.wRegister == 0) {
-            obj.ram.setZeroBit(true);
+
+            obj.ram.setStatus(obj.ram.setZeroBit(true));
         }
-        System.out.println("iorlw");
+        System.out.println("iorlw wRegister: "+ String.format("0x%02X", Ram.wRegister));
     }
 
-    public void subLW() {
-        System.out.println("sublw");
+    /**
+     * he contents of W register is subtracted (2’s complement method) from the eight bit literal 'i'.
+     * The result is placed in the W register.
+     * @param i 8 bit literal
+     *
+     * TODO when do i have to set the DC bit ?
+     */
+    public void subLW(Integer i) {
+
+        Ram.wRegister = i - Ram.wRegister;
+        if (Ram.wRegister > 0) {
+            obj.ram.setStatus(obj.ram.setCarryBit(true));
+
+        } else if (Ram.wRegister == 0) {
+            obj.ram.setStatus(obj.ram.setCarryBit(true));
+            obj.ram.setStatus(obj.ram.setZeroBit(true));
+
+
+        } else if (Ram.wRegister < 0) {
+            /**
+             * TODO subtraction with complement right?
+             */
+            Ram.wRegister = 0xFF - Ram.wRegister;
+
+        }
+
+        System.out.println("sublw wRegister: "+ String.format("0x%02X", Ram.wRegister));
     }
 
-    public void xorLW() {
+    /**
+     * The contents of the W register are
+     * XOR’ed with the eight bit literal 'i'.
+     * The result is placed in the W register.
+     * TODO fix c dc and z bit
+     * @param i 8 bit literal
+     */
+    public void xorLW(Integer i) {
+        Ram.wRegister = obj.alu.xor(Ram.wRegister, i);
 
-        System.out.println("xorlw");
+        if (Ram.wRegister == 0) {
+            obj.ram.setStatus(obj.ram.setZeroBit(true));
+
+        }
+
+        //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
+        System.out.println("xorlw wRegister: "+ String.format("0x%02X", Ram.wRegister));
     }
 
     /**
      * The contents of the W register are
      * added to the eight bit literal ’i’ and the
      * result is placed in the W register
-     *
-     * @param i
+     * TODO fix c dc and z bit
+     * @param i 8 bit literal
      */
     public void addLW(Integer i) {
         Ram.wRegister += i;
-        System.out.println("addlw");
+        //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
+        System.out.println("addlw wRegister: "+ String.format("0x%02X", Ram.wRegister));
     }
 
-
+    /**
+     *
+     * @param i
+     */
     public void goTO(Integer i) {
+
 
         ProgrammMemory.stopStackoverflow++;
 
 
         /**
          * loop to create artificial endless loop
-         * TODO increase to 10
+         * TODO increase stackoverflow amount to wanted number
          */
         if (ProgrammMemory.stopStackoverflow != 3) {
             functionCalls(i);

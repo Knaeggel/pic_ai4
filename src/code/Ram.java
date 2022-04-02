@@ -34,13 +34,47 @@ public class Ram {
     /**
      * TODO
      *
-     * @param b
-     * @return
+     * @param b if true set Zero bit to 1 if false set Zero bit to 0
+     * @return new Status
      */
     public Integer setZeroBit(boolean b) {
         Integer iRet = getStatus();
         if (b) {
             iRet += 0b100;
+        } else {
+            iRet -= 0b100;
+        }
+        return iRet;
+    }
+
+    /**
+     *
+     *
+     * @param b if true set Carry bit to 1 if false set Carry bit to 0
+     * @return new Status
+     */
+    public Integer setCarryBit(boolean b) {
+        Integer iRet = getStatus();
+        if (b) {
+            iRet +=0b1;
+        } else {
+            iRet -= 0b1;
+        }
+        return iRet;
+    }
+
+    /**
+     *
+     *
+     * @param b if true set DigitCarry bit to 1 if false set DigitCarry bit to 0
+     * @return new Status
+     */
+    public Integer setDigitCarryBit(boolean b) {
+        Integer iRet = getStatus();
+        if (b) {
+            iRet +=0b10;
+        } else {
+            iRet -= 0b10;
         }
         return iRet;
     }
