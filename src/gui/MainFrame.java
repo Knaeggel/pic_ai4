@@ -86,5 +86,51 @@ public class MainFrame extends JFrame {
 
             }
         });
+
     }
+
+    /**
+     * Aktualisiert den Stack in der GUI
+     * @param aiStack
+     */
+    public void updateStack(Integer[] aiStack){
+        int count = 0;
+
+        for(int i = 0; i < aiStack.length; i++){
+            if(aiStack[i] != null) {
+                count++;
+                switch (count) {
+                    case 1:
+                        Stack8.setText(aiStack[i].toString());
+                        break;
+                    case 2:
+                        Stack7.setText(aiStack[i].toString());
+                        break;
+                    case 3:
+                        Stack6.setText(aiStack[i].toString());
+                        break;
+                    case 4:
+                        Stack5.setText(aiStack[i].toString());
+                        break;
+                    case 5:
+                        Stack4.setText(aiStack[i].toString());
+                        break;
+                    case 6:
+                        Stack3.setText(aiStack[i].toString());
+                        break;
+                    case 7:
+                        Stack2.setText(aiStack[i].toString());
+                        break;
+                    case 8:
+                        Stack1.setText(aiStack[i].toString());
+                        break;
+                    default:
+                        System.out.println("Default updateStack");
+                        break;
+                }
+            }
+        }
+    }
+
+
 }
