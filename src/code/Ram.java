@@ -17,7 +17,7 @@ public class Ram {
         setStatus(0b0001_1000);
     }
 
-    public static Integer[][] getRam() {
+    public Integer[][] getRam() {
         return ram;
     }
 
@@ -27,7 +27,7 @@ public class Ram {
         ram[1][3] = i;
     }
 
-    public static Integer getStatus() {
+    public Integer getStatus() {
         return ram[bank][3];
     }
 
@@ -37,7 +37,7 @@ public class Ram {
      * @param b
      * @return
      */
-    public static Integer setZeroBit(boolean b) {
+    public Integer setZeroBit(boolean b) {
         Integer iRet = getStatus();
         if (b) {
             iRet += 0b100;

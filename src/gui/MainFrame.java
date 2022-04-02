@@ -14,7 +14,7 @@ public class MainFrame extends JFrame {
     private JPanel Ports;
     private JPanel PortA;
     private JPanel PortB;
-    private JPanel Stack;
+    private JPanel StackPanel;
     private JLabel Stack1;
     private JLabel Stack2;
     private JLabel Stack3;
@@ -56,6 +56,7 @@ public class MainFrame extends JFrame {
     private JCheckBox pinB5;
     private JCheckBox pinB6;
     private JCheckBox pinB7;
+
 
 
 
@@ -102,28 +103,28 @@ public class MainFrame extends JFrame {
                 count++;
                 switch (count) {
                     case 1:
-                        Stack8.setText(aiStack[i].toString());
+                        Stack8.setText(String.format("0x%04X",aiStack[i]));
                         break;
                     case 2:
-                        Stack7.setText(aiStack[i].toString());
+                        Stack7.setText(String.format("0x%04X",aiStack[i]));
                         break;
                     case 3:
-                        Stack6.setText(aiStack[i].toString());
+                        Stack6.setText(String.format("0x%04X",aiStack[i]));
                         break;
                     case 4:
-                        Stack5.setText(aiStack[i].toString());
+                        Stack5.setText(String.format("0x%04X",aiStack[i]));
                         break;
                     case 5:
-                        Stack4.setText(aiStack[i].toString());
+                        Stack4.setText(String.format("0x%04X",aiStack[i]));
                         break;
                     case 6:
-                        Stack3.setText(aiStack[i].toString());
+                        Stack3.setText(String.format("0x%04X",aiStack[i]));
                         break;
                     case 7:
-                        Stack2.setText(aiStack[i].toString());
+                        Stack2.setText(String.format("0x%04X",aiStack[i]));
                         break;
                     case 8:
-                        Stack1.setText(aiStack[i].toString());
+                        Stack1.setText(String.format("0x%04X",aiStack[i]));
                         break;
                     default:
                         System.out.println("Default updateStack");

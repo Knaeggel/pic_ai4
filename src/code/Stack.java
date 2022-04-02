@@ -2,27 +2,35 @@ package code;
 
 public class Stack {
 
-    public static Integer[] stack = new Integer[8];
+    private Integer[] stack;
     static int pointer = 0;
 
-    public static void printStack(){
+    public Stack(){
+         stack = new Integer[8];
+    }
+
+    public void printStack(){
         for (Integer integer : stack) {
             System.out.println(String.format("0x%02X",integer));
         }
+    }
+
+    public Integer[] getStack() {
+        return stack;
     }
 
     /**
      *
      * @param iVal
      */
-    public static void pushOnStack(Integer iVal) {
+    public void pushOnStack(Integer iVal) {
         stack[pointer] = iVal;
         pointer++;
         if (pointer == 8) {
             pointer = 0;
         }
     }
-    public static Integer pop() {
+    public Integer pop() {
         Integer iRet = 0;
         iRet = stack[pointer];
         stack[pointer] = 0;

@@ -3,15 +3,16 @@ package code;
 import java.util.ArrayList;
 
 
+
 public class Decoder {
+    AllObjects obj = new AllObjects();
 
-
-    public static int decodeString(String src) {
+    public int decodeString(String src) {
         /**
          * initialized ram
          */
-        Ram ram = new Ram();
-        System.out.println(Integer.toBinaryString(ram.getStatus()));
+
+        System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
 
 
         //LSTFileReader file = new LSTFileReader();
@@ -45,6 +46,7 @@ public class Decoder {
             //System.out.println(String.format("0x%02X",Memory.stack[i]));
         }
 
+        //stack.printStack();
 
         //System.out.println(iSizeOfDecodedList);
         return 1;
@@ -53,10 +55,11 @@ public class Decoder {
     /**
      * makes the function calls
      */
-    public static void functionCalls(Integer i) {
+    public void functionCalls(Integer i) {
 
         ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
         ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
+        ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
 
         int iOpCode = LSTFileReader.getOpcode(i);
 
@@ -65,9 +68,9 @@ public class Decoder {
         int iOpValue = opVal.get(i);
 
         //System.out.println(String.format("0x%02X",iOpValue));
-        Stack.pushOnStack(iOpCode);
+        obj.stack.pushOnStack(decodeList.get(i));
 
-
+        obj.mainFrame.updateStack(obj.stack.getStack());
 
         switch (iHexOpcode) {
             case 0b00110000 -> movLW(iOpValue);
@@ -84,7 +87,7 @@ public class Decoder {
     /**
      * moves 8 bit literal to W register
      */
-    public static void movLW(Integer i) {
+    public void movLW(Integer i) {
         System.out.println("movlw wRegister: " + String.format("0x%02X", Ram.wRegister));
         Ram.wRegister = i;
     }
@@ -95,8 +98,8 @@ public class Decoder {
      *
      * @param i 8 bit literal
      */
-    public static void andLW(Integer i) {
-        Ram.wRegister = ALU.and(Ram.wRegister, i);
+    public void andLW(Integer i) {
+        Ram.wRegister = obj.alu.and(Ram.wRegister, i);
         System.out.println("andlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
@@ -107,19 +110,20 @@ public class Decoder {
      *
      * @param i
      */
-    public static void iorLW(Integer i) {
-        Ram.wRegister = ALU.or(Ram.wRegister, i);
+    public void iorLW(Integer i) {
+
+        Ram.wRegister = obj.alu.or(Ram.wRegister, i);
         if (Ram.wRegister == 0) {
-            Ram.setZeroBit(true);
+            obj.ram.setZeroBit(true);
         }
         System.out.println("iorlw");
     }
 
-    public static void subLW() {
+    public void subLW() {
         System.out.println("sublw");
     }
 
-    public static void xorLW() {
+    public void xorLW() {
 
         System.out.println("xorlw");
     }
@@ -131,21 +135,22 @@ public class Decoder {
      *
      * @param i
      */
-    public static void addLW(Integer i) {
+    public void addLW(Integer i) {
         Ram.wRegister += i;
         System.out.println("addlw");
     }
 
 
-    public static void goTO(Integer i) {
+    public void goTO(Integer i) {
 
         ProgrammMemory.stopStackoverflow++;
 
 
         /**
          * loop to create artificial endless loop
+         * TODO increase to 10
          */
-        if (ProgrammMemory.stopStackoverflow != 10) {
+        if (ProgrammMemory.stopStackoverflow != 3) {
             functionCalls(i);
         }
         System.out.println("goto");

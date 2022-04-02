@@ -1,19 +1,18 @@
 package code;
-import gui.MainFrame;
-
-
 import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
+        AllObjects obj;
 
-        MainFrame myFrame = new MainFrame();
+        //MainFrame myFrame = new MainFrame();
 
+        Decoder decoder = new Decoder();
 
         //LSTFileReader.read(".\\res\\Sim1.txt");
         
-        if ((Decoder.decodeString(".\\res\\Sim1.txt")) == 1) {
-            //Stack.printStack();
+        if ((decoder.decodeString(".\\res\\Sim1.txt")) == 1) {
+
             //System.out.println(Memory.wRegister);
 
             System.out.println("Main decoding done");
@@ -49,7 +48,7 @@ public class Main {
         ProgrammMemory.memory = new ArrayList<>();
         Ram.bank = 0;
         Ram.wRegister = 0;
-        Stack.stack = new Integer[8];
+        //Stack.stack = new Integer[8];
         Stack.pointer = 0;
 
     }
