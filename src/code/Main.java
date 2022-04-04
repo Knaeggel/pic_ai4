@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
+        /**
         AllObjects obj;
 
         //MainFrame myFrame = new MainFrame();
@@ -35,6 +36,7 @@ public class Main {
             System.out.println(String.format("0x%04X",integer));
         }
         */
+
 
 	}
 

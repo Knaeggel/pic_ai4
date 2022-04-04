@@ -88,14 +88,15 @@ public class Decoder {
      * moves 8 bit literal to W register
      */
     public void movLW(Integer i) {
-        System.out.println("movlw wRegister: " + String.format("0x%02X", Ram.wRegister));
+
         Ram.wRegister = i;
+        System.out.println("movlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
      * W register is anded with the 8 bit literal
      * result ist stored in W register
-     *
+     * TODO fix ALU and and use here
      * @param i 8 bit literal
      */
     public void andLW(Integer i) {
@@ -142,7 +143,7 @@ public class Decoder {
             /**
              * TODO subtraction with complement right?
              */
-            Ram.wRegister = 0xFF - Ram.wRegister;
+            Ram.wRegister = 256 + Ram.wRegister;
 
         }
 
@@ -198,6 +199,7 @@ public class Decoder {
         if (ProgrammMemory.stopStackoverflow != 3) {
             functionCalls(i);
         }
+
         System.out.println("goto");
 
     }
