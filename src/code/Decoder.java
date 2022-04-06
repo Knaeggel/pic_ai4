@@ -3,23 +3,23 @@ package code;
 import java.util.ArrayList;
 
 
-
+/**
+ * TODO jede instruction per functioncall einzeln ausführen lassen
+ */
 public class Decoder {
     public static AllObjects obj = AllObjects.getAllObjectsInstance();
 
     ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
     ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
     ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
+    boolean flag = true;
 
-    public int decodeString(String src) {
+    public void decodeString(String src) {
         /**
          * initialized ram
          */
 
         System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
-        //System.out.println(obj.ram.getSpecificBit(3));
-        //System.out.println(obj.ram.getSpecificBit(4));
-        //System.out.println(obj.ram.getSpecificBit(5));
 
 
         try {
@@ -29,16 +29,9 @@ public class Decoder {
             e.printStackTrace();
         }
 
-        /**
-         * initializes memory to remember the programCounter
-         */
-        var decodeList = LSTFileReader.getDecodeList();
-        for (Integer integer : decodeList) {
 
-            int i = 0;
-            //ProgrammMemory.memory[i] = integer;
+        for (Integer integer : decodeList) {
             ProgrammMemory.memory.add(integer);
-            i++;
         }
 
 
@@ -47,15 +40,16 @@ public class Decoder {
         for (int i = 0; i < iSizeOfDecodedList; i++) {
 
 
-            functionCalls(i);
-
             //System.out.println(String.format("0x%02X",Memory.stack[i]));
         }
 
-        //stack.printStack();
+        //functionCalls(Ram.programmCounter);
 
-        //System.out.println(iSizeOfDecodedList);
-        return 1;
+
+
+    }
+    public void nextStep(){
+        functionCalls(Ram.programmCounter);
     }
 
     /**
@@ -75,6 +69,7 @@ public class Decoder {
 
         obj.mainFrame.updateStack(obj.stack.getStack());
 
+        Ram.programmCounter++;
         switch (iHexOpcode) {
             case 0b00110000 -> movLW(iOpValue);
             case 0b00111001 -> andLW(iOpValue);
@@ -91,6 +86,7 @@ public class Decoder {
      * moves 8 bit literal to W register
      */
     public void movLW(Integer i) {
+
 
         Ram.wRegister = i;
         System.out.println("movlw wRegister: " + String.format("0x%02X", Ram.wRegister));
@@ -194,10 +190,14 @@ public class Decoder {
          * loop to create artificial endless loop
          * TODO increase stackoverflow amount to wanted number
          */
-        if (++ProgrammMemory.stopStackoverflow != 1) {
-            functionCalls(i);
+        if (++ProgrammMemory.stopStackoverflow == 5) {
+            //functionCalls(i);
+
+            //System.exit(1);
         }
 
+
+        Ram.programmCounter = i;
         System.out.println("goto");
 
     }

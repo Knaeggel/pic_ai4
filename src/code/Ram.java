@@ -6,12 +6,14 @@ public class Ram {
     private static Integer[][] ram;
 
 
+
     /**
      * decides which bank is chosen
      */
     public static int bank = 0;
 
     public static int wRegister;
+    public static int programmCounter = 0;
 
 
     public Ram() {

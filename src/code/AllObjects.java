@@ -9,6 +9,7 @@ public class AllObjects {
     public Stack stack;
     public Ram ram;
     public MainFrame mainFrame;
+    public Decoder decoder;
 
     private static AllObjects obj;
 
@@ -17,6 +18,7 @@ public class AllObjects {
         stack = new Stack();
         ram  = new Ram();
         mainFrame = new MainFrame();
+        decoder = new Decoder();
 
     }
     public static AllObjects getAllObjectsInstance() {

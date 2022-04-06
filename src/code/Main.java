@@ -6,17 +6,18 @@ public class Main {
 
         //MainFrame myFrame = new MainFrame();
 
-        Decoder decoder = new Decoder();
+
 
         //LSTFileReader.read(".\\res\\Sim1.txt");
 
-        if ((decoder.decodeString(".\\res\\Sim1.txt")) == 1) {
+        if ((1) == 1) {
 
             //System.out.println(Memory.wRegister);
-
+            Decoder.obj.decoder.decodeString(".\\res\\Sim1.txt");
             System.out.println("Main decoding done");
 
         }
+
 
 
         /*

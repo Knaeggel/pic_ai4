@@ -12,6 +12,9 @@ public class Sim1Test {
     public void setUp() {
 
         decoder.decodeString(".\\res\\Sim1.txt");
+        for (int i = 0; i < 20; i++) {
+            decoder.nextStep();
+        }
     }
 
     @Test
