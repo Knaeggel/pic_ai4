@@ -4,20 +4,8 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
 
-        //MainFrame myFrame = new MainFrame();
 
-
-
-        //LSTFileReader.read(".\\res\\Sim1.txt");
-
-        if ((1) == 1) {
-
-            //System.out.println(Memory.wRegister);
-            Decoder.obj.decoder.decodeString(".\\res\\Sim1.txt");
-            System.out.println("Main decoding done");
-
-        }
-
+        Decoder.obj.decoder.decodeString(".\\res\\Sim1.txt");
 
 
         /*
@@ -36,7 +24,7 @@ public class Main {
         }
         */
 
-
+        System.out.println("Main decoding done");
 	}
 
 

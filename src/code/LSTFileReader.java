@@ -37,13 +37,6 @@ public class LSTFileReader {
 
 				}
 			}
-			// For tests
-		/*
-		for (Integer a: decodeList) {
-			System.out.println(a);
-		}
-		*/
-
 
 			myReader.close();
 		} catch (Exception e) {

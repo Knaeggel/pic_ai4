@@ -12,20 +12,13 @@ public class Decoder {
     ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
     ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
     ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
-    boolean flag = true;
 
     public void decodeString(String src) {
-        /**
-         * initialized ram
-         */
-
-        System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
-
+        //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
 
         try {
             LSTFileReader.read(src);
         } catch (Exception e) {
-            //System.out.println(e);
             e.printStackTrace();
         }
 
@@ -34,20 +27,8 @@ public class Decoder {
             ProgrammMemory.memory.add(integer);
         }
 
-
-        int iSizeOfDecodedList = LSTFileReader.getDecodeList().size();
-
-        for (int i = 0; i < iSizeOfDecodedList; i++) {
-
-
-            //System.out.println(String.format("0x%02X",Memory.stack[i]));
-        }
-
-        //functionCalls(Ram.programmCounter);
-
-
-
     }
+
     public void nextStep(){
         functionCalls(Ram.programmCounter);
     }
