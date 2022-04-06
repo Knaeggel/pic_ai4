@@ -91,6 +91,7 @@ public class MainFrame extends JFrame {
 
     }
 
+
     /**
      * TODO creates stackoverflow in unit tests
      * Aktualisiert den Stack in der GUI
