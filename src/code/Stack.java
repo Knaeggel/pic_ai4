@@ -5,7 +5,7 @@ public class Stack {
     private Integer[] stack;
     static int pointer = 0;
 
-    public Stack(){
+    public Stack() {
          stack = new Integer[8];
     }
 

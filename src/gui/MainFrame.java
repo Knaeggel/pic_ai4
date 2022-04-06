@@ -1,6 +1,7 @@
 package gui;
 
 import code.Decoder;
+import code.Stack;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -104,11 +105,12 @@ public class MainFrame extends JFrame {
 
 
     /**
-     * TODO creates stackoverflow in unit tests
+     *
      * Aktualisiert den Stack in der GUI
-     * @param aiStack
+     * @param stack
      */
-    public void updateStack(Integer[] aiStack){
+    public void updateStack(Stack stack){
+        Integer[] aiStack = stack.getStack();
 
         int count = 0;
 

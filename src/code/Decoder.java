@@ -67,7 +67,7 @@ public class Decoder {
         //System.out.println(String.format("0x%02X",iOpValue));
         obj.stack.pushOnStack(decodeList.get(i));
 
-        obj.mainFrame.updateStack(obj.stack.getStack());
+        obj.mainFrame.updateStack(obj.stack);
 
         Ram.programmCounter++;
         switch (iHexOpcode) {
