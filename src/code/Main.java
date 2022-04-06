@@ -3,15 +3,13 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        /**
-        AllObjects obj;
 
         //MainFrame myFrame = new MainFrame();
 
         Decoder decoder = new Decoder();
 
         //LSTFileReader.read(".\\res\\Sim1.txt");
-        
+
         if ((decoder.decodeString(".\\res\\Sim1.txt")) == 1) {
 
             //System.out.println(Memory.wRegister);

@@ -5,7 +5,11 @@ import java.util.ArrayList;
 
 
 public class Decoder {
-    AllObjects obj = new AllObjects();
+    public static AllObjects obj = AllObjects.getAllObjectsInstance();
+
+    ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
+    ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
+    ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
 
     public int decodeString(String src) {
         /**
@@ -13,9 +17,11 @@ public class Decoder {
          */
 
         System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
+        //System.out.println(obj.ram.getSpecificBit(3));
+        //System.out.println(obj.ram.getSpecificBit(4));
+        //System.out.println(obj.ram.getSpecificBit(5));
 
 
-        //LSTFileReader file = new LSTFileReader();
         try {
             LSTFileReader.read(src);
         } catch (Exception e) {
@@ -57,11 +63,8 @@ public class Decoder {
      */
     public void functionCalls(Integer i) {
 
-        ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
-        ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
-        ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
 
-        int iOpCode = LSTFileReader.getOpcode(i);
+
 
         int iHexOpcode = opCodeList.get(i);
 
@@ -184,19 +187,14 @@ public class Decoder {
 
     /**
      *
-     * @param i
+     * @param i number of the the next code segment
      */
     public void goTO(Integer i) {
-
-
-        ProgrammMemory.stopStackoverflow++;
-
-
         /**
          * loop to create artificial endless loop
          * TODO increase stackoverflow amount to wanted number
          */
-        if (ProgrammMemory.stopStackoverflow != 3) {
+        if (++ProgrammMemory.stopStackoverflow != 1) {
             functionCalls(i);
         }
 

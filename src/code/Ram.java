@@ -1,6 +1,8 @@
 package code;
 
 public class Ram {
+    public enum statusBits {Carry, DigitCarry, Zero}
+
     private static Integer[][] ram;
 
 
@@ -32,7 +34,18 @@ public class Ram {
     }
 
     /**
-     * TODO
+     *
+     * @param n the specific bits value (starts with 0)
+     * @return value of the n-th bit
+     *
+     * remove the commented part to start with 1 instead of 0
+     */
+    public int getSpecificBit(int n) {
+        return ((ram[bank][3] >> (n /*-1*/ )) & 1);
+    }
+
+    /**
+     *
      *
      * @param b if true set Zero bit to 1 if false set Zero bit to 0
      * @return new Status
@@ -46,6 +59,7 @@ public class Ram {
         }
         return iRet;
     }
+
 
     /**
      *

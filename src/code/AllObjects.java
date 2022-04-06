@@ -1,13 +1,32 @@
 package code;
 
+import com.sun.jdi.request.DuplicateRequestException;
 import gui.MainFrame;
 
 public class AllObjects {
 
-    public ALU alu = new ALU();
-    public Stack stack = new Stack();
-    public Ram ram = new Ram();
-    public MainFrame mainFrame = new MainFrame();
+    public ALU alu;
+    public Stack stack;
+    public Ram ram;
+    public MainFrame mainFrame;
+
+    private static AllObjects obj;
+
+    public AllObjects() {
+        alu = new ALU();
+        stack = new Stack();
+        ram  = new Ram();
+        mainFrame = new MainFrame();
+
+    }
+    public static AllObjects getAllObjectsInstance() {
+        if (obj == null) {
+            obj = new AllObjects();
+        } else {
+            throw new DuplicateRequestException("Multiple instances of AllObjects");
+        }
+        return obj;
+    }
 
 
 

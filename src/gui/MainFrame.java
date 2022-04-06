@@ -92,11 +92,14 @@ public class MainFrame extends JFrame {
     }
 
     /**
+     * TODO creates stackoverflow in unit tests
      * Aktualisiert den Stack in der GUI
      * @param aiStack
      */
     public void updateStack(Integer[] aiStack){
+
         int count = 0;
+
 
         for(int i = 0; i < aiStack.length; i++){
             if(aiStack[i] != null) {
