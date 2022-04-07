@@ -4,6 +4,12 @@ Watchdogzeit ca 18ms
 
 Befehlszykluszeit bei 4MHz 1ns; 8MHz 0,5ns
 
-2 Befehlstakte bei GOTO,CALL und Manipulation des PCL-Register, weil im Befehlsregister steht falscher 
-Befehl -> NOP
+2 Befehlstakte bei GOTO,CALL und Manipulation des 
+PCL-Register, weil im Befehlsregister steht falscher 
+Befehl -> NOP.
+
+Laufzeitzähler Zeit in mykroSekunde,
+4 Quarztakte/Befehl. 
+
+Zu addierende Zeit = 4/fQuarz
 
