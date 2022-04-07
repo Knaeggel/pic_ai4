@@ -16,11 +16,12 @@ public class AllObjects {
     public AllObjects() {
         alu = new ALU();
         stack = new Stack();
-        ram  = new Ram();
+        ram = new Ram();
         mainFrame = new MainFrame();
         decoder = new Decoder();
 
     }
+
     public static AllObjects getAllObjectsInstance() {
         if (obj == null) {
             obj = new AllObjects();
@@ -29,8 +30,6 @@ public class AllObjects {
         }
         return obj;
     }
-
-
 
 
 }

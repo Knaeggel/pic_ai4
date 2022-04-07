@@ -6,7 +6,6 @@ public class Ram {
     private static Integer[][] ram;
 
 
-
     /**
      * decides which bank is chosen
      */
@@ -36,18 +35,16 @@ public class Ram {
     }
 
     /**
-     *
      * @param n the specific bits value (starts with 0)
      * @return value of the n-th bit
-     *
+     * <p>
      * remove the commented part to start with 1 instead of 0
      */
     public int getSpecificBit(int n) {
-        return ((ram[bank][3] >> (n /*-1*/ )) & 1);
+        return ((ram[bank][3] >> (n /*-1*/)) & 1);
     }
 
     /**
-     *
      * @param b if true set Zero bit to 1 if false set Zero bit to 0
      */
     public void setZeroBit(boolean b) {
@@ -62,14 +59,12 @@ public class Ram {
 
 
     /**
-     *
-     *
      * @param b if true set Carry bit to 1 if false set Carry bit to 0
      */
     public void setCarryBit(boolean b) {
         Integer iRet = getStatus();
         if (b) {
-            iRet +=0b1;
+            iRet += 0b1;
         } else {
             iRet -= 0b1;
         }
@@ -77,14 +72,12 @@ public class Ram {
     }
 
     /**
-     *
-     *
      * @param b if true set DigitCarry bit to 1 if false set DigitCarry bit to 0
      */
     public void setDigitCarryBit(boolean b) {
         Integer iRet = getStatus();
         if (b) {
-            iRet +=0b10;
+            iRet += 0b10;
         } else {
             iRet -= 0b10;
         }

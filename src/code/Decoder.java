@@ -56,14 +56,27 @@ public class Decoder {
 
         Ram.programmCounter++;
         switch (iHexOpcode) {
-            case 0b00110000 -> movLW(iOpValue);
-            case 0b00111001 -> andLW(iOpValue);
-            case 0b00111000 -> iorLW(iOpValue);
-            case 0b00111100 -> subLW(iOpValue);
-            case 0b00111010 -> xorLW(iOpValue);
-            case 0b00111110 -> addLW(iOpValue);
-            case 0b00101000 -> goTO(iOpValue);
-
+            case 0b0011_0000 -> movLW(iOpValue);
+            case 0b0011_1001 -> andLW(iOpValue);
+            case 0b0011_1000 -> iorLW(iOpValue);
+            case 0b0011_1100 -> subLW(iOpValue);
+            case 0b0011_1010 -> xorLW(iOpValue);
+            case 0b0011_1110 -> addLW(iOpValue);
+            case 0b0010_1000 -> goTO(iOpValue);
+            case 0b0010_0000 -> call(iOpValue);
+            case 0b0011_0100 -> retLW(iOpValue);
+            case 0b0000_0000 -> {
+                if (iOpValue == 0b0000){
+                    nop();
+                }
+                if (iOpValue == 0b1000) {
+                    reTurn();
+                }
+                if (iOpValue == 0b1001) {
+                    //TODO RETFIE
+                }
+            }
+            default -> System.out.println("Default");
 
         }
     }
@@ -217,6 +230,43 @@ public class Decoder {
         Ram.programmCounter = i;
         System.out.println("goto");
 
+    }
+
+    public void call(Integer i) {
+
+        System.out.println("call " + i);
+    }
+
+    /**
+     * The W register is loaded with the eight
+     * bit literal ’i’. The program counter is
+     * loaded from the top of the stack (the
+     * return address). This is a two cycle
+     * instruction.
+     *
+     * @param i 8 bit literal which is loaded into wRegister
+     */
+    public void retLW(Integer i) {
+        Ram.wRegister = i;
+        Ram.programmCounter = obj.stack.pop();
+        System.out.println("retLW");
+    }
+
+    /**
+     * Return from subroutine. The stack is
+     * POPed and the top of the stack (TOS)
+     * is loaded into the program counter. This
+     * is a two cycle instruction.
+     */
+    public void reTurn() {
+        System.out.println("return");
+    }
+
+    /**
+     * no operation
+     */
+    public void nop() {
+        System.out.println("nop");
     }
 
 }
