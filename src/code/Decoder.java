@@ -23,9 +23,7 @@ public class Decoder {
         }
 
 
-        for (Integer integer : decodeList) {
-            ProgrammMemory.memory.add(integer);
-        }
+        ProgrammMemory.memory.addAll(decodeList);
 
     }
 
@@ -119,10 +117,8 @@ public class Decoder {
             obj.ram.setStatus(obj.ram.setZeroBit(true));
 
 
-        } else if (Ram.wRegister < 0) {
-            /**
-             * TODO subtraction with complement right?
-             */
+        } else {
+            //TODO subtraction with complement right?
             Ram.wRegister = 256 + Ram.wRegister;
 
         }
@@ -163,20 +159,10 @@ public class Decoder {
     }
 
     /**
-     *
-     * @param i number of the the next code segment
+     * TODO runtime counter needs to be increased by 2
+     * @param i number of the next code segment
      */
     public void goTO(Integer i) {
-        /**
-         * loop to create artificial endless loop
-         * TODO increase stackoverflow amount to wanted number
-         */
-        if (++ProgrammMemory.stopStackoverflow == 5) {
-            //functionCalls(i);
-
-            //System.exit(1);
-        }
-
 
         Ram.programmCounter = i;
         System.out.println("goto");
