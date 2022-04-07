@@ -35,20 +35,5 @@ public class Sim1Test {
         Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(2));
     }
 
-/*
-    @Test
-    public void testCarry() {
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(0));
-    }
 
-    @Test
-    public void testDigitCarry() {
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(1));
-    }
-
-    @Test
-    public void testZero() {
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(2));
-    }
-*/
 }

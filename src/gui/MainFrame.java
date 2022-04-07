@@ -61,6 +61,7 @@ public class MainFrame extends JFrame {
     private JCheckBox pinB7;
 
 
+    boolean stopFlag = true;
 
 
     public MainFrame() {
@@ -77,9 +78,13 @@ public class MainFrame extends JFrame {
             }
         });
 
+        /**
+         * stop button
+         */
         btnStopp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
 
             }
         });
@@ -101,47 +106,57 @@ public class MainFrame extends JFrame {
                 Decoder.obj.decoder.nextStep();
             }
         });
+
+        /**
+         * start button
+         */
+        btnStart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
 
     /**
-     *
      * Aktualisiert den Stack in der GUI
+     *
      * @param stack
      */
-    public void updateStack(Stack stack){
+    public void updateStack(Stack stack) {
         Integer[] aiStack = stack.getStack();
 
         int count = 0;
 
 
-        for(int i = 0; i < aiStack.length; i++){
-            if(aiStack[i] != null) {
+        for (int i = 0; i < aiStack.length; i++) {
+            if (aiStack[i] != null) {
                 count++;
                 switch (count) {
                     case 1:
-                        Stack8.setText(String.format("0x%04X",aiStack[i]));
+                        Stack8.setText(String.format("0x%04X", aiStack[i]));
                         break;
                     case 2:
-                        Stack7.setText(String.format("0x%04X",aiStack[i]));
+                        Stack7.setText(String.format("0x%04X", aiStack[i]));
                         break;
                     case 3:
-                        Stack6.setText(String.format("0x%04X",aiStack[i]));
+                        Stack6.setText(String.format("0x%04X", aiStack[i]));
                         break;
                     case 4:
-                        Stack5.setText(String.format("0x%04X",aiStack[i]));
+                        Stack5.setText(String.format("0x%04X", aiStack[i]));
                         break;
                     case 5:
-                        Stack4.setText(String.format("0x%04X",aiStack[i]));
+                        Stack4.setText(String.format("0x%04X", aiStack[i]));
                         break;
                     case 6:
-                        Stack3.setText(String.format("0x%04X",aiStack[i]));
+                        Stack3.setText(String.format("0x%04X", aiStack[i]));
                         break;
                     case 7:
-                        Stack2.setText(String.format("0x%04X",aiStack[i]));
+                        Stack2.setText(String.format("0x%04X", aiStack[i]));
                         break;
                     case 8:
-                        Stack1.setText(String.format("0x%04X",aiStack[i]));
+                        Stack1.setText(String.format("0x%04X", aiStack[i]));
                         break;
                     default:
                         System.out.println("Default updateStack");
