@@ -22,7 +22,7 @@ public class Sim1Test {
         Assertions.assertEquals(0x25, Ram.wRegister);
     }
 
-
+/*
     @Test
     public void testStatusRegister() {
         //System.out.println(Integer.toBinaryString(Decoder.obj.ram.getStatus()));
@@ -34,6 +34,21 @@ public class Sim1Test {
         Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(1));
         Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(2));
     }
+*/
 
+    @Test
+    public void testCarry() {
+        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(0));
+    }
+
+    @Test
+    public void testDigitCarry() {
+        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(1));
+    }
+
+    @Test
+    public void testZero() {
+        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(2));
+    }
 
 }

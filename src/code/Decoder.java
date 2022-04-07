@@ -13,6 +13,11 @@ public class Decoder {
     ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
     ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
 
+    /**
+     * decodes the lst file and adds all to the programm memory
+     *
+     * @param src string of the source
+     */
     public void decodeString(String src) {
         //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
 
@@ -27,7 +32,10 @@ public class Decoder {
 
     }
 
-    public void nextStep(){
+    /**
+     * does one step at a time
+     */
+    public void nextStep() {
         functionCalls(Ram.programmCounter);
     }
 
@@ -35,8 +43,6 @@ public class Decoder {
      * makes the function calls
      */
     public void functionCalls(Integer i) {
-
-
 
 
         int iHexOpcode = opCodeList.get(i);
@@ -58,7 +64,24 @@ public class Decoder {
             case 0b00111110 -> addLW(iOpValue);
             case 0b00101000 -> goTO(iOpValue);
 
+
         }
+    }
+
+    /**
+     * @param wRegBeforeSub value of the wRegister before any operation
+     * @param i             operation value
+     * @return boolen value if you have to set the DigitCarry bit or not
+     */
+    public boolean needToSetDigitCarry(int wRegBeforeSub, int i) {
+        boolean bRet;
+        wRegBeforeSub = obj.alu.xor(wRegBeforeSub, 0xFF) + 1;
+        if (((i & 0xF) + (wRegBeforeSub & 0xF) + 1) > 15) {
+            bRet = true;
+        } else {
+            bRet = false;
+        }
+        return bRet;
     }
 
     /**
@@ -68,17 +91,19 @@ public class Decoder {
 
 
         Ram.wRegister = i;
+        //System.out.println("In movlw " + Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("movlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
      * W register is anded with the 8 bit literal
      * result ist stored in W register
-     * TODO fix ALU and and use here
+     *
      * @param i 8 bit literal
      */
     public void andLW(Integer i) {
         Ram.wRegister = obj.alu.and(Ram.wRegister, i);
+        //System.out.println("In andlw " + Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("andlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
@@ -93,73 +118,98 @@ public class Decoder {
 
         Ram.wRegister = obj.alu.or(Ram.wRegister, i);
         if (Ram.wRegister == 0) {
+            obj.ram.setZeroBit(true);
 
-            obj.ram.setStatus(obj.ram.setZeroBit(true));
         }
-        System.out.println("iorlw wRegister: "+ String.format("0x%02X", Ram.wRegister));
+        //System.out.println("In iorlw " + Integer.toBinaryString(obj.ram.getStatus()));
+        System.out.println("iorlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
+
 
     /**
      * he contents of W register is subtracted (2’s complement method) from the eight bit literal 'i'.
      * The result is placed in the W register.
-     * @param i 8 bit literal
      *
-     * TODO when do i have to set the DC bit ?
+     * @param i 8 bit literal
      */
     public void subLW(Integer i) {
+        int wRegBeforeSub = Ram.wRegister;
+
+        boolean b = needToSetDigitCarry(wRegBeforeSub, i);
+        obj.ram.setDigitCarryBit(b);
+
 
         Ram.wRegister = i - Ram.wRegister;
+
         if (Ram.wRegister > 0) {
-            obj.ram.setStatus(obj.ram.setCarryBit(true));
+            obj.ram.setCarryBit(true);
 
         } else if (Ram.wRegister == 0) {
-            obj.ram.setStatus(obj.ram.setCarryBit(true));
-            obj.ram.setStatus(obj.ram.setZeroBit(true));
+            obj.ram.setCarryBit(true);
+            obj.ram.setZeroBit(true);
 
 
         } else {
-            //TODO subtraction with complement right?
-            Ram.wRegister = 256 + Ram.wRegister;
+            Ram.wRegister = obj.alu.xor(Ram.wRegister, 0xFF);
 
         }
 
-        System.out.println("sublw wRegister: "+ String.format("0x%02X", Ram.wRegister));
+        //System.out.println("In sublw " + Integer.toBinaryString(obj.ram.getStatus()));
+        System.out.println("sublw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
      * The contents of the W register are
      * XOR’ed with the eight bit literal 'i'.
      * The result is placed in the W register.
-     * TODO fix c dc and z bit
+     *
      * @param i 8 bit literal
      */
     public void xorLW(Integer i) {
         Ram.wRegister = obj.alu.xor(Ram.wRegister, i);
 
         if (Ram.wRegister == 0) {
-            obj.ram.setStatus(obj.ram.setZeroBit(true));
+            obj.ram.setZeroBit(true);
 
         }
 
-        //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("xorlw wRegister: "+ String.format("0x%02X", Ram.wRegister));
+        //System.out.println("in xorlw " + Integer.toBinaryString(obj.ram.getStatus()));
+        System.out.println("xorlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
      * The contents of the W register are
      * added to the eight bit literal ’i’ and the
      * result is placed in the W register
-     * TODO fix c dc and z bit
+     *
      * @param i 8 bit literal
      */
     public void addLW(Integer i) {
+
+        int wregBefore = Ram.wRegister;
+
+
         Ram.wRegister += i;
-        //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("addlw wRegister: "+ String.format("0x%02X", Ram.wRegister));
+        if (Ram.wRegister == 0) {
+            obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
+        }
+
+        if (Ram.wRegister > 255) {
+            Ram.wRegister = obj.alu.and(Ram.wRegister, 0xFF);
+            obj.ram.setCarryBit(true);
+        } else {
+            obj.ram.setCarryBit(false);
+        }
+        obj.ram.setDigitCarryBit(needToSetDigitCarry(wregBefore, i));
+        //System.out.println("in addlw " + Integer.toBinaryString(obj.ram.getStatus()));
+        System.out.println("addlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
      * TODO runtime counter needs to be increased by 2
+     *
      * @param i number of the next code segment
      */
     public void goTO(Integer i) {
