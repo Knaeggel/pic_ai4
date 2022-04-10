@@ -6,7 +6,15 @@ import java.util.ArrayList;
 /**
  * TODO jede instruction per functioncall einzeln ausführen lassen
  */
-public class Decoder {
+public class Decoder extends Thread {
+    //Thread t1 = new Thread();
+    Thread t1 = new Thread(){
+        public void run(){
+            while(true){
+                nextStep();
+            }
+        }
+    };
     public static AllObjects obj = AllObjects.getAllObjectsInstance();
 
     ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
@@ -231,6 +239,21 @@ public class Decoder {
         System.out.println("goto");
 
     }
+int counter = 0;
+    public void startT1(){
+        if(counter == 0){
+            t1.start();
+            counter++;
+        }else{
+            t1.notify();
+        }
+
+    }
+
+    public void stopT1() throws InterruptedException {
+        t1.wait();
+    }
+
 
     public void call(Integer i) {
 

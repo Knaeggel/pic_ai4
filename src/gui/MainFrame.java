@@ -62,7 +62,9 @@ public class MainFrame extends JFrame {
 
 
     boolean stopFlag = true;
+    boolean statusSchleife = false;
 
+    int block = 0;
 
     public MainFrame() {
         setContentPane(panel1);
@@ -75,6 +77,8 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Start");
+
+
             }
         });
 
@@ -84,8 +88,11 @@ public class MainFrame extends JFrame {
         btnStopp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-
+                try {
+                    Decoder.obj.decoder.stopT1();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
@@ -113,7 +120,7 @@ public class MainFrame extends JFrame {
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                Decoder.obj.decoder.startT1();
             }
         });
     }
@@ -165,6 +172,7 @@ public class MainFrame extends JFrame {
             }
         }
     }
+
 
 
 }
