@@ -8,13 +8,40 @@ import java.util.ArrayList;
  */
 public class Decoder extends Thread {
     //Thread t1 = new Thread();
-    Thread t1 = new Thread(){
-        public void run(){
-            while(true){
+    Thread t1 = new Thread() {
+        public void run() {
+
+            for (int i = 0; i < 10000000; i++) {
                 nextStep();
             }
+            /*
+            while (true) {
+                nextStep();
+            }
+             */
         }
     };
+
+    int counter = 0;
+
+    public void startT1() {
+        if (counter == 0) {
+            t1.start();
+            counter++;
+        } else {
+            t1.notify();
+        }
+
+    }
+
+    public void stopT1() {
+        try {
+            t1.wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static AllObjects obj = AllObjects.getAllObjectsInstance();
 
     ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
@@ -36,15 +63,17 @@ public class Decoder extends Thread {
         }
 
 
-        ProgrammMemory.memory.addAll(decodeList);
+        ProgramMemory.memory.addAll(decodeList);
 
     }
 
     /**
      * does one step at a time
+     * TODO update pic ui here
      */
     public void nextStep() {
         functionCalls(Ram.programmCounter);
+        obj.mainFrame.updateStack(obj.stack);
     }
 
     /**
@@ -60,7 +89,7 @@ public class Decoder extends Thread {
         //System.out.println(String.format("0x%02X",iOpValue));
         obj.stack.pushOnStack(decodeList.get(i));
 
-        obj.mainFrame.updateStack(obj.stack);
+
 
         Ram.programmCounter++;
         switch (iHexOpcode) {
@@ -74,7 +103,7 @@ public class Decoder extends Thread {
             case 0b0010_0000 -> call(iOpValue);
             case 0b0011_0100 -> retLW(iOpValue);
             case 0b0000_0000 -> {
-                if (iOpValue == 0b0000){
+                if (iOpValue == 0b0000) {
                     nop();
                 }
                 if (iOpValue == 0b1000) {
@@ -220,22 +249,8 @@ public class Decoder extends Thread {
     public void goTO(Integer i) {
 
         Ram.programmCounter = i;
-        System.out.println("goto");
+        System.out.println("goto " + i);
 
-    }
-int counter = 0;
-    public void startT1(){
-        if(counter == 0){
-            t1.start();
-            counter++;
-        }else{
-            t1.notify();
-        }
-
-    }
-
-    public void stopT1() throws InterruptedException {
-        t1.wait();
     }
 
 

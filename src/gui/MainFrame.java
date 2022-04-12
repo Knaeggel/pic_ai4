@@ -88,11 +88,7 @@ public class MainFrame extends JFrame {
         btnStopp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    Decoder.obj.decoder.stopT1();
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
+                Decoder.obj.decoder.stopT1();
             }
         });
 

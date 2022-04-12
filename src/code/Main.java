@@ -35,7 +35,7 @@ public class Main {
     public static void resetMemory() {
         Ram ram = new Ram();
         //ProgrammMemory.memory = new Integer[1024];
-        ProgrammMemory.memory = new ArrayList<>();
+        ProgramMemory.memory = new ArrayList<>();
         Ram.bank = 0;
         Ram.wRegister = 0;
         //Stack.stack = new Integer[8];
