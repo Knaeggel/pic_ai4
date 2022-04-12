@@ -78,7 +78,7 @@ public class Decoder extends Thread {
                     nop();
                 }
                 if (iOpValue == 0b1000) {
-                    reTurn();
+                    returnToTos();
                 }
                 if (iOpValue == 0b1001) {
                     //TODO RETFIE
@@ -87,22 +87,6 @@ public class Decoder extends Thread {
             default -> System.out.println("Default");
 
         }
-    }
-
-    /**
-     * @param wRegBeforeSub value of the wRegister before any operation
-     * @param i             operation value
-     * @return boolen value if you have to set the DigitCarry bit or not
-     */
-    public boolean needToSetDigitCarry(int wRegBeforeSub, int i) {
-        boolean bRet;
-        wRegBeforeSub = obj.alu.xor(wRegBeforeSub, 0xFF) + 1;
-        if (((i & 0xF) + (wRegBeforeSub & 0xF) + 1) > 15) {
-            bRet = true;
-        } else {
-            bRet = false;
-        }
-        return bRet;
     }
 
     /**
@@ -156,7 +140,7 @@ public class Decoder extends Thread {
     public void subLW(Integer i) {
         int wRegBeforeSub = Ram.wRegister;
 
-        boolean b = needToSetDigitCarry(wRegBeforeSub, i);
+        boolean b = obj.alu.isDigitCarry(wRegBeforeSub, i);
         obj.ram.setDigitCarryBit(b);
 
 
@@ -223,7 +207,7 @@ public class Decoder extends Thread {
         } else {
             obj.ram.setCarryBit(false);
         }
-        obj.ram.setDigitCarryBit(needToSetDigitCarry(wregBefore, i));
+        obj.ram.setDigitCarryBit(obj.alu.isDigitCarry(wregBefore, i));
         //System.out.println("in addlw " + Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("addlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
@@ -276,12 +260,13 @@ int counter = 0;
     }
 
     /**
+     * normal name return
      * Return from subroutine. The stack is
      * POPed and the top of the stack (TOS)
      * is loaded into the program counter. This
      * is a two cycle instruction.
      */
-    public void reTurn() {
+    public void returnToTos() {
         System.out.println("return");
     }
 

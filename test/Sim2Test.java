@@ -12,7 +12,7 @@ public class Sim2Test {
     public void setUp() {
 
         decoder.decodeString(".\\res\\Sim2.txt");
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 100; i++) {
             decoder.nextStep();
         }
     }
@@ -22,19 +22,6 @@ public class Sim2Test {
         Assertions.assertEquals(0x36, Ram.wRegister);
     }
 
-/*
-    @Test
-    public void testStatusRegister() {
-        //System.out.println(Integer.toBinaryString(Decoder.obj.ram.getStatus()));
-
-        //System.out.println("C: " + Decoder.obj.ram.getSpecificBit(0));
-        //System.out.println("DC: "+Decoder.obj.ram.getSpecificBit(1));
-        //System.out.println("Z: "+Decoder.obj.ram.getSpecificBit(2));
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(0));
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(1));
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(2));
-    }
-*/
 
     @Test
     public void testCarry() {
