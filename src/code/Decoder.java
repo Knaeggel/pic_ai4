@@ -234,7 +234,7 @@ public class Decoder extends Thread {
     public void addLW(Integer i) {
 
         int wregBefore = Ram.wRegister;
-
+        boolean b =obj.alu.isDigitCarry(Ram.wRegister, i);
 
         Ram.wRegister += i;
         if (Ram.wRegister == 0) {
@@ -249,7 +249,8 @@ public class Decoder extends Thread {
         } else {
             obj.ram.setCarryBit(false);
         }
-        obj.ram.setDigitCarryBit(obj.alu.isDigitCarry(wregBefore, i));
+
+        obj.ram.setDigitCarryBit(b);
         //System.out.println("in addlw " + Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("addlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
@@ -270,7 +271,6 @@ public class Decoder extends Thread {
         }
         obj.programMemory.cycleList.add(pcOfThisInstruction);
 
-        //System.out.println("goto " + i);
     }
 
 

@@ -108,7 +108,9 @@ public class Ram {
         if (b) {
             iRet += 0b100;
         } else {
-            iRet -= 0b100;
+            if (getSpecificStatusBit(2) == 1) {
+                iRet -= 0b100;
+            }
         }
         Decoder.obj.ram.setStatus(iRet);
     }
@@ -122,7 +124,10 @@ public class Ram {
         if (b) {
             iRet += 0b1;
         } else {
-            iRet -= 0b1;
+            if (getSpecificStatusBit(0) == 1) {
+                iRet -= 0b1;
+            }
+
         }
         Decoder.obj.ram.setStatus(iRet);
     }
@@ -135,7 +140,10 @@ public class Ram {
         if (b) {
             iRet += 0b10;
         } else {
-            iRet -= 0b10;
+            if (getSpecificStatusBit(1) == 1) {
+                iRet -= 0b10;
+            }
+
         }
         Decoder.obj.ram.setStatus(iRet);
     }

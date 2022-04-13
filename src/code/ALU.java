@@ -9,12 +9,20 @@ public class ALU {
      */
     public boolean isDigitCarry(int wRegBeforeSub, int i) {
         boolean bRet;
-        wRegBeforeSub = xor(wRegBeforeSub, 0xFF) + 1;
-        if (((i & 0xF) + (wRegBeforeSub & 0xF) + 1) > 15) {
+        if ((((wRegBeforeSub >> (3 )) & 1) == 1) && (((i >> (3 )) & 1) == 1)) {
             bRet = true;
         } else {
             bRet = false;
         }
+
+        /*
+        wRegBeforeSub = xor(wRegBeforeSub, 0xFF) + 1;
+        if (((i & 0xF) + (wRegBeforeSub & 0xF) ) > 15) {
+            bRet = true;
+        } else {
+            bRet = false;
+        }
+        */
         return bRet;
     }
 

@@ -98,9 +98,7 @@ public class MainFrame extends JFrame {
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(Decoder.obj.ram.getSpecificStatusBit(0));
-                System.out.println(Decoder.obj.ram.getSpecificStatusBit(1));
-                System.out.println(Decoder.obj.ram.getSpecificStatusBit(2));
+
             }
         });
 
@@ -111,6 +109,9 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Decoder.obj.decoder.nextStep();
+                System.out.println("C: "+Decoder.obj.ram.getSpecificStatusBit(0));
+                System.out.println("DC: "+Decoder.obj.ram.getSpecificStatusBit(1));
+                System.out.println("Z: "+Decoder.obj.ram.getSpecificStatusBit(2));
             }
         });
 
