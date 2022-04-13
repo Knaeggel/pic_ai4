@@ -12,9 +12,12 @@ public class Sim1Test {
     public void setUp() {
 
         decoder.decodeString(".\\res\\Sim1.txt");
-        for (int i = 0; i < 20; i++) {
-            decoder.nextStep();
+        for (int i = 0; i < 100; i++) {
+
         }
+        do {
+            decoder.nextStep();
+        } while (decoder.obj.programMemory.checkCycle(6) == false);
     }
 
     @Test
@@ -22,7 +25,7 @@ public class Sim1Test {
         Assertions.assertEquals(0x25, Ram.wRegister);
     }
 
-/*
+
     @Test
     public void testStatusRegister() {
         //System.out.println(Integer.toBinaryString(Decoder.obj.ram.getStatus()));
@@ -30,11 +33,11 @@ public class Sim1Test {
         //System.out.println("C: " + Decoder.obj.ram.getSpecificBit(0));
         //System.out.println("DC: "+Decoder.obj.ram.getSpecificBit(1));
         //System.out.println("Z: "+Decoder.obj.ram.getSpecificBit(2));
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(0));
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(1));
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(2));
+        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificStatusBit(0));
+        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificStatusBit(1));
+        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificStatusBit(2));
     }
-*/
+
 
     @Test
     public void testCarry() {
