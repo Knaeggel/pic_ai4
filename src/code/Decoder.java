@@ -36,6 +36,7 @@ public class Decoder extends Thread {
 
     public void stopT1() {
         try {
+
             t1.wait();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -47,6 +48,8 @@ public class Decoder extends Thread {
     ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
     ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
     ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
+    ArrayList<Integer> last11Bits = LSTFileReader.getLast11Bits();
+
 
     /**
      * decodes the lst file and adds all to the programm memory
@@ -63,7 +66,7 @@ public class Decoder extends Thread {
         }
 
 
-        ProgramMemory.memory.addAll(decodeList);
+        //ProgramMemory.memory.addAll(decodeList);
 
     }
 
@@ -74,6 +77,10 @@ public class Decoder extends Thread {
     public void nextStep() {
         functionCalls(Ram.programmCounter);
         obj.mainFrame.updateStack(obj.stack);
+
+        //System.out.println("Stackpointer: " + Stack.pointer);
+        //obj.stack.printStack();
+
     }
 
     /**
@@ -82,27 +89,37 @@ public class Decoder extends Thread {
     public void functionCalls(Integer i) {
 
 
-        int iHexOpcode = opCodeList.get(i);
+        //int iHexOpcode = opCodeList.get(i);
 
-        int iOpValue = opVal.get(i);
+        //int iOpValue = opVal.get(i);
 
         //System.out.println(String.format("0x%02X",iOpValue));
-        obj.stack.pushOnStack(decodeList.get(i));
+        int iOpCode = obj.alu.and(decodeList.get(i), 0xFF00);
+        int iOpValue = obj.alu.and(decodeList.get(i), 0x00FF);
 
 
+        /*
+        Integer[] iStack = obj.stack.getStack();
+        int iOpCode = obj.alu.and(iStack[Stack.pointer], 0xFF00);
+        int iOpValue = obj.alu.and(iStack[Stack.pointer], 0x00FF);
+         */
 
         Ram.programmCounter++;
-        switch (iHexOpcode) {
-            case 0b0011_0000 -> movLW(iOpValue);
-            case 0b0011_1001 -> andLW(iOpValue);
-            case 0b0011_1000 -> iorLW(iOpValue);
-            case 0b0011_1100 -> subLW(iOpValue);
-            case 0b0011_1010 -> xorLW(iOpValue);
-            case 0b0011_1110 -> addLW(iOpValue);
-            case 0b0010_1000 -> goTO(iOpValue);
-            case 0b0010_0000 -> call(iOpValue);
-            case 0b0011_0100 -> retLW(iOpValue);
-            case 0b0000_0000 -> {
+
+
+        //System.out.println(iOpCode);
+        //switch (iHexOpcode) {
+        switch (iOpCode) {
+            case 0b0011_0000_0000_0000 -> movLW(iOpValue);
+            case 0b0011_1001_0000_0000 -> andLW(iOpValue);
+            case 0b0011_1000_0000_0000 -> iorLW(iOpValue);
+            case 0b0011_1100_0000_0000 -> subLW(iOpValue);
+            case 0b0011_1010_0000_0000 -> xorLW(iOpValue);
+            case 0b0011_1110_0000_0000 -> addLW(iOpValue);
+            case 0b0010_1000_0000_0000 -> goTO(iOpValue);
+            case 0b0010_0000_0000_0000 -> call(last11Bits.get(i));
+            case 0b0011_0100_0000_0000 -> retLW(iOpValue);
+            case 0b0000_0000_0000_0000 -> {
                 if (iOpValue == 0b0000) {
                     nop();
                 }
@@ -114,8 +131,9 @@ public class Decoder extends Thread {
                 }
             }
             default -> System.out.println("Default");
-
         }
+        //obj.stack.pushOnStack(decodeList.get(i));
+
     }
 
     /**
@@ -242,7 +260,6 @@ public class Decoder extends Thread {
     }
 
     /**
-     * TODO runtime counter needs to be increased by 2
      *
      * @param i number of the next code segment
      */
@@ -254,7 +271,28 @@ public class Decoder extends Thread {
     }
 
 
+    /**
+     * Call Subroutine. First, return address
+     * (PC+1) is pushed onto the stack. The
+     * eleven bit immediate address is loaded
+     * into PC bits <10:0>. The upper bits of
+     * the PC are loaded from PCLATH. CALL
+     * is a two cycle instruction.
+     * TODO (PCLATH<4:3>) → PC<12:11> ?????????
+     * TODO cycles nachfragen
+     *
+     * @param i 11bit address
+     */
     public void call(Integer i) {
+        obj.stack.pushOnStack(Ram.programmCounter);
+        //obj.stack.printStack();
+        //System.out.println("pclathbit 3 and 4");
+        //System.out.println(obj.ram.getSpecificPCLATHBit(3));
+        //System.out.println(obj.ram.getSpecificPCLATHBit(4));
+        Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
+        Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
+        Ram.programmCounter = i;
+
 
         System.out.println("call " + i);
     }
@@ -280,8 +318,13 @@ public class Decoder extends Thread {
      * POPed and the top of the stack (TOS)
      * is loaded into the program counter. This
      * is a two cycle instruction.
+     *
      */
     public void returnToTos() {
+
+        //System.out.println("next to call " +Ram.programmCounter);
+        Ram.programmCounter = obj.stack.pop();
+        //System.out.println("next to call " +Ram.programmCounter);
         System.out.println("return");
     }
 

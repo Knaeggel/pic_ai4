@@ -1,11 +1,10 @@
 package code;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
 
 
-        Decoder.obj.decoder.decodeString(".\\res\\Sim1.txt");
+        Decoder.obj.decoder.decodeString(".\\res\\Sim2.txt");
 
 
         /*
@@ -35,7 +34,7 @@ public class Main {
     public static void resetMemory() {
         Ram ram = new Ram();
         //ProgrammMemory.memory = new Integer[1024];
-        ProgramMemory.memory = new ArrayList<>();
+        //ProgramMemory.memory = new ArrayList<>();
         Ram.bank = 0;
         Ram.wRegister = 0;
         //Stack.stack = new Integer[8];

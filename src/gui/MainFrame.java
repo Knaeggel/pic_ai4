@@ -66,6 +66,8 @@ public class MainFrame extends JFrame {
 
     int block = 0;
 
+
+
     public MainFrame() {
         setContentPane(panel1);
         setTitle("PIC GUI");

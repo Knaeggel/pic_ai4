@@ -18,6 +18,7 @@ public class Ram {
     public Ram() {
         ram = new Integer[2][128];
         setStatus(0b0001_1000);
+        setPCLATH(0b0_0000);
     }
 
     public Integer[][] getRam() {
@@ -35,13 +36,68 @@ public class Ram {
     }
 
     /**
+     * cant be more than 31
+     * TODO should be set on the selected bank?
+     *
+     * @param i < 32
+     */
+    public void setPCLATH(Integer i) {
+        ram[0][0xA] = i;
+        ram[1][0xA] = i;
+    }
+
+    public Integer getPCLATH() {
+        return ram[bank][0xA];
+    }
+
+    /**
+     *
+     * @param n
+     * @param addressOfRegister
+     * @return
+     */
+    public int getSpecificGenericBit(int n, int addressOfRegister) {
+        return ((ram[bank][addressOfRegister] >> (n /*-1*/)) & 1);
+    }
+
+    /**
      * @param n the specific bits value (starts with 0)
      * @return value of the n-th bit
      * <p>
      * remove the commented part to start with 1 instead of 0
      */
-    public int getSpecificBit(int n) {
-        return ((ram[bank][3] >> (n /*-1*/)) & 1);
+    public int getSpecificStatusBit(int n) {
+        //return ((ram[bank][3] >> (n /*-1*/)) & 1);
+        return getSpecificGenericBit(n, 3);
+    }
+
+    /**
+     * @param n the specific bits value (starts with 0)
+     * @return value of the n-th bit
+     * <p>
+     * remove the commented part to start with 1 instead of 0
+     */
+    public int getSpecificPCLATHBit(int n) {
+        return getSpecificGenericBit(n, 0xA);
+    }
+
+    /**
+     * Sets a specific bit of an int.
+     *
+     * @param bit    the bit to set. The least significant bit is bit 0
+     * @param target the integer where the bit will be set
+     * @param set decides if you want to set or keep the original
+     * @return the updated value of the target
+     */
+    public int setBit(int bit, int target, int set) {
+
+        if (set == 1) {
+            int mask = 1 << bit;
+            // Set bit
+            return target | mask;
+        } else {
+            return target;
+        }
     }
 
     /**

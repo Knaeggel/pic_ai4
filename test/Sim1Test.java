@@ -38,17 +38,17 @@ public class Sim1Test {
 
     @Test
     public void testCarry() {
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(0));
+        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificStatusBit(0));
     }
 
     @Test
     public void testDigitCarry() {
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(1));
+        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificStatusBit(1));
     }
 
     @Test
     public void testZero() {
-        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificBit(2));
+        Assertions.assertEquals(0, Decoder.obj.ram.getSpecificStatusBit(2));
     }
 
 }

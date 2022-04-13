@@ -1,5 +1,13 @@
 package code;
 
+/**
+ * Der PIC-Controller besitzt einen 8-stufigen Stack. Dieser kann nicht per Befehl
+ * beeinflusst werden. Er dient lediglich für die Speicherung der Rückkehradresse
+ * bei Unterprogrammaufrufen. Der Stack wird über einen unsichtbaren Stackpointer verwaltet.
+ * Auch auf dieses Register ist kein direkter Zugriff möglich.
+ * Der Stackpointer selbst umfasst lediglich 3 Bits, was für die oben genannten 8
+ * Einträge ausreicht.
+ */
 public class Stack {
 
     private Integer[] stack;
@@ -32,12 +40,13 @@ public class Stack {
     }
     public Integer pop() {
         Integer iRet = 0;
-        iRet = stack[pointer];
-        stack[pointer] = 0;
         pointer--;
         if (pointer < 0) {
             pointer = 7;
         }
+        iRet = stack[pointer];
+        stack[pointer] = null;
+
 
         return iRet;
     }
