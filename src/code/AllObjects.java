@@ -10,6 +10,7 @@ public class AllObjects {
     public Ram ram;
     public MainFrame mainFrame;
     public Decoder decoder;
+    public ProgramMemory programMemory;
 
     private static AllObjects obj;
 
@@ -19,7 +20,7 @@ public class AllObjects {
         ram = new Ram();
         mainFrame = new MainFrame();
         decoder = new Decoder();
-
+        programMemory = new ProgramMemory();
     }
 
     public static AllObjects getAllObjectsInstance() {

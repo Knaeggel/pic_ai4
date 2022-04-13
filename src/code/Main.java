@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
 
 
-        Decoder.obj.decoder.decodeString(".\\res\\Sim2.txt");
+        Decoder.obj.decoder.decodeString(".\\res\\Sim1.txt");
 
 
         /*
@@ -14,14 +14,8 @@ public class Main {
         System.out.println(String.format("0x%04X",ALU.or(0x9A, 0x35)));
         */
 
+        
 
-
-
-        /*
-        for (Integer integer : ProgrammMemory.memory) {
-            System.out.println(String.format("0x%04X",integer));
-        }
-        */
 
         System.out.println("Main decoding done");
 	}
