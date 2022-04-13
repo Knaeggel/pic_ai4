@@ -98,7 +98,9 @@ public class MainFrame extends JFrame {
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                System.out.println(Decoder.obj.ram.getSpecificStatusBit(0));
+                System.out.println(Decoder.obj.ram.getSpecificStatusBit(1));
+                System.out.println(Decoder.obj.ram.getSpecificStatusBit(2));
             }
         });
 
