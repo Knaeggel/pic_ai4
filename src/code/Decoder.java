@@ -49,6 +49,7 @@ public class Decoder extends Thread {
     ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
     ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
     ArrayList<Integer> last11Bits = LSTFileReader.getLast11Bits();
+    ArrayList<Integer> pcList = LSTFileReader.getPcList();
 
 
     /**
@@ -98,6 +99,7 @@ public class Decoder extends Thread {
             int iOpValue = obj.alu.and(decodeList.get(i), 0x00FF);
             int iWholeInstruction = obj.alu.and(decodeList.get(i), 0xFFFF);
 
+
             Ram.programmCounter++;
 
 
@@ -110,7 +112,7 @@ public class Decoder extends Thread {
                 case 0b0011_1100_0000_0000 -> subLW(iOpValue);
                 case 0b0011_1010_0000_0000 -> xorLW(iOpValue);
                 case 0b0011_1110_0000_0000 -> addLW(iOpValue);
-                case 0b0010_1000_0000_0000 -> goTO(iOpValue);
+                case 0b0010_1000_0000_0000 -> goTO(last11Bits.get(i));
                 case 0b0010_0000_0000_0000 -> call(last11Bits.get(i));
                 case 0b0011_0100_0000_0000 -> retLW(iOpValue);
                 case 0b0000_0000_0000_0000 -> {
@@ -258,8 +260,10 @@ public class Decoder extends Thread {
     public void goTO(Integer i) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
         if (obj.programMemory.checkCycle(pcOfThisInstruction) == false) {
-
             Ram.programmCounter = i;
+            Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
+            Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
+
             System.out.println("goto " + i + " cycle 1");
         } else {
             System.out.println("goto " + i + " cycle 2");
@@ -284,12 +288,6 @@ public class Decoder extends Thread {
      */
     public void call(Integer i) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
-
-        //obj.stack.printStack();
-        //System.out.println("pclathbit 3 and 4");
-        //System.out.println(obj.ram.getSpecificPCLATHBit(3));
-        //System.out.println(obj.ram.getSpecificPCLATHBit(4));
-
         if (obj.programMemory.checkCycle(pcOfThisInstruction) == false) {
             obj.stack.pushOnStack(Ram.programmCounter);
             Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
@@ -299,10 +297,7 @@ public class Decoder extends Thread {
         } else {
             System.out.println("call " + i + " cycle 2");
         }
-
-
         obj.programMemory.cycleList.add(pcOfThisInstruction);
-        //System.out.println("call " + i);
     }
 
     /**
@@ -315,9 +310,20 @@ public class Decoder extends Thread {
      * @param i 8 bit literal which is loaded into wRegister
      */
     public void retLW(Integer i) {
-        Ram.wRegister = i;
-        Ram.programmCounter = obj.stack.pop();
-        System.out.println("retLW");
+
+
+        int pcOfThisInstruction = Ram.programmCounter - 1;
+        if (obj.programMemory.checkCycle(pcOfThisInstruction) == false) {
+            Ram.wRegister = i;
+            Ram.programmCounter = obj.stack.pop();
+            System.out.println("retLW: " + String.format("0x%02X", Ram.wRegister) +
+                    " next instruction: " + Ram.programmCounter);
+            System.out.println("goto " + i + " cycle 1");
+        } else {
+            System.out.println("goto " + i + " cycle 2");
+        }
+        obj.programMemory.cycleList.add(pcOfThisInstruction);
+
     }
 
     /**
@@ -328,11 +334,23 @@ public class Decoder extends Thread {
      * is a two cycle instruction.
      */
     public void returnToTos() {
+        Integer[] localStack = obj.stack.getStack();
+        //System.out.println("next to call " +Ram.programmCounter);
+        //TODO
+        int localReadPointer = obj.stack.pointer -1;
+        if (localReadPointer == 8) {
+            localReadPointer = 0;
+        } else if (localReadPointer < 0) {
+            localReadPointer = 7;
+        }
 
-        //System.out.println("next to call " +Ram.programmCounter);
-        Ram.programmCounter = obj.stack.pop();
-        //System.out.println("next to call " +Ram.programmCounter);
-        System.out.println("return");
+        if (localStack[localReadPointer] != null) {
+            Ram.programmCounter = obj.stack.pop();
+            //System.out.println("next to call " +Ram.programmCounter);
+            System.out.println("return to: " + Ram.programmCounter + " cycle 1");
+        } else {
+            System.out.println("retrun to cycle 2");
+        }
     }
 
     /**
