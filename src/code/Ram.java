@@ -21,6 +21,12 @@ public class Ram {
         setPCLATH(0b0_0000);
     }
 
+    public void printZDCC(){
+        System.out.println("C: "+Decoder.obj.ram.getSpecificStatusBit(0));
+        System.out.println("DC: "+Decoder.obj.ram.getSpecificStatusBit(1));
+        System.out.println("Z: "+Decoder.obj.ram.getSpecificStatusBit(2));
+    }
+
     public Integer[][] getRam() {
         return ram;
     }

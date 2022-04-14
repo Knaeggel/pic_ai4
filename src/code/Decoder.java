@@ -126,6 +126,7 @@ public class Decoder extends Thread {
                         //TODO RETFIE
                     }
                 }
+                case 0b0000_0111_0000_0000 -> addWF(iOpValue);
                 default -> System.out.println("Default");
             }
         }
@@ -234,7 +235,7 @@ public class Decoder extends Thread {
     public void addLW(Integer i) {
 
         int wregBefore = Ram.wRegister;
-        boolean b =obj.alu.isDigitCarry(Ram.wRegister, i);
+        boolean b = obj.alu.isDigitCarry(Ram.wRegister, i);
 
         Ram.wRegister += i;
         if (Ram.wRegister == 0) {
@@ -337,7 +338,7 @@ public class Decoder extends Thread {
         Integer[] localStack = obj.stack.getStack();
         //System.out.println("next to call " +Ram.programmCounter);
 
-        int localReadPointer = obj.stack.pointer -1;
+        int localReadPointer = obj.stack.pointer - 1;
         if (localReadPointer == 8) {
             localReadPointer = 0;
         } else if (localReadPointer < 0) {
@@ -351,6 +352,22 @@ public class Decoder extends Thread {
         } else {
             System.out.println("retrun to cycle 2");
         }
+    }
+
+    /**
+     * Move data from W register to register
+     * 'f' in the ram section
+     * TODO decide between bank 0 and 1
+     * @param f
+     */
+    public void movWF(Integer f) {
+
+    }
+
+    public void addWF(Integer i) {
+
+
+        System.out.println("addwf");
     }
 
     /**

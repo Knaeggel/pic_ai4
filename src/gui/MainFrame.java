@@ -109,9 +109,7 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Decoder.obj.decoder.nextStep();
-                System.out.println("C: "+Decoder.obj.ram.getSpecificStatusBit(0));
-                System.out.println("DC: "+Decoder.obj.ram.getSpecificStatusBit(1));
-                System.out.println("Z: "+Decoder.obj.ram.getSpecificStatusBit(2));
+                //Decoder.obj.ram.printZDCC();
             }
         });
 
