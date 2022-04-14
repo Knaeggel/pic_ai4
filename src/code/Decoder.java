@@ -336,7 +336,7 @@ public class Decoder extends Thread {
     public void returnToTos() {
         Integer[] localStack = obj.stack.getStack();
         //System.out.println("next to call " +Ram.programmCounter);
-        //TODO
+
         int localReadPointer = obj.stack.pointer -1;
         if (localReadPointer == 8) {
             localReadPointer = 0;

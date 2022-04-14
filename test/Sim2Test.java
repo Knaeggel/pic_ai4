@@ -13,8 +13,12 @@ public class Sim2Test {
 
         decoder.decodeString(".\\res\\Sim2.txt");
         for (int i = 0; i < 100; i++) {
-            decoder.nextStep();
+
         }
+        do {
+            decoder.nextStep();
+        } while (decoder.obj.programMemory.checkCycle(9) == false);
+
     }
 
     @Test
