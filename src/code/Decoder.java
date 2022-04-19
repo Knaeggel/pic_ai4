@@ -77,14 +77,19 @@ public class Decoder {
                 case 0b0010_0000_0000_0000 -> call(last11Bits.get(i));
                 case 0b0011_0100_0000_0000 -> retLW(iOpValue);
                 case 0b0000_0000_0000_0000 -> {
-                    if (iOpValue == 0b0000) {
+                    if (iOpValue == 0b0000_0000) {
                         nop();
                     }
-                    if (iOpValue == 0b1000) {
+                    if (iOpValue == 0b0000_1000) {
                         returnToTos();
                     }
-                    if (iOpValue == 0b1001) {
+                    if (iOpValue == 0b0000_1001) {
                         //TODO RETFIE
+
+                    }
+                    if (obj.ram.getNthBitOfValue(7, iOpValue) == 1) {
+                        int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
+                        movWF(newOpval, obj.ram.getNthBitOfValue(7, iOpValue));
                     }
                 }
                 case 0b0000_0111_0000_0000 -> addWF(iOpValue);
@@ -318,12 +323,14 @@ public class Decoder {
     /**
      * Move data from W register to register
      * 'f' in the ram section
-     * TODO decide between bank 0 and 1
      *
      * @param f
+     * @param thisbank
      */
-    public void movWF(Integer f) {
+    public void movWF(Integer f, int thisbank) {
 
+        obj.ram.setRamAt(thisbank, f, Ram.wRegister);
+        System.out.println("movwf");
     }
 
     public void addWF(Integer i) {

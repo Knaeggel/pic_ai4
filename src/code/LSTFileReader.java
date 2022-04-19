@@ -98,5 +98,9 @@ public class LSTFileReader {
         return last11Bits;
     }
 
+    public static ArrayList<String> getAllLines() {
+        return allLines;
+    }
+
 }
 

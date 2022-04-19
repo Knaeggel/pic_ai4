@@ -31,6 +31,16 @@ public class Ram {
         return ram;
     }
 
+    /**
+     *
+     * @param thisbank
+     * @param position
+     * @param value
+     */
+    public static void setRamAt(int thisbank, int position, int value) {
+        ram[thisbank][position] = value;
+    }
+
 
     public void setStatus(Integer i) {
         ram[0][3] = i;
@@ -64,6 +74,16 @@ public class Ram {
      */
     public int getSpecificGenericBit(int n, int addressOfRegister) {
         return ((ram[bank][addressOfRegister] >> (n /*-1*/)) & 1);
+    }
+
+    /**
+     *
+     * @param n
+     * @param value
+     * @return
+     */
+    public int getNthBitOfValue(int n, int value) {
+        return ((value >> (n /*-1*/)) & 1);
     }
 
     /**
