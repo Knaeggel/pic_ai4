@@ -94,6 +94,7 @@ public class Decoder {
                 }
                 case 0b0000_0111_0000_0000 -> addWF(iOpValue);
                 case 0b0000_0101_0000_0000 -> andWF(iOpValue);
+                case 0b0000_0001_0000_0000 -> clrf(iOpValue);
                 default -> System.out.println("Default");
             }
         }
@@ -375,6 +376,19 @@ public class Decoder {
         obj.ram.affectStatusBits(b);
 
         System.out.println("andwf");
+    }
+
+    /**
+     * The contents of register ’f’ are cleared
+     * and the Z bit is set.
+     *
+     * @param f
+     */
+    public void clrf(Integer f) {
+        obj.ram.setRamAt(f, 0);
+        obj.ram.setZeroBit(true);
+        System.out.println("clrf register " + String.format("%04X", f) + " = " + obj.ram.getRamAt(f));
+        //System.out.println(obj.ram.getRamAt(f));
     }
 
     /**
