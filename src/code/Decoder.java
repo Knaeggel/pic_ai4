@@ -6,42 +6,7 @@ import java.util.ArrayList;
 /**
  * TODO jede instruction per functioncall einzeln ausführen lassen
  */
-public class Decoder extends Thread {
-    //Thread t1 = new Thread();
-    Thread t1 = new Thread() {
-        public void run() {
-
-            for (int i = 0; i < 10000000; i++) {
-                nextStep();
-            }
-            /*
-            while (true) {
-                nextStep();
-            }
-             */
-        }
-    };
-
-    int counter = 0;
-
-    public void startT1() {
-        if (counter == 0) {
-            t1.start();
-            counter++;
-        } else {
-            t1.notify();
-        }
-
-    }
-
-    public void stopT1() {
-        try {
-
-            t1.wait();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+public class Decoder {
 
     public static AllObjects obj = AllObjects.getAllObjectsInstance();
 

@@ -2,6 +2,7 @@ package gui;
 
 import code.Decoder;
 import code.Stack;
+import code.MyThread;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -60,11 +61,7 @@ public class MainFrame extends JFrame {
     private JCheckBox pinB6;
     private JCheckBox pinB7;
 
-
-    boolean stopFlag = true;
-    boolean statusSchleife = false;
-
-    int block = 0;
+    MyThread t1;
 
 
 
@@ -90,7 +87,7 @@ public class MainFrame extends JFrame {
         btnStopp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Decoder.obj.decoder.stopT1();
+                t1.stop();
             }
         });
 
@@ -119,7 +116,7 @@ public class MainFrame extends JFrame {
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Decoder.obj.decoder.startT1();
+                t1 = new MyThread();
             }
         });
     }
