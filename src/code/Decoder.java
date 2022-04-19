@@ -396,6 +396,7 @@ public class Decoder {
      * he contents of register ’f’ are complemented. If ’d’ is 0 the result is stored in
      * W. If ’d’ is 1 the result is stored back in
      * register ’f’.
+     * TODO need to debug till here in Sim3 (wRegister)
      * @param f 7bit literal
      */
     public void comf(Integer f) {
@@ -413,7 +414,7 @@ public class Decoder {
             obj.ram.setZeroBit(true);
         }
 
-        System.out.println("comf");
+        System.out.println("comf " + String.format("0x%04X" ,Ram.wRegister));
     }
 
     /**
