@@ -32,7 +32,7 @@ public class ALU {
      * @param i
      * @return
      */
-    public static int getTwoCompliment(int i) {
+    public int getTwoCompliment(int i) {
         i = getCompliment(i);
         i += 1;
         i &= 0xFF; //safety for 8bit
@@ -45,7 +45,7 @@ public class ALU {
      * @param i
      * @return
      */
-    public static int getCompliment(int i) {
+    public int getCompliment(int i) {
         return ~i & 0xFF;
     }
 

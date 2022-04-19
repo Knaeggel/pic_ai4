@@ -95,6 +95,7 @@ public class Decoder {
                 case 0b0000_0111_0000_0000 -> addWF(iOpValue);
                 case 0b0000_0101_0000_0000 -> andWF(iOpValue);
                 case 0b0000_0001_0000_0000 -> clrf(iOpValue);
+                case 0b0000_1001_0000_0000 -> comf(iOpValue);
                 default -> System.out.println("Default");
             }
         }
@@ -389,6 +390,30 @@ public class Decoder {
         obj.ram.setZeroBit(true);
         System.out.println("clrf register " + String.format("%04X", f) + " = " + obj.ram.getRamAt(f));
         //System.out.println(obj.ram.getRamAt(f));
+    }
+
+    /**
+     * he contents of register ’f’ are complemented. If ’d’ is 0 the result is stored in
+     * W. If ’d’ is 1 the result is stored back in
+     * register ’f’.
+     * @param f 7bit literal
+     */
+    public void comf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int newOpVal = obj.alu.and(f, 0b0111_1111);
+
+        int resultOfComplement = obj.alu.getCompliment(newOpVal);
+
+        if (dest == 0) {
+            Ram.wRegister = resultOfComplement;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(newOpVal, resultOfComplement);
+        }
+        if (resultOfComplement == 0) {
+            obj.ram.setZeroBit(true);
+        }
+
+        System.out.println("comf");
     }
 
     /**
