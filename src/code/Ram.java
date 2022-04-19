@@ -21,10 +21,10 @@ public class Ram {
         setPCLATH(0b0_0000);
     }
 
-    public void printZDCC(){
-        System.out.println("C: "+Decoder.obj.ram.getSpecificStatusBit(0));
-        System.out.println("DC: "+Decoder.obj.ram.getSpecificStatusBit(1));
-        System.out.println("Z: "+Decoder.obj.ram.getSpecificStatusBit(2));
+    public void printZDCC() {
+        System.out.println("C: " + Decoder.obj.ram.getSpecificStatusBit(0));
+        System.out.println("DC: " + Decoder.obj.ram.getSpecificStatusBit(1));
+        System.out.println("Z: " + Decoder.obj.ram.getSpecificStatusBit(2));
     }
 
     public Integer[][] getRam() {
@@ -32,13 +32,25 @@ public class Ram {
     }
 
     /**
-     *
-     * @param thisbank
      * @param position
      * @param value
      */
-    public static void setRamAt(int thisbank, int position, int value) {
-        ram[thisbank][position] = value;
+    public static void setRamAt(int position, int value) {
+        if (position <= 0x7F) {
+            ram[0][position] = value;
+        } else {
+            int newPos = Decoder.obj.alu.and(position, 0b0111_1111);
+            ram[1][newPos] = value;
+        }
+    }
+
+    public static int getRamAt(int pos) {
+        if (pos <= 0x7F) {
+            return ram[0][pos];
+        } else {
+            int newPos = Decoder.obj.alu.and(pos, 0b0111_1111);
+            return ram[1][newPos];
+        }
     }
 
 
@@ -67,7 +79,6 @@ public class Ram {
     }
 
     /**
-     *
      * @param n
      * @param addressOfRegister
      * @return
@@ -77,7 +88,6 @@ public class Ram {
     }
 
     /**
-     *
      * @param n
      * @param value
      * @return
@@ -112,7 +122,7 @@ public class Ram {
      *
      * @param bit    the bit to set. The least significant bit is bit 0
      * @param target the integer where the bit will be set
-     * @param set decides if you want to set or keep the original
+     * @param set    decides if you want to set or keep the original
      * @return the updated value of the target
      */
     public int setBit(int bit, int target, int set) {
@@ -172,6 +182,30 @@ public class Ram {
 
         }
         Decoder.obj.ram.setStatus(iRet);
+    }
+
+    /**
+     * needs
+     * boolean b = obj.alu.isDigitCarry(Ram.wRegister, i);
+     * before wanted operation
+     *
+     * @param b = obj.alu.isDigitCarry(Ram.wRegister, i);
+     */
+    public void affectStatusBits(boolean b) {
+        if (Ram.wRegister == 0) {
+            Decoder.obj.ram.setZeroBit(true);
+        } else {
+            Decoder.obj.ram.setZeroBit(false);
+        }
+
+        if (Ram.wRegister > 255) {
+            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
+            Decoder.obj.ram.setCarryBit(true);
+        } else {
+            Decoder.obj.ram.setCarryBit(false);
+        }
+        Decoder.obj.ram.setDigitCarryBit(b);
+
     }
 
 
