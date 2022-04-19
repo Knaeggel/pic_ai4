@@ -43,10 +43,6 @@ public class Decoder {
     public void nextStep() {
         functionCalls(Ram.programmCounter);
         obj.mainFrame.updateStack(obj.stack);
-
-        //System.out.println("Stackpointer: " + Stack.pointer);
-        //obj.stack.printStack();
-
     }
 
     /**
@@ -323,6 +319,7 @@ public class Decoder {
      * Move data from W register to register
      * 'f' in the ram section
      * TODO decide between bank 0 and 1
+     *
      * @param f
      */
     public void movWF(Integer f) {

@@ -1,6 +1,6 @@
 package code;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,6 +16,8 @@ public class LSTFileReader {
     private static ArrayList<Integer> opcode = new ArrayList<>();
     private static ArrayList<Integer> last11Bits = new ArrayList<>();
 
+    private static ArrayList<String> allLines = new ArrayList<>();
+
     public static void read(String src) {
 
         // File
@@ -27,6 +29,7 @@ public class LSTFileReader {
 
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
+                allLines.add(data);
                 if (!data.substring(0, 1).isBlank()) {
 
                     decodeList.add(Integer.decode("0x" + data.substring(5, 9)));
