@@ -35,7 +35,7 @@ public class Ram {
      * @param position
      * @param value
      */
-    public static void setRamAt(int position, int value) {
+    public void setRamAt(int position, int value) {
         if (position <= 0x7F) {
             ram[0][position] = value;
         } else {
@@ -44,7 +44,7 @@ public class Ram {
         }
     }
 
-    public static int getRamAt(int pos) {
+    public int getRamAt(int pos) {
         if (pos <= 0x7F) {
             return ram[0][pos];
         } else {

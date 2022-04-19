@@ -202,7 +202,6 @@ public class Decoder {
      */
     public void addLW(Integer i) {
 
-        int wregBefore = Ram.wRegister;
         boolean b = obj.alu.isDigitCarry(Ram.wRegister, i);
 
         Ram.wRegister += i;
@@ -218,7 +217,7 @@ public class Decoder {
      */
     public void goTO(Integer i) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
-        if (obj.programMemory.checkCycle(pcOfThisInstruction) == false) {
+        if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             Ram.programmCounter = i;
             Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
@@ -246,11 +245,12 @@ public class Decoder {
      */
     public void call(Integer i) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
-        if (obj.programMemory.checkCycle(pcOfThisInstruction) == false) {
+        if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             obj.stack.pushOnStack(Ram.programmCounter);
+            Ram.programmCounter = i;
             Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
-            Ram.programmCounter = i;
+
             System.out.println("call " + i + " cycle 1");
         } else {
             System.out.println("call " + i + " cycle 2");
@@ -271,7 +271,7 @@ public class Decoder {
 
 
         int pcOfThisInstruction = Ram.programmCounter - 1;
-        if (obj.programMemory.checkCycle(pcOfThisInstruction) == false) {
+        if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             Ram.wRegister = i;
             Ram.programmCounter = obj.stack.pop();
             System.out.println("retLW: " + String.format("0x%02X", Ram.wRegister) +
@@ -285,7 +285,7 @@ public class Decoder {
     }
 
     /**
-     * normal name return
+     * normal name return.
      * Return from subroutine. The stack is
      * POPed and the top of the stack (TOS)
      * is loaded into the program counter. This
@@ -295,7 +295,7 @@ public class Decoder {
         Integer[] localStack = obj.stack.getStack();
         //System.out.println("next to call " +Ram.programmCounter);
 
-        int localReadPointer = obj.stack.pointer - 1;
+        int localReadPointer = Stack.pointer - 1;
         if (localReadPointer == 8) {
             localReadPointer = 0;
         } else if (localReadPointer < 0) {
@@ -315,7 +315,7 @@ public class Decoder {
      * Move data from W register to register
      * 'f' in the ram section
      *
-     * @param f
+     * @param f 7bit literal
      */
     public void movWF(Integer f) {
 
@@ -330,7 +330,7 @@ public class Decoder {
      * stored back in register ’f’.
      * TODO look if status bits are affected the right way
      *
-     * @param i
+     * @param i 7bit literal
      */
     public void addWF(Integer i) {
         int dest = obj.ram.getNthBitOfValue(7, i);
@@ -357,7 +357,7 @@ public class Decoder {
      * If 'd' is 0 the result is stored in the W register. If 'd' is 1 the result is stored back in
      * register 'f'.
      *
-     * @param f
+     * @param f 7bit literal
      */
     public void andWF(Integer f) {
         int dest = obj.ram.getNthBitOfValue(7, f);
@@ -382,7 +382,7 @@ public class Decoder {
      * The contents of register ’f’ are cleared
      * and the Z bit is set.
      *
-     * @param f
+     * @param f 7bit literal
      */
     public void clrf(Integer f) {
         obj.ram.setRamAt(f, 0);
