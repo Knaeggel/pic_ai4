@@ -22,9 +22,9 @@ public class Ram {
     }
 
     public void printZDCC() {
-        System.out.println("C: " + Decoder.obj.ram.getSpecificStatusBit(0));
-        System.out.println("DC: " + Decoder.obj.ram.getSpecificStatusBit(1));
-        System.out.println("Z: " + Decoder.obj.ram.getSpecificStatusBit(2));
+        System.out.print("C: " + Decoder.obj.ram.getSpecificStatusBit(0));
+        System.out.print(" DC: " + Decoder.obj.ram.getSpecificStatusBit(1));
+        System.out.println(" Z: " + Decoder.obj.ram.getSpecificStatusBit(2));
     }
 
     public Integer[][] getRam() {
