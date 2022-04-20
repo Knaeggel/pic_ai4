@@ -101,6 +101,7 @@ public class Decoder {
                     }
                 }
                 case 0b0000_1001_0000_0000 -> comf(iOpValue);
+                case 0b0000_0011_0000_0000 -> decf(iOpValue);
                 default -> System.out.println("Default");
             }
         }
@@ -430,7 +431,38 @@ public class Decoder {
             obj.ram.setZeroBit(false);
         }
 
-        System.out.println("comf " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("comf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * Decrement contents of register ’f’. If ’d’ is 0 the
+     * result is stored in the W register. If ’d’ is
+     * 1 the result is stored back in register ’f’.
+     *
+     * @param f 7bit literal, 8th bit=d
+     */
+    public void decf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int adressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(adressInRam);
+
+        valueOnAdress -= 1;
+        //TODO 255 oder 127?
+        if (valueOnAdress < 0) {
+            valueOnAdress = 0xFF;
+        }
+
+        if (dest == 0) {
+            Ram.wRegister = valueOnAdress;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(adressInRam, valueOnAdress);
+        }
+        if (valueOnAdress == 0) {
+            obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
+        }
+        System.out.println("decf wRegister: "+ String.format("0x%02X", Ram.wRegister));
     }
 
     /**
