@@ -202,7 +202,7 @@ public class Ram {
      * needs
      * boolean b = obj.alu.isDigitCarry(Ram.wRegister, i);
      * before wanted operation
-     * TODO Evtl fehler
+     * TODO Evtl fehler, doesnt affect zero if anything else then wregister operation was zero
      *
      * @param b = obj.alu.isDigitCarry(Ram.wRegister, i);
      */
