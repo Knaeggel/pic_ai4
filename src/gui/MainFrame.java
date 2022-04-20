@@ -106,7 +106,7 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Decoder.obj.decoder.nextStep();
-                //Decoder.obj.ram.printZDCC();
+                Decoder.obj.ram.printZDCC();
             }
         });
 

@@ -188,6 +188,7 @@ public class Ram {
      * needs
      * boolean b = obj.alu.isDigitCarry(Ram.wRegister, i);
      * before wanted operation
+     * TODO Evtl fehler
      *
      * @param b = obj.alu.isDigitCarry(Ram.wRegister, i);
      */
