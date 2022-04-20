@@ -94,7 +94,12 @@ public class Decoder {
                 }
                 case 0b0000_0111_0000_0000 -> addWF(iOpValue);
                 case 0b0000_0101_0000_0000 -> andWF(iOpValue);
-                case 0b0000_0001_0000_0000 -> clrf(iOpValue);
+                case 0b0000_0001_0000_0000 -> {
+                    if (obj.ram.getNthBitOfValue(7, iOpValue) == 1) {
+                        int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
+                        clrf(newOpval);
+                    }
+                }
                 case 0b0000_1001_0000_0000 -> comf(iOpValue);
                 default -> System.out.println("Default");
             }
@@ -321,7 +326,7 @@ public class Decoder {
     public void movWF(Integer f) {
 
         obj.ram.setRamAt(f, Ram.wRegister);
-        System.out.println("movwf");
+        System.out.println("movwf saved in " + String.format("0x%02X", f));
     }
 
     /**
@@ -335,17 +340,19 @@ public class Decoder {
      */
     public void addWF(Integer i) {
         int dest = obj.ram.getNthBitOfValue(7, i);
-        int newOpVal = obj.alu.and(i, 0b0111_1111);
+        int adressInRam = obj.alu.and(i, 0b0111_1111);
 
-        boolean b = obj.alu.isDigitCarry(Ram.wRegister, i);
+        int valueOnAdress = obj.ram.getRamAt(adressInRam);
 
-        int resultOfAdd = Ram.wRegister + newOpVal;
+        boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
+
+        int resultOfAdd = Ram.wRegister + valueOnAdress;
         //System.out.println(String.format("0x%04X", resultOfAdd));
 
         if (dest == 0) {
             Ram.wRegister = resultOfAdd;
         } else if (dest == 1) {
-            obj.ram.setRamAt(newOpVal, resultOfAdd);
+            obj.ram.setRamAt(adressInRam, resultOfAdd);
         }
 
         obj.ram.affectStatusBits(b);
@@ -362,21 +369,25 @@ public class Decoder {
      */
     public void andWF(Integer f) {
         int dest = obj.ram.getNthBitOfValue(7, f);
-        int newOpVal = obj.alu.and(f, 0b0111_1111);
 
-        boolean b = obj.alu.isDigitCarry(Ram.wRegister, f);
 
-        int resultOfAnd = obj.alu.and(Ram.wRegister, newOpVal);
+        int adressInRam = obj.alu.and(f, 0b0111_1111);
+
+        int valueOnAdress = obj.ram.getRamAt(adressInRam);
+
+        boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
+
+        int resultOfAnd = obj.alu.and(Ram.wRegister, valueOnAdress);
 
         if (dest == 0) {
             Ram.wRegister = resultOfAnd;
         } else if (dest == 1) {
-            obj.ram.setRamAt(newOpVal, resultOfAnd);
+            obj.ram.setRamAt(adressInRam, resultOfAnd);
         }
 
         obj.ram.affectStatusBits(b);
 
-        System.out.println("andwf");
+        System.out.println("andwf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
@@ -386,9 +397,10 @@ public class Decoder {
      * @param f 7bit literal
      */
     public void clrf(Integer f) {
+
         obj.ram.setRamAt(f, 0);
         obj.ram.setZeroBit(true);
-        System.out.println("clrf register " + String.format("%04X", f) + " = " + obj.ram.getRamAt(f));
+        System.out.println("clrf register " + String.format("%02X", f) + " = " + obj.ram.getRamAt(f));
         //System.out.println(obj.ram.getRamAt(f));
     }
 
@@ -396,25 +408,29 @@ public class Decoder {
      * he contents of register ’f’ are complemented. If ’d’ is 0 the result is stored in
      * W. If ’d’ is 1 the result is stored back in
      * register ’f’.
-     * TODO need to debug till here in Sim3 (wRegister)
+     *
      * @param f 7bit literal
      */
     public void comf(Integer f) {
         int dest = obj.ram.getNthBitOfValue(7, f);
-        int newOpVal = obj.alu.and(f, 0b0111_1111);
+        int adressInRam = obj.alu.and(f, 0b0111_1111);
 
-        int resultOfComplement = obj.alu.getCompliment(newOpVal);
+        int valueOnAdress = obj.ram.getRamAt(adressInRam);
+
+        int resultOfComplement = obj.alu.getCompliment(valueOnAdress);
 
         if (dest == 0) {
             Ram.wRegister = resultOfComplement;
         } else if (dest == 1) {
-            obj.ram.setRamAt(newOpVal, resultOfComplement);
+            obj.ram.setRamAt(adressInRam, resultOfComplement);
         }
         if (resultOfComplement == 0) {
             obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
         }
 
-        System.out.println("comf " + String.format("0x%04X" ,Ram.wRegister));
+        System.out.println("comf " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**

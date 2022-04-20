@@ -48,6 +48,10 @@ public class ALU {
     public int getCompliment(int i) {
         return ~i & 0xFF;
     }
+    public int get7BitCompliment(int i) {
+        return ~i & 0x7F;
+    }
+
 
 
     public Integer and(Integer firstVal, Integer secondVal) {

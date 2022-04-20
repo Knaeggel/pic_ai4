@@ -22,9 +22,23 @@ public class Ram {
     }
 
     public void printZDCC() {
-        System.out.print("C: " + Decoder.obj.ram.getSpecificStatusBit(0));
-        System.out.print(" DC: " + Decoder.obj.ram.getSpecificStatusBit(1));
-        System.out.println(" Z: " + Decoder.obj.ram.getSpecificStatusBit(2));
+        System.out.print("C=" + Decoder.obj.ram.getSpecificStatusBit(0));
+        System.out.print(" DC=" + Decoder.obj.ram.getSpecificStatusBit(1));
+        System.out.println(" Z=" + Decoder.obj.ram.getSpecificStatusBit(2));
+    }
+
+    public void printGeneralAndMapped() {
+        for (int i = 0x0C; i < 0x4F; i++) {
+            if (ram[0][i] != null) {
+                System.out.println("Val at bank 0 and adress " +
+                        String.format("0x%02X = ", i) + String.format("0x%02X", ram[0][i]));
+            }
+            if (ram[1][i] != null) {
+                System.out.println("Val at bank 1 and adress " +
+                        String.format("0x%02X = ", i) + String.format("0x%02X", ram[0][i]));
+            }
+        }
+        System.out.println();
     }
 
     public Integer[][] getRam() {
