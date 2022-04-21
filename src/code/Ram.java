@@ -206,14 +206,14 @@ public class Ram {
      *
      * @param b = obj.alu.isDigitCarry(Ram.wRegister, i);
      */
-    public void affectStatusBits(boolean b) {
-        if (Ram.wRegister == 0) {
+    public void affectStatusBits(boolean b, int afterInstructionVal) {
+        if (afterInstructionVal == 0) {
             Decoder.obj.ram.setZeroBit(true);
         } else {
             Decoder.obj.ram.setZeroBit(false);
         }
 
-        if (Ram.wRegister > 255) {
+        if (afterInstructionVal > 255 || afterInstructionVal < 0) {
             Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
             Decoder.obj.ram.setCarryBit(true);
         } else {

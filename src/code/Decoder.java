@@ -105,6 +105,11 @@ public class Decoder {
                 case 0b0000_1010_0000_0000 -> incf(iOpValue);
                 case 0b0000_1000_0000_0000 -> movf(iOpValue);
                 case 0b0000_0100_0000_0000 -> iorwf(iOpValue);
+                case 0b0000_0010_0000_0000 -> subWF(iOpValue);
+                case 0b0000_1110_0000_0000 -> swapf(iOpValue);
+                case 0b0000_0110_0000_0000 -> xorWF(iOpValue);
+
+
                 default -> System.out.println("Default");
             }
         }
@@ -216,7 +221,7 @@ public class Decoder {
 
         Ram.wRegister += i;
 
-        obj.ram.affectStatusBits(b);
+        obj.ram.affectStatusBits(b, Ram.wRegister);
 
         //System.out.println("in addlw " + Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("addlw wRegister: " + String.format("0x%02X", Ram.wRegister));
@@ -359,7 +364,7 @@ public class Decoder {
             obj.ram.setRamAt(addressInRam, resultOfAdd);
         }
 
-        obj.ram.affectStatusBits(b);
+        obj.ram.affectStatusBits(b, Ram.wRegister);
 
         System.out.println("addwf");
     }
@@ -389,7 +394,7 @@ public class Decoder {
             obj.ram.setRamAt(addressInRam, resultOfAnd);
         }
 
-        obj.ram.affectStatusBits(b);
+        obj.ram.affectStatusBits(b, Ram.wRegister);
 
         System.out.println("andwf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
@@ -523,6 +528,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
+        System.out.println("movf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
@@ -530,6 +536,7 @@ public class Decoder {
      * register ’f’. If ’d’ is 0 the result is placed in the
      * W register. If ’d’ is 1 the result is placed
      * back in register ’f’.
+     *
      * @param f 7bit literal, 8th bit=destination
      */
     public void iorwf(Integer f) {
@@ -539,9 +546,9 @@ public class Decoder {
 
         int result = obj.alu.or(Ram.wRegister, valueOnAdress);
 
-        if (dest== 1) {
+        if (dest == 0) {
             Ram.wRegister = result;
-        } else if (dest == 0){
+        } else if (dest == 1) {
             obj.ram.setRamAt(addressInRam, result);
         }
 
@@ -550,6 +557,69 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
+        System.out.println("iorwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * Subtract (2’s complement method) contents
+     * of W register from register 'f'. If 'd' is 0 the
+     * result is stored in the W register. If 'd' is 1 the
+     * result is stored back in register 'f'.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void subWF(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
+
+        int result = valueOnAdress - Ram.wRegister;
+        if (result < 0) {
+            result = 256 + result;
+        }
+
+        obj.ram.affectStatusBits(b, result);
+        if (dest == 0) {
+            Ram.wRegister = result;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, result);
+        }
+        System.out.println("subwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * The upper and lower nibbles of contents of
+     * register 'f' are exchanged. If 'd' is 0 the result
+     * is placed in W register. If 'd' is 1 the result
+     * is placed in register 'f'.
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void swapf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        int lownibble = valueOnAdress & 0x0F;
+        int uppernibble = (valueOnAdress & 0XF0) >> 4;
+
+        int result = (lownibble << 4) | uppernibble;
+
+
+        if (dest == 0) {
+            Ram.wRegister = result;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, result);
+        }
+        System.out.println("swapf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    public void xorWF(Integer f) {
+
+
+
+        System.out.println("xorwf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
