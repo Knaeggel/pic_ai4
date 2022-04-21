@@ -29,7 +29,7 @@ public class Stack {
 
     /**
      *
-     * @param iVal
+     * @param iVal value to push on stack
      */
     public void pushOnStack(Integer iVal) {
         stack[pointer] = iVal;
@@ -38,6 +38,7 @@ public class Stack {
             pointer = 0;
         }
     }
+
     public Integer pop() {
         Integer iRet = 0;
         pointer--;

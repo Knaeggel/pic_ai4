@@ -89,10 +89,27 @@ public class Decoder {
                     }
                     if (obj.ram.getNthBitOfValue(7, iOpValue) == 1) {
                         int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
-                        movWF(newOpval, obj.ram.getNthBitOfValue(7, iOpValue));
+                        movWF(newOpval);
                     }
                 }
                 case 0b0000_0111_0000_0000 -> addWF(iOpValue);
+                case 0b0000_0101_0000_0000 -> andWF(iOpValue);
+                case 0b0000_0001_0000_0000 -> {
+                    if (obj.ram.getNthBitOfValue(7, iOpValue) == 1) {
+                        int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
+                        clrf(newOpval);
+                    }
+                }
+                case 0b0000_1001_0000_0000 -> comf(iOpValue);
+                case 0b0000_0011_0000_0000 -> decf(iOpValue);
+                case 0b0000_1010_0000_0000 -> incf(iOpValue);
+                case 0b0000_1000_0000_0000 -> movf(iOpValue);
+                case 0b0000_0100_0000_0000 -> iorwf(iOpValue);
+                case 0b0000_0010_0000_0000 -> subWF(iOpValue);
+                case 0b0000_1110_0000_0000 -> swapf(iOpValue);
+                case 0b0000_0110_0000_0000 -> xorWF(iOpValue);
+
+
                 default -> System.out.println("Default");
             }
         }
@@ -200,24 +217,12 @@ public class Decoder {
      */
     public void addLW(Integer i) {
 
-        int wregBefore = Ram.wRegister;
         boolean b = obj.alu.isDigitCarry(Ram.wRegister, i);
 
         Ram.wRegister += i;
-        if (Ram.wRegister == 0) {
-            obj.ram.setZeroBit(true);
-        } else {
-            obj.ram.setZeroBit(false);
-        }
 
-        if (Ram.wRegister > 255) {
-            Ram.wRegister = obj.alu.and(Ram.wRegister, 0xFF);
-            obj.ram.setCarryBit(true);
-        } else {
-            obj.ram.setCarryBit(false);
-        }
+        obj.ram.affectStatusBits(b, Ram.wRegister);
 
-        obj.ram.setDigitCarryBit(b);
         //System.out.println("in addlw " + Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("addlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
@@ -227,7 +232,7 @@ public class Decoder {
      */
     public void goTO(Integer i) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
-        if (obj.programMemory.checkCycle(pcOfThisInstruction) == false) {
+        if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             Ram.programmCounter = i;
             Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
@@ -255,11 +260,12 @@ public class Decoder {
      */
     public void call(Integer i) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
-        if (obj.programMemory.checkCycle(pcOfThisInstruction) == false) {
+        if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             obj.stack.pushOnStack(Ram.programmCounter);
+            Ram.programmCounter = i;
             Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
-            Ram.programmCounter = i;
+
             System.out.println("call " + i + " cycle 1");
         } else {
             System.out.println("call " + i + " cycle 2");
@@ -280,7 +286,7 @@ public class Decoder {
 
 
         int pcOfThisInstruction = Ram.programmCounter - 1;
-        if (obj.programMemory.checkCycle(pcOfThisInstruction) == false) {
+        if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             Ram.wRegister = i;
             Ram.programmCounter = obj.stack.pop();
             System.out.println("retLW: " + String.format("0x%02X", Ram.wRegister) +
@@ -294,7 +300,7 @@ public class Decoder {
     }
 
     /**
-     * normal name return
+     * normal name return.
      * Return from subroutine. The stack is
      * POPed and the top of the stack (TOS)
      * is loaded into the program counter. This
@@ -304,7 +310,7 @@ public class Decoder {
         Integer[] localStack = obj.stack.getStack();
         //System.out.println("next to call " +Ram.programmCounter);
 
-        int localReadPointer = obj.stack.pointer - 1;
+        int localReadPointer = Stack.pointer - 1;
         if (localReadPointer == 8) {
             localReadPointer = 0;
         } else if (localReadPointer < 0) {
@@ -324,19 +330,320 @@ public class Decoder {
      * Move data from W register to register
      * 'f' in the ram section
      *
-     * @param f
-     * @param thisbank
+     * @param f 7bit literal
      */
-    public void movWF(Integer f, int thisbank) {
+    public void movWF(Integer f) {
 
-        obj.ram.setRamAt(thisbank, f, Ram.wRegister);
-        System.out.println("movwf");
+        obj.ram.setRamAt(f, Ram.wRegister);
+        System.out.println("movwf saved in " + String.format("0x%02X", f));
     }
 
+    /**
+     * Add the contents of the W register with the
+     * contents of register ’f’. If ’d’ is 0 the result is
+     * stored in the W register. If ’d’ is 1 the result is
+     * stored back in register ’f’.
+     * TODO look if status bits are affected the right way
+     *
+     * @param i 7bit literal
+     */
     public void addWF(Integer i) {
+        int dest = obj.ram.getNthBitOfValue(7, i);
+        int addressInRam = obj.alu.and(i, 0b0111_1111);
 
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
+
+        int resultOfAdd = Ram.wRegister + valueOnAdress;
+        //System.out.println(String.format("0x%04X", resultOfAdd));
+
+        if (dest == 0) {
+            Ram.wRegister = resultOfAdd;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, resultOfAdd);
+        }
+
+        obj.ram.affectStatusBits(b, Ram.wRegister);
 
         System.out.println("addwf");
+    }
+
+    /**
+     * AND the W register with contents of register 'f'.
+     * If 'd' is 0 the result is stored in the W register. If 'd' is 1 the result is stored back in
+     * register 'f'.
+     *
+     * @param f 7bit literal
+     */
+    public void andWF(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+
+
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
+
+        int resultOfAnd = obj.alu.and(Ram.wRegister, valueOnAdress);
+
+        if (dest == 0) {
+            Ram.wRegister = resultOfAnd;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, resultOfAnd);
+        }
+
+        obj.ram.affectStatusBits(b, Ram.wRegister);
+
+        System.out.println("andwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * The contents of register ’f’ are cleared
+     * and the Z bit is set.
+     *
+     * @param f 7bit literal
+     */
+    public void clrf(Integer f) {
+
+        obj.ram.setRamAt(f, 0);
+        obj.ram.setZeroBit(true);
+        System.out.println("clrf register " + String.format("%02X", f) + " = " + obj.ram.getRamAt(f));
+        //System.out.println(obj.ram.getRamAt(f));
+    }
+
+    /**
+     * he contents of register ’f’ are complemented. If ’d’ is 0 the result is stored in
+     * W. If ’d’ is 1 the result is stored back in
+     * register ’f’.
+     *
+     * @param f 7bit literal
+     */
+    public void comf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        int resultOfComplement = obj.alu.getCompliment(valueOnAdress);
+
+        if (dest == 0) {
+            Ram.wRegister = resultOfComplement;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, resultOfComplement);
+        }
+        if (resultOfComplement == 0) {
+            obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
+        }
+
+        System.out.println("comf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * Decrement contents of register ’f’. If ’d’ is 0 the
+     * result is stored in the W register. If ’d’ is
+     * 1 the result is stored back in register ’f’.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void decf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        valueOnAdress -= 1;
+        if (valueOnAdress < 0) {
+            valueOnAdress = 0xFF;
+        }
+
+        if (dest == 0) {
+            Ram.wRegister = valueOnAdress;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, valueOnAdress);
+        }
+        if (valueOnAdress == 0) {
+            obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
+        }
+        System.out.println("decf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * he contents of register ’f’ are incremented.
+     * If ’d’ is 0 the result is placed in
+     * the W register. If ’d’ is 1 the result is
+     * placed back in register ’f’.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void incf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        valueOnAdress += 1;
+        if (valueOnAdress > 0xFF) {
+            valueOnAdress = 0;
+        }
+
+        if (dest == 0) {
+            Ram.wRegister = valueOnAdress;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, valueOnAdress);
+        }
+        if (valueOnAdress == 0) {
+            obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
+        }
+        System.out.println("decf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * The contents of register f is moved to a
+     * destination dependant upon the status
+     * of d. If d = 0, destination is W register. If
+     * d = 1, the destination is file register f
+     * itself. d = 1 is useful to test a file register
+     * since status flag Z is affected.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void movf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        if (dest == 0) {
+            Ram.wRegister = valueOnAdress;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, valueOnAdress);
+        }
+        if (valueOnAdress == 0) {
+            obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
+        }
+        System.out.println("movf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * Inclusive OR the W register with contents of
+     * register ’f’. If ’d’ is 0 the result is placed in the
+     * W register. If ’d’ is 1 the result is placed
+     * back in register ’f’.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void iorwf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        int result = obj.alu.or(Ram.wRegister, valueOnAdress);
+
+        if (dest == 0) {
+            Ram.wRegister = result;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, result);
+        }
+
+        if (result == 0) {
+            obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
+        }
+        System.out.println("iorwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * Subtract (2’s complement method) contents
+     * of W register from register 'f'. If 'd' is 0 the
+     * result is stored in the W register. If 'd' is 1 the
+     * result is stored back in register 'f'.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void subWF(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
+
+        int result = valueOnAdress - Ram.wRegister;
+        if (result < 0) {
+            result = 256 + result;
+        }
+
+        obj.ram.affectStatusBits(b, result);
+        if (dest == 0) {
+            Ram.wRegister = result;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, result);
+        }
+        System.out.println("subwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * The upper and lower nibbles of contents of
+     * register 'f' are exchanged. If 'd' is 0 the result
+     * is placed in W register. If 'd' is 1 the result
+     * is placed in register 'f'.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void swapf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        int lownibble = valueOnAdress & 0x0F;
+        int uppernibble = (valueOnAdress & 0XF0) >> 4;
+
+        int result = (lownibble << 4) | uppernibble;
+
+
+        if (dest == 0) {
+            Ram.wRegister = result;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, result);
+        }
+        System.out.println("swapf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * Exclusive OR the contents of the W
+     * register with contents of register 'f'. If 'd' is
+     * 0 the result is stored in the W register. If 'd' is
+     * 1 the result is stored back in register 'f'.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void xorWF(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        int result = obj.alu.xor(Ram.wRegister, valueOnAdress);
+
+        if (dest == 0) {
+            Ram.wRegister = result;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, result);
+        }
+
+        if (result == 0) {
+            obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
+        }
+
+        System.out.println("xorwf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
