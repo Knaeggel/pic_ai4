@@ -4,6 +4,7 @@ import code.Decoder;
 import code.LSTFileReader;
 import code.Stack;
 import code.MyThread;
+import code.Ram;
 
 import javax.swing.*;
 import java.awt.*;
@@ -68,7 +69,8 @@ public class MainFrame extends JFrame {
     private JScrollPane ProtgrammLST;
     private JList lstList;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
-    private ArrayList<Integer> selectedLST = new ArrayList<>();
+    private static ArrayList<Integer> selectedLST = new ArrayList<>();
+    private int space = 0;
 
     MyThread t1;
 
@@ -108,6 +110,13 @@ public class MainFrame extends JFrame {
                 Decoder.obj.decoder.nextStep();
                 //Decoder.obj.ram.printZDCC();
                 updateLstList();
+                if (!selectedLST.isEmpty()) {
+                    System.out.println(Ram.programmCounter);
+                    if (!vergleichen(selectedLST, Ram.programmCounter)) {
+                        t1.stop();
+                    }
+                }
+
             }
         });
 
@@ -129,14 +138,16 @@ public class MainFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 Color color = Color.red;
-
+                space = LSTFileReader.readComments(".\\res\\Sim3.txt");
+                System.out.println("Comments: " + space);
                 if (vergleichen(selectedLST,lstList.getSelectedIndex())) {
                     selectedLST.add(lstList.getSelectedIndex());
                     lstList.setSelectionForeground(color);
                     lstList.setOpaque(true);
                     int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
                     lstList.setSelectedIndices(arr);
-
+                    System.out.println("Set break point in line " + (lstList.getSelectedIndex()));
+                    System.out.println(selectedLST);
                 } else {
                     selectedLST.remove(position(selectedLST, lstList.getSelectedIndex()));
                     int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
@@ -199,6 +210,8 @@ public class MainFrame extends JFrame {
 
     public void updateLstList() {
         lstList.setListData(allLST.toArray());
+        int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
+        lstList.setSelectedIndices(arr);
     }
 
 public boolean vergleichen(ArrayList<Integer> arrList, int value){
