@@ -1,12 +1,17 @@
 package gui;
 
 import code.Decoder;
+import code.LSTFileReader;
 import code.Stack;
 import code.MyThread;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class MainFrame extends JFrame {
     private JButton btnStart;
@@ -60,9 +65,12 @@ public class MainFrame extends JFrame {
     private JCheckBox pinB5;
     private JCheckBox pinB6;
     private JCheckBox pinB7;
+    private JScrollPane ProtgrammLST;
+    private JList lstList;
+    private ArrayList<String> allLST = LSTFileReader.getAllLines();
+    private ArrayList<Integer> selectedLST = new ArrayList<>();
 
     MyThread t1;
-
 
 
     public MainFrame() {
@@ -72,14 +80,6 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
 
-        btnStart.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Start");
-
-
-            }
-        });
 
         /**
          * stop button
@@ -107,6 +107,7 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Decoder.obj.decoder.nextStep();
                 //Decoder.obj.ram.printZDCC();
+                updateLstList();
             }
         });
 
@@ -119,6 +120,34 @@ public class MainFrame extends JFrame {
                 t1 = new MyThread();
             }
         });
+
+        /**
+         * Soll die LST File einlesen und Breakpoints setzten
+         */
+        lstList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                Color color = Color.red;
+
+                if (vergleichen(selectedLST,lstList.getSelectedIndex())) {
+                    selectedLST.add(lstList.getSelectedIndex());
+                    lstList.setSelectionForeground(color);
+                    lstList.setOpaque(true);
+                    int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
+                    lstList.setSelectedIndices(arr);
+                    System.out.println(selectedLST);
+                } else {
+                    System.out.println("Else fall");
+                    selectedLST.remove(lstList.getSelectedIndex());
+                    int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
+                    lstList.clearSelection();
+                    lstList.setSelectedIndices(arr);
+                }
+
+            }
+        });
+
     }
 
 
@@ -168,6 +197,21 @@ public class MainFrame extends JFrame {
             }
         }
     }
+
+    public void updateLstList() {
+        lstList.setListData(allLST.toArray());
+    }
+
+public boolean vergleichen(ArrayList<Integer> arrList, int value){
+
+        for (int i = 0; i < arrList.size(); i++){
+            if(arrList.get(i) == value){
+                return true;
+            }
+        }
+
+        return false;
+}
 
 
 
