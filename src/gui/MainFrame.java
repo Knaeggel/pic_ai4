@@ -136,10 +136,9 @@ public class MainFrame extends JFrame {
                     lstList.setOpaque(true);
                     int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
                     lstList.setSelectedIndices(arr);
-                    System.out.println(selectedLST);
+
                 } else {
-                    System.out.println("Else fall");
-                    selectedLST.remove(lstList.getSelectedIndex());
+                    selectedLST.remove(position(selectedLST, lstList.getSelectedIndex()));
                     int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
                     lstList.clearSelection();
                     lstList.setSelectedIndices(arr);
@@ -204,13 +203,25 @@ public class MainFrame extends JFrame {
 
 public boolean vergleichen(ArrayList<Integer> arrList, int value){
 
-        for (int i = 0; i < arrList.size(); i++){
+        if(!arrList.isEmpty()){
+            for (int i = 0; i < arrList.size(); i++){
+                if(arrList.get(i) == value){
+                    return false;
+                }
+            }
+        }
+        return true;
+}
+
+public int position(ArrayList<Integer> arrList, int value){
+
+        for(int i = 0; i < arrList.size(); i++){
             if(arrList.get(i) == value){
-                return true;
+                return i;
             }
         }
 
-        return false;
+        return 0;
 }
 
 
