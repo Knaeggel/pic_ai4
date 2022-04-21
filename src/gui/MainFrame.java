@@ -70,7 +70,9 @@ public class MainFrame extends JFrame {
     private JList lstList;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
-    private int space = 0;
+
+
+    private static ArrayList<Object> valueList = new ArrayList<>();
 
     MyThread t1;
 
@@ -138,21 +140,33 @@ public class MainFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 Color color = Color.red;
-                space = LSTFileReader.readComments(".\\res\\Sim3.txt");
-                System.out.println("Comments: " + space);
+
                 if (vergleichen(selectedLST,lstList.getSelectedIndex())) {
+
                     selectedLST.add(lstList.getSelectedIndex());
                     lstList.setSelectionForeground(color);
                     lstList.setOpaque(true);
                     int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
                     lstList.setSelectedIndices(arr);
-                    System.out.println("Set break point in line " + (lstList.getSelectedIndex()));
-                    System.out.println(selectedLST);
+
+
                 } else {
+
                     selectedLST.remove(position(selectedLST, lstList.getSelectedIndex()));
+
                     int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
                     lstList.clearSelection();
                     lstList.setSelectedIndices(arr);
+
+                }
+
+
+                if(valueList.equals(lstList.getSelectedValue())){
+                    valueList.add(lstList.getSelectedValue());
+                    int[] arr = valueList.stream().mapToInt(i -> (int) i).toArray();
+                    lstList.setSelectedIndices(arr);
+                }else{
+                    valueList.remove(lstList.getSelectedValue());
                 }
 
             }
