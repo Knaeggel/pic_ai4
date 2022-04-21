@@ -583,6 +583,7 @@ public class Decoder {
         int result = valueOnAdress - Ram.wRegister;
         if (result < 0) {
             result = 256 + result;
+
         }
 
         obj.ram.affectStatusBits(b, result);
