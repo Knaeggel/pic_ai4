@@ -594,6 +594,7 @@ public class Decoder {
      * register 'f' are exchanged. If 'd' is 0 the result
      * is placed in W register. If 'd' is 1 the result
      * is placed in register 'f'.
+     *
      * @param f 7bit literal, 8th bit=destination
      */
     public void swapf(Integer f) {
@@ -615,9 +616,32 @@ public class Decoder {
         System.out.println("swapf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
+    /**
+     * Exclusive OR the contents of the W
+     * register with contents of register 'f'. If 'd' is
+     * 0 the result is stored in the W register. If 'd' is
+     * 1 the result is stored back in register 'f'.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
     public void xorWF(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
 
+        int result = obj.alu.xor(Ram.wRegister, valueOnAdress);
 
+        if (dest == 0) {
+            Ram.wRegister = result;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, result);
+        }
+
+        if (result == 0) {
+            obj.ram.setZeroBit(true);
+        } else {
+            obj.ram.setZeroBit(false);
+        }
 
         System.out.println("xorwf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
