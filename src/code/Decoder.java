@@ -99,6 +99,9 @@ public class Decoder {
                         int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
                         clrf(newOpval);
                     }
+                    if (obj.ram.getNthBitOfValue(7, iOpValue) == 0){
+                        clrw();
+                    }
                 }
                 case 0b0000_1001_0000_0000 -> comf(iOpValue);
                 case 0b0000_0011_0000_0000 -> decf(iOpValue);
@@ -566,6 +569,8 @@ public class Decoder {
      * result is stored in the W register. If 'd' is 1 the
      * result is stored back in register 'f'.
      *
+     * TODO dc c z bit correction
+     *
      * @param f 7bit literal, 8th bit=destination
      */
     public void subWF(Integer f) {
@@ -581,6 +586,7 @@ public class Decoder {
         }
 
         obj.ram.affectStatusBits(b, result);
+
         if (dest == 0) {
             Ram.wRegister = result;
         } else if (dest == 1) {
@@ -644,6 +650,15 @@ public class Decoder {
         }
 
         System.out.println("xorwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * W register is cleared. Zero bit (Z) is set
+     */
+    public void clrw() {
+        Ram.wRegister = 0;
+        obj.ram.setZeroBit(true);
+        System.out.println("clrw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
