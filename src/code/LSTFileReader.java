@@ -1,6 +1,7 @@
 package code;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -100,6 +101,30 @@ public class LSTFileReader {
 
     public static ArrayList<String> getAllLines() {
         return allLines;
+    }
+
+    public static int readComments(String src) {
+
+        int blankCounter = 0;
+
+        try {
+            myObj = new File(src);
+
+            Scanner myReader = new Scanner(myObj);
+            myReader.reset();
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+
+                if (data.substring(0, 1).isBlank()) {
+                    blankCounter++;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        return blankCounter;
     }
 
 }
