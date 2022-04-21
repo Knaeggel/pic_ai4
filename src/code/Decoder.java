@@ -584,7 +584,6 @@ public class Decoder {
         if (result < 0) {
             result = 256 + result;
 
-
         }
 
         obj.ram.affectStatusBits(b, result);
