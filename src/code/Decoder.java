@@ -99,7 +99,7 @@ public class Decoder {
                         int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
                         clrf(newOpval);
                     }
-                    if (obj.ram.getNthBitOfValue(7, iOpValue) == 0){
+                    if (obj.ram.getNthBitOfValue(7, iOpValue) == 0) {
                         clrw();
                     }
                 }
@@ -163,6 +163,10 @@ public class Decoder {
     /**
      * he contents of W register is subtracted (2’s complement method) from the eight bit literal 'i'.
      * The result is placed in the W register.
+     * <p>
+     * Daher gilt: Wenn der PIC eine Subtraktion durchführt:
+     * Ergebnis 0 oder größer → Carry gesetzt
+     * Ergebnis kleiner 0 → Carry gelöscht
      *
      * @param i 8 bit literal
      */
@@ -183,6 +187,8 @@ public class Decoder {
             obj.ram.setZeroBit(true);
 
 
+        } else if (Ram.wRegister < 0) {
+            obj.ram.setCarryBit(false);
         } else {
             Ram.wRegister = obj.alu.xor(Ram.wRegister, 0xFF);
 
@@ -503,7 +509,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
-        System.out.println("decf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("incf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
@@ -568,8 +574,8 @@ public class Decoder {
      * of W register from register 'f'. If 'd' is 0 the
      * result is stored in the W register. If 'd' is 1 the
      * result is stored back in register 'f'.
-     *
-     * TODO dc c z bit correction
+     * <p>
+     * <p>
      * Daher gilt: Wenn der PIC eine Subtraktion durchführt:
      * Ergebnis 0 oder größer → Carry gesetzt
      * Ergebnis kleiner 0 → Carry gelöscht
@@ -581,16 +587,30 @@ public class Decoder {
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
 
-        //TODO hier seperate bitsetzung (subtraktion)
+        //hier seperate bitsetzung (subtraktion)
         boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
 
         int result = valueOnAdress - Ram.wRegister;
+
+        if (result >= 0) {
+            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
+            Decoder.obj.ram.setCarryBit(true);
+        } else if (result < 0) {
+            Decoder.obj.ram.setCarryBit(false);
+        }
+
+        if (result == 0) {
+            Decoder.obj.ram.setZeroBit(true);
+        } else {
+            Decoder.obj.ram.setZeroBit(false);
+        }
+        Decoder.obj.ram.setDigitCarryBit(b);
+
         if (result < 0) {
             result = 256 + result;
 
         }
 
-        obj.ram.affectStatusBits(b, result);
 
         if (dest == 0) {
             Ram.wRegister = result;

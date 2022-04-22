@@ -110,7 +110,9 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Decoder.obj.decoder.nextStep();
-                //Decoder.obj.ram.printZDCC();
+                Decoder.obj.ram.printZDCC();
+                Decoder.obj.ram.printGeneralAndMapped();
+
                 updateLstList();
                 if (!selectedLST.isEmpty()) {
                     System.out.println(Ram.programmCounter);
