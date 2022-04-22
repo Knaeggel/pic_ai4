@@ -570,6 +570,9 @@ public class Decoder {
      * result is stored back in register 'f'.
      *
      * TODO dc c z bit correction
+     * Daher gilt: Wenn der PIC eine Subtraktion durchführt:
+     * Ergebnis 0 oder größer → Carry gesetzt
+     * Ergebnis kleiner 0 → Carry gelöscht
      *
      * @param f 7bit literal, 8th bit=destination
      */
@@ -578,6 +581,7 @@ public class Decoder {
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
 
+        //TODO hier seperate bitsetzung (subtraktion)
         boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
 
         int result = valueOnAdress - Ram.wRegister;
