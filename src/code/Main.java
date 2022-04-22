@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
 
 
-        Decoder.obj.decoder.decodeString(".\\res\\Sim3.txt");
+        Decoder.obj.decoder.decodeString(".\\res\\Sim4.txt");
 
 
         /*

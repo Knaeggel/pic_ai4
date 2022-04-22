@@ -111,6 +111,9 @@ public class Decoder {
                 case 0b0000_0010_0000_0000 -> subWF(iOpValue);
                 case 0b0000_1110_0000_0000 -> swapf(iOpValue);
                 case 0b0000_0110_0000_0000 -> xorWF(iOpValue);
+                case 0b0000_1101_0000_0000 -> rlf(iOpValue);
+                case 0b0000_1100_0000_0000 -> rrf(iOpValue);
+
 
 
                 default -> System.out.println("Default");
@@ -684,6 +687,82 @@ public class Decoder {
         Ram.wRegister = 0;
         obj.ram.setZeroBit(true);
         System.out.println("clrw wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * The contents of register ’f’ are rotated
+     * one bit to the left through the Carry
+     * Flag. If ’d’ is 0 the result is placed in the
+     * W register. If ’d’ is 1 the result is stored
+     * back in register ’f’.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void rlf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        int carry = obj.ram.getSpecificStatusBit(0);
+
+        if (obj.ram.getNthBitOfValue(7, valueOnAdress) == 1) {
+            if (carry == 1) {
+                obj.ram.setCarryBit(false);
+            }
+            obj.ram.setCarryBit(true);
+        } else {
+            obj.ram.setCarryBit(false);
+        }
+        valueOnAdress <<= 1;
+        valueOnAdress = obj.alu.and(valueOnAdress, 0xFF);
+        valueOnAdress += carry;
+
+        if (dest == 0) {
+            Ram.wRegister = valueOnAdress;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, valueOnAdress);
+        }
+
+        //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
+        System.out.println("rlf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * The contents of register ’f’ are rotated
+     * one bit to the right through the Carry
+     * Flag. If ’d’ is 0 the result is placed in the
+     * W register. If ’d’ is 1 the result is placed
+     * back in register ’f’.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void rrf(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+        int carry = obj.ram.getSpecificStatusBit(0);
+
+        if (obj.ram.getNthBitOfValue(0, valueOnAdress) == 1) {
+            if (carry == 1) {
+                obj.ram.setCarryBit(false);
+            }
+            obj.ram.setCarryBit(true);
+        } else {
+            obj.ram.setCarryBit(false);
+        }
+        valueOnAdress >>= 1;
+        valueOnAdress = obj.alu.and(valueOnAdress, 0xFF);
+        valueOnAdress = obj.ram.setBit(7,valueOnAdress,carry);
+
+        if (dest == 0) {
+            Ram.wRegister = valueOnAdress;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, valueOnAdress);
+        }
+
+        //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
+        System.out.println("rrf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
