@@ -3,6 +3,7 @@ package code;
 public class ALU {
 
     /**
+     *
      * @param wRegBeforeSub value of the wRegister before any operation
      * @param i             operation value
      * @return boolen value if you have to set the DigitCarry bit or not

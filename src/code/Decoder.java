@@ -591,6 +591,7 @@ public class Decoder {
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
 
         //hier seperate bitsetzung (subtraktion)
+        //TODO addition mit 2er komplement???
         boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
 
         int result = valueOnAdress - Ram.wRegister;
