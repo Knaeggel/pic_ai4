@@ -10,11 +10,12 @@ public class Decoder {
 
     public static AllObjects obj = AllObjects.getAllObjectsInstance();
 
+
     /**
      * decides wether goto goes to the second cycle
      * or goes into another first cycle
      */
-    //public static boolean gotoSecondCycle = false;
+    public static boolean gotoSecondCycle = true;
 
     ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
     ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
