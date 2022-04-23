@@ -13,3 +13,8 @@ Laufzeitzähler Zeit in mykroSekunde,
 
 Zu addierende Zeit = 4/fQuarz
 
+Bei decfsz den programmcounter manipuliert wenn es nicht null ist
+Schaue bei Pc-1 nach ob es ein decfsz oder incfsz ist,
+welches nicht null als ergebnis hat,
+lösche dann bestehendes goto aus der cyclelist
+

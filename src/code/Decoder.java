@@ -85,7 +85,6 @@ public class Decoder {
                     }
                     if (iOpValue == 0b0000_1001) {
                         //TODO RETFIE
-
                     }
                     if (obj.ram.getNthBitOfValue(7, iOpValue) == 1) {
                         int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
@@ -113,7 +112,6 @@ public class Decoder {
                 case 0b0000_0110_0000_0000 -> xorWF(iOpValue);
                 case 0b0000_1101_0000_0000 -> rlf(iOpValue);
                 case 0b0000_1100_0000_0000 -> rrf(iOpValue);
-
 
 
                 default -> System.out.println("Default");
@@ -754,7 +752,7 @@ public class Decoder {
         }
         valueOnAdress >>= 1;
         valueOnAdress = obj.alu.and(valueOnAdress, 0xFF);
-        valueOnAdress = obj.ram.setBit(7,valueOnAdress,carry);
+        valueOnAdress = obj.ram.setBit(7, valueOnAdress, carry);
 
         if (dest == 0) {
             Ram.wRegister = valueOnAdress;
