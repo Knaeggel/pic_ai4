@@ -10,6 +10,12 @@ public class Decoder {
 
     public static AllObjects obj = AllObjects.getAllObjectsInstance();
 
+    /**
+     * decides wether goto goes to the second cycle
+     * or goes into another first cycle
+     */
+    public static boolean gotoSecondCycle = true;
+
     ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
     ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
     ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
@@ -112,6 +118,7 @@ public class Decoder {
                 case 0b0000_0110_0000_0000 -> xorWF(iOpValue);
                 case 0b0000_1101_0000_0000 -> rlf(iOpValue);
                 case 0b0000_1100_0000_0000 -> rrf(iOpValue);
+                case 0b0000_1011_0000_0000 -> decfsz(iOpValue);
 
 
                 default -> System.out.println("Default");
@@ -247,11 +254,14 @@ public class Decoder {
             Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
-            System.out.println("goto " + i + " cycle 1");
+            System.out.println("goto " + String.format("0x%02X" , i) + " cycle 1");
         } else {
-            System.out.println("goto " + i + " cycle 2");
+            System.out.println("goto " + String.format("0x%02X" , i) + " cycle 2");
         }
-        obj.programMemory.cycleList.add(pcOfThisInstruction);
+        if (gotoSecondCycle){
+            obj.programMemory.cycleList.add(pcOfThisInstruction);
+        }
+
 
     }
 
@@ -762,6 +772,28 @@ public class Decoder {
 
         //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("rrf wRegister: " + String.format("0x%02X", Ram.wRegister));
+    }
+
+    /**
+     * TODO
+     * @param f
+     */
+    public void decfsz(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+        valueOnAdress--;
+        if (valueOnAdress == 0) {
+            gotoSecondCycle = false;
+        }
+
+        if (dest == 0) {
+            Ram.wRegister = valueOnAdress;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, valueOnAdress);
+        }
+
+        System.out.println("decfsz");
     }
 
     /**
