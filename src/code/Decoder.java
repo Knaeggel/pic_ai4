@@ -14,7 +14,7 @@ public class Decoder {
      * decides wether goto goes to the second cycle
      * or goes into another first cycle
      */
-    public static boolean gotoSecondCycle = true;
+    //public static boolean gotoSecondCycle = false;
 
     ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
     ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
@@ -245,6 +245,7 @@ public class Decoder {
     }
 
     /**
+     * TODO bearbeiten mit gotoSecondCycle
      * @param i number of the next code segment
      */
     public void goTO(Integer i) {
@@ -254,14 +255,11 @@ public class Decoder {
             Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
-            System.out.println("goto " + String.format("0x%02X" , i) + " cycle 1");
+            System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
         } else {
-            System.out.println("goto " + String.format("0x%02X" , i) + " cycle 2");
+            System.out.println("goto " + String.format("0x%02X", i) + " cycle 2");
         }
-        if (gotoSecondCycle){
-            obj.programMemory.cycleList.add(pcOfThisInstruction);
-        }
-
+        obj.programMemory.cycleList.add(pcOfThisInstruction);
 
     }
 
@@ -776,6 +774,7 @@ public class Decoder {
 
     /**
      * TODO
+     *
      * @param f
      */
     public void decfsz(Integer f) {
@@ -784,7 +783,7 @@ public class Decoder {
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
         valueOnAdress--;
         if (valueOnAdress == 0) {
-            gotoSecondCycle = false;
+            //gotoSecondCycle = false;
         }
 
         if (dest == 0) {
