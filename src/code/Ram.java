@@ -207,6 +207,7 @@ public class Ram {
      *
      * @param b = obj.alu.isDigitCarry(Ram.wRegister, i);
      */
+    /*
     public void affectStatusBits(boolean b, int afterInstructionVal) {
         if (afterInstructionVal == 0) {
             Decoder.obj.ram.setZeroBit(true);
@@ -223,6 +224,6 @@ public class Ram {
         Decoder.obj.ram.setDigitCarryBit(b);
 
     }
-
+*/
 
 }

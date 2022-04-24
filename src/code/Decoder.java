@@ -120,6 +120,7 @@ public class Decoder {
                 case 0b0000_1101_0000_0000 -> rlf(iOpValue);
                 case 0b0000_1100_0000_0000 -> rrf(iOpValue);
                 case 0b0000_1011_0000_0000 -> decfsz(iOpValue);
+                case 0b0000_1111_0000_0000 -> incfsz(iOpValue);
 
 
                 default -> System.out.println("Default");
@@ -239,7 +240,22 @@ public class Decoder {
 
         Ram.wRegister += i;
 
-        obj.ram.affectStatusBits(b, Ram.wRegister);
+        int resultOfAdd = Ram.wRegister;
+
+        //obj.ram.affectStatusBits(b, Ram.wRegister);
+        if (resultOfAdd == 0) {
+            Decoder.obj.ram.setZeroBit(true);
+        } else {
+            Decoder.obj.ram.setZeroBit(false);
+        }
+
+        if (resultOfAdd > 255 || resultOfAdd < 0) {
+            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
+            Decoder.obj.ram.setCarryBit(true);
+        } else {
+            Decoder.obj.ram.setCarryBit(false);
+        }
+        Decoder.obj.ram.setDigitCarryBit(b);
 
         //System.out.println("in addlw " + Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("addlw wRegister: " + String.format("0x%02X", Ram.wRegister));
@@ -247,6 +263,7 @@ public class Decoder {
 
     /**
      * TODO bearbeiten mit gotoSecondCycle
+     *
      * @param i number of the next code segment
      */
     public void goTO(Integer i) {
@@ -383,7 +400,20 @@ public class Decoder {
             obj.ram.setRamAt(addressInRam, resultOfAdd);
         }
 
-        obj.ram.affectStatusBits(b, Ram.wRegister);
+        //obj.ram.affectStatusBits(b, resultOfAdd);
+        if (resultOfAdd == 0) {
+            Decoder.obj.ram.setZeroBit(true);
+        } else {
+            Decoder.obj.ram.setZeroBit(false);
+        }
+
+        if (resultOfAdd > 255 || resultOfAdd < 0) {
+            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
+            Decoder.obj.ram.setCarryBit(true);
+        } else {
+            Decoder.obj.ram.setCarryBit(false);
+        }
+        Decoder.obj.ram.setDigitCarryBit(b);
 
         System.out.println("addwf");
     }
@@ -413,7 +443,21 @@ public class Decoder {
             obj.ram.setRamAt(addressInRam, resultOfAnd);
         }
 
-        obj.ram.affectStatusBits(b, Ram.wRegister);
+        //obj.ram.affectStatusBits(b, Ram.wRegister);
+
+        if (resultOfAnd == 0) {
+            Decoder.obj.ram.setZeroBit(true);
+        } else {
+            Decoder.obj.ram.setZeroBit(false);
+        }
+
+        if (resultOfAnd > 255 || resultOfAnd < 0) {
+            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
+            Decoder.obj.ram.setCarryBit(true);
+        } else {
+            Decoder.obj.ram.setCarryBit(false);
+        }
+        Decoder.obj.ram.setDigitCarryBit(b);
 
         System.out.println("andwf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
@@ -492,7 +536,7 @@ public class Decoder {
     }
 
     /**
-     * he contents of register ’f’ are incremented.
+     * the contents of register ’f’ are incremented.
      * If ’d’ is 0 the result is placed in
      * the W register. If ’d’ is 1 the result is
      * placed back in register ’f’.
@@ -774,17 +818,28 @@ public class Decoder {
     }
 
     /**
-     * TODO
+     * The contents of register ’f’ are decremented. If ’d’ is 0 the result is placed in the
+     * W register. If ’d’ is 1 the result is placed
+     * back in register ’f’.
+     * If the result is not 0, the next instruction, is
+     * executed. If the result is 0, then a NOP is
+     * executed instead making it a 2TCY instruction.
      *
-     * @param f
+     * @param f 7bit literal, 8th bit=destination
      */
     public void decfsz(Integer f) {
         int dest = obj.ram.getNthBitOfValue(7, f);
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
         valueOnAdress--;
-        if (valueOnAdress == 0) {
-            //gotoSecondCycle = false;
+        if (valueOnAdress != 0) {
+
+            // creates assembler for loop
+            if (obj.programMemory.checkCycle(obj.ram.programmCounter)) {
+                obj.programMemory.cycleList.remove(obj.programMemory.cycleList.size() - 1);
+            }
+        } else if (valueOnAdress == 0) {
+            nop();
         }
 
         if (dest == 0) {
@@ -794,6 +849,43 @@ public class Decoder {
         }
 
         System.out.println("decfsz");
+    }
+
+    /**
+     * TODO bits richtig setzen
+     * he contents of register ’f’ are incremented. If ’d’ is 0 the result is placed in
+     * the W register. If ’d’ is 1 the result is
+     * placed back in register ’f’.
+     * If the result is not 0, the next instruction is
+     * executed. If the result is 0, a NOP is executed instead making it a 2TCY instruction.
+     *
+     * @param f 7bit literal, 8th bit=destination
+     */
+    public void incfsz(Integer f) {
+        int dest = obj.ram.getNthBitOfValue(7, f);
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+        valueOnAdress++;
+        if (valueOnAdress > 0xFF) {
+            valueOnAdress = 0;
+        }
+        if (valueOnAdress != 0) {
+
+            // creates assembler for loop
+            if (obj.programMemory.checkCycle(obj.ram.programmCounter)) {
+                obj.programMemory.cycleList.remove(obj.programMemory.cycleList.size() - 1);
+            }
+        } else if (valueOnAdress == 0) {
+            nop();
+        }
+
+        if (dest == 0) {
+            Ram.wRegister = valueOnAdress;
+        } else if (dest == 1) {
+            obj.ram.setRamAt(addressInRam, valueOnAdress);
+        }
+
+        System.out.println("incfsz");
     }
 
     /**
