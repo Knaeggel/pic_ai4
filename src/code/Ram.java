@@ -164,6 +164,7 @@ public class Ram {
             }
         }
         Decoder.obj.ram.setStatus(iRet);
+        System.out.println(";Z set;");
     }
 
 
@@ -181,6 +182,7 @@ public class Ram {
 
         }
         Decoder.obj.ram.setStatus(iRet);
+        System.out.println(";C set;");
     }
 
     /**
@@ -197,6 +199,7 @@ public class Ram {
 
         }
         Decoder.obj.ram.setStatus(iRet);
+        System.out.println(";DC set;");
     }
 
     /**
