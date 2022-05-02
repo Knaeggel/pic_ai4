@@ -910,24 +910,63 @@ public class Decoder {
         System.out.println("bsf newVal: " + String.format("0x%02X", valueOnAdress));
     }
 
+    /**
+     * Bit ’b’ in register ’f’ is cleared.
+     *
+     * @param f <0:6> register <7:9> selected bit to set
+     */
     public void bcf(Integer f) {
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
-        int bitToSet = obj.alu.getIntValFromBitToBit(8, 10, f);
+        int bitToClear = obj.alu.getIntValFromBitToBit(8, 10, f);
 
-        if (obj.ram.getNthBitOfValue(bitToSet, valueOnAdress) == 1) {
-            valueOnAdress = obj.ram.clearBit(bitToSet, valueOnAdress, 1);
+        if (obj.ram.getNthBitOfValue(bitToClear, valueOnAdress) == 1) {
+            valueOnAdress = obj.ram.clearBit(bitToClear, valueOnAdress, 1);
         }
         obj.ram.setRamAt(addressInRam, valueOnAdress);
         System.out.println("bcf newVal: " + String.format("0x%02X", valueOnAdress));
     }
 
+    /**
+     * If bit ’b’ in register ’f’ is ’1’ then the next
+     * instruction is executed.
+     * If bit ’b’, in register ’f’, is ’0’ then the next
+     * instruction is discarded, and a NOP is
+     * executed instead, making this a 2TCY
+     * instruction.
+     *
+     * @param f <0:6> register <7:9> selected bit to set
+     */
     public void btfsc(Integer f) {
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+        int bitToClear = obj.alu.getIntValFromBitToBit(8, 10, f);
+
+        if (obj.ram.getNthBitOfValue(bitToClear, valueOnAdress) != 1) {
+            obj.programMemory.skipNextInstruction();
+
+        }
 
     }
 
+    /**
+     * If bit ’b’ in register ’f’ is ’0’ then the next
+     * instruction is executed.
+     * If bit ’b’ is ’1’, then the next instruction is
+     * discarded and a NOP is executed
+     * instead, making this a 2TCY instruction.
+     *
+     * @param f <0:6> register <7:9> selected bit to set
+     */
     public void btfss(Integer f) {
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+        int bitToClear = obj.alu.getIntValFromBitToBit(8, 10, f);
 
+        if (obj.ram.getNthBitOfValue(bitToClear, valueOnAdress) == 1) {
+            obj.programMemory.skipNextInstruction();
+
+        }
     }
 
     /**
