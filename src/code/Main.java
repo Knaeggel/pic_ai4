@@ -4,8 +4,7 @@ public class Main {
     public static void main(String[] args) {
 
 
-        Decoder.obj.decoder.decodeString(".\\res\\Sim4.txt");
-
+        Decoder.obj.decoder.decodeString(".\\res\\Sim5.txt");
 
         /*
         System.out.println(Integer.toBinaryString(0x9A));
@@ -35,4 +34,5 @@ public class Main {
         Stack.pointer = 0;
 
     }
+
 }

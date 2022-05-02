@@ -114,6 +114,22 @@ public class Decoder {
                 case 0b0000_1100_0000_0000 -> rrf(iOpValue);
                 case 0b0000_1011_0000_0000 -> decfsz(iOpValue);
                 case 0b0000_1111_0000_0000 -> incfsz(iOpValue);
+                case 0b0001_0100_0000_0000,
+                        0b0001_0101_0000_0000,
+                        0b0001_0110_0000_0000,
+                        0b0001_0111_0000_0000 -> bsf(iWholeInstruction);
+                case 0b0001_0000_0000_0000,
+                        0b0001_0001_0000_0000,
+                        0b0001_0010_0000_0000,
+                        0b0001_0011_0000_0000 -> bcf(iWholeInstruction);
+                case 0b0001_1000_0000_0000,
+                        0b0001_1001_0000_0000,
+                        0b0001_1010_0000_0000,
+                        0b0001_1011_0000_0000 -> btfsc(iWholeInstruction);
+                case 0b0001_1100_0000_0000,
+                        0b0001_1101_0000_0000,
+                        0b0001_1110_0000_0000,
+                        0b0001_1111_0000_0000 -> btfss(iWholeInstruction);
 
 
                 default -> System.out.println("Default");
@@ -831,8 +847,6 @@ public class Decoder {
             if (obj.programMemory.checkCycle(obj.ram.programmCounter)) {
                 obj.programMemory.cycleList.remove(obj.programMemory.cycleList.size() - 1);
             }
-        } else if (valueOnAdress == 0) {
-            nop();
         }
 
         if (dest == 0) {
@@ -868,8 +882,6 @@ public class Decoder {
             if (obj.programMemory.checkCycle(obj.ram.programmCounter)) {
                 obj.programMemory.cycleList.remove(obj.programMemory.cycleList.size() - 1);
             }
-        } else if (valueOnAdress == 0) {
-            nop();
         }
 
         if (dest == 0) {
@@ -879,6 +891,43 @@ public class Decoder {
         }
 
         System.out.println("incfsz");
+    }
+
+    /**
+     * Bit ’b’ in register ’f’ is set.
+     *
+     * @param f <0:6> register <7:9> selected bit to set
+     */
+    public void bsf(Integer f) {
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+        int bitToSet = obj.alu.getIntValFromBitToBit(8, 10, f);
+
+        if (obj.ram.getNthBitOfValue(bitToSet, valueOnAdress) != 1) {
+            valueOnAdress = obj.ram.setBit(bitToSet, valueOnAdress, 1);
+        }
+        obj.ram.setRamAt(addressInRam, valueOnAdress);
+        System.out.println("bsf newVal: " + String.format("0x%02X", valueOnAdress));
+    }
+
+    public void bcf(Integer f) {
+        int addressInRam = obj.alu.and(f, 0b0111_1111);
+        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+        int bitToSet = obj.alu.getIntValFromBitToBit(8, 10, f);
+
+        if (obj.ram.getNthBitOfValue(bitToSet, valueOnAdress) == 1) {
+            valueOnAdress = obj.ram.clearBit(bitToSet, valueOnAdress, 1);
+        }
+        obj.ram.setRamAt(addressInRam, valueOnAdress);
+        System.out.println("bcf newVal: " + String.format("0x%02X", valueOnAdress));
+    }
+
+    public void btfsc(Integer f) {
+
+    }
+
+    public void btfss(Integer f) {
+
     }
 
     /**

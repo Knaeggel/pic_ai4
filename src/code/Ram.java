@@ -152,6 +152,21 @@ public class Ram {
     }
 
     /**
+     * @param bit    starting with 0
+     * @param target the integer where the bit will be set
+     * @param clear  decides if you want to set or keep the original
+     * @return the updated value of the target
+     */
+    public int clearBit(int bit, int target, int clear) {
+        if (clear == 1) {
+            return target & ~(1 << bit);
+        } else {
+            return target;
+        }
+    }
+
+
+    /**
      * @param b if true set Zero bit to 1 if false set Zero bit to 0
      */
     public void setZeroBit(boolean b) {

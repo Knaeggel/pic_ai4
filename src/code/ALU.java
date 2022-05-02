@@ -3,14 +3,13 @@ package code;
 public class ALU {
 
     /**
-     *
      * @param wRegBeforeSub value of the wRegister before any operation
      * @param i             operation value
      * @return boolen value if you have to set the DigitCarry bit or not
      */
-    public boolean isDigitCarry2(int wRegBeforeSub, int i) {
+    public boolean isDigitCarry(int wRegBeforeSub, int i) {
         boolean bRet;
-        if ((((wRegBeforeSub >> (3 )) & 1) == 1) && (((i >> (3 )) & 1) == 1)) {
+        if ((((wRegBeforeSub >> (3)) & 1) == 1) && (((i >> (3)) & 1) == 1)) {
             bRet = true;
         } else {
             bRet = false;
@@ -27,13 +26,13 @@ public class ALU {
         return bRet;
     }
 
-    public static boolean isDigitCarry(int firstStart, int secondStart) {
+    public static boolean isDigitCarry2(int firstStart, int secondStart) {
         int carryCheck = (firstStart & 0xF) + (secondStart & 0xF);
         return carryCheck > 0xF;
     }
 
     public static boolean isCarry(int firstStart, int secondStart) {
-        return firstStart+ secondStart > 0xFF;
+        return firstStart + secondStart > 0xFF;
     }
 
     /**
@@ -58,10 +57,29 @@ public class ALU {
     public int getCompliment(int i) {
         return ~i & 0xFF;
     }
+
     public int get7BitCompliment(int i) {
         return ~i & 0x7F;
     }
 
+    /**
+     *
+     * @param startBit startbit
+     * @param endBit includingEndbit
+     * @param inputVal instructioonVal
+     * @return added number
+     */
+    public int getIntValFromBitToBit(int startBit, int endBit, int inputVal) {
+        int ret = 0;
+        int counter = 0;
+        for (int i = startBit - 1; i < endBit; i++, counter++) {
+            if (Decoder.obj.ram.getNthBitOfValue(i, inputVal) == 1) {
+                ret += (int) Math.pow(2, counter);
+            }
+        }
+
+        return ret;
+    }
 
 
     public Integer and(Integer firstVal, Integer secondVal) {
