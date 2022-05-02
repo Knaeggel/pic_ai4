@@ -157,14 +157,17 @@ public class Ram {
     public void setZeroBit(boolean b) {
         Integer iRet = getStatus();
         if (b) {
-            iRet += 0b100;
+            if (getSpecificStatusBit(2) != 1) {
+                iRet += 0b100;
+                System.out.println(";Z set;");
+            }
         } else {
             if (getSpecificStatusBit(2) == 1) {
                 iRet -= 0b100;
             }
         }
         Decoder.obj.ram.setStatus(iRet);
-        System.out.println(";Z set;");
+
     }
 
 
@@ -174,7 +177,10 @@ public class Ram {
     public void setCarryBit(boolean b) {
         Integer iRet = getStatus();
         if (b) {
-            iRet += 0b1;
+            if (getSpecificStatusBit(0) != 1) {
+                iRet += 0b1;
+                System.out.println(";C set;");
+            }
         } else {
             if (getSpecificStatusBit(0) == 1) {
                 iRet -= 0b1;
@@ -182,7 +188,7 @@ public class Ram {
 
         }
         Decoder.obj.ram.setStatus(iRet);
-        System.out.println(";C set;");
+
     }
 
     /**
@@ -191,7 +197,10 @@ public class Ram {
     public void setDigitCarryBit(boolean b) {
         Integer iRet = getStatus();
         if (b) {
-            iRet += 0b10;
+            if (getSpecificStatusBit(1) != 1) {
+                iRet += 0b10;
+                System.out.println(";DC set;");
+            }
         } else {
             if (getSpecificStatusBit(1) == 1) {
                 iRet -= 0b10;
@@ -199,7 +208,7 @@ public class Ram {
 
         }
         Decoder.obj.ram.setStatus(iRet);
-        System.out.println(";DC set;");
+
     }
 
     /**
