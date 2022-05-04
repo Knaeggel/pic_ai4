@@ -6,15 +6,13 @@ import java.util.ArrayList;
 /**
  * TODO jede instruction per functioncall einzeln ausführen lassen
  */
+@SuppressWarnings("RedundantIfStatement")
 public class Decoder {
 
     public static AllObjects obj = AllObjects.getAllObjectsInstance();
 
-    ArrayList<Integer> opCodeList = LSTFileReader.getOpcode();
-    ArrayList<Integer> opVal = LSTFileReader.getOperationValue();
     ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
     ArrayList<Integer> last11Bits = LSTFileReader.getLast11Bits();
-    ArrayList<Integer> pcList = LSTFileReader.getPcList();
 
 
     /**
@@ -51,25 +49,15 @@ public class Decoder {
     public void functionCalls(Integer i) {
 
         if (i < decodeList.size()) {
-            //int iHexOpcode = opCodeList.get(i);
 
-            //int iOpValue = opVal.get(i);
-
-            //System.out.println(String.format("0x%02X",iOpValue));
             int iOpCode = obj.alu.and(decodeList.get(i), 0xFF00);
             int iOpValue = obj.alu.and(decodeList.get(i), 0x00FF);
             int iWholeInstruction = obj.alu.and(decodeList.get(i), 0xFFFF);
 
 
-
-
-
-            System.out.println("PC: "+String.format("%02X",  Ram.programmCounter));
+            System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
             Ram.programmCounter++;
 
-
-            //System.out.println(iOpCode);
-            //switch (iHexOpcode) {
             switch (iOpCode) {
                 case 0b0011_0000_0000_0000 -> movLW(iOpValue);
                 case 0b0011_1001_0000_0000 -> andLW(iOpValue);
@@ -89,6 +77,7 @@ public class Decoder {
                     }
                     if (iOpValue == 0b0000_1001) {
                         //TODO RETFIE
+                        System.out.println("retfie");
                     }
                     if (obj.ram.getNthBitOfValue(7, iOpValue) == 1) {
                         int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
@@ -139,6 +128,22 @@ public class Decoder {
                 default -> System.out.println("Default");
             }
         }
+    }
+
+    private void affectZeroCarryDigitCarry(boolean b, int resultOfAdd) {
+        if (resultOfAdd == 0) {
+            Decoder.obj.ram.setZeroBit(true);
+        } else {
+            Decoder.obj.ram.setZeroBit(false);
+        }
+
+        if (resultOfAdd > 255 || resultOfAdd < 0) {
+            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
+            Decoder.obj.ram.setCarryBit(true);
+        } else {
+            Decoder.obj.ram.setCarryBit(false);
+        }
+        Decoder.obj.ram.setDigitCarryBit(b);
     }
 
     /**
@@ -195,29 +200,18 @@ public class Decoder {
      */
     public void subLW(Integer i) {
         int wRegBeforeSub = Ram.wRegister;
-
         boolean b = obj.alu.isDigitCarry(wRegBeforeSub, i);
         obj.ram.setDigitCarryBit(b);
-
-
         Ram.wRegister = i - Ram.wRegister;
 
         if (Ram.wRegister > 0) {
             obj.ram.setCarryBit(true);
-
         } else if (Ram.wRegister == 0) {
             obj.ram.setCarryBit(true);
             obj.ram.setZeroBit(true);
-
-
-        } else if (Ram.wRegister < 0) {
-            obj.ram.setCarryBit(false);
         } else {
-            Ram.wRegister = obj.alu.xor(Ram.wRegister, 0xFF);
-
+            obj.ram.setCarryBit(false);
         }
-
-        //System.out.println("In sublw " + Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("sublw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
@@ -256,23 +250,12 @@ public class Decoder {
         int resultOfAdd = Ram.wRegister;
 
         //obj.ram.affectStatusBits(b, Ram.wRegister);
-        if (resultOfAdd == 0) {
-            Decoder.obj.ram.setZeroBit(true);
-        } else {
-            Decoder.obj.ram.setZeroBit(false);
-        }
-
-        if (resultOfAdd > 255 || resultOfAdd < 0) {
-            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
-            Decoder.obj.ram.setCarryBit(true);
-        } else {
-            Decoder.obj.ram.setCarryBit(false);
-        }
-        Decoder.obj.ram.setDigitCarryBit(b);
+        affectZeroCarryDigitCarry(b, resultOfAdd);
 
         //System.out.println("in addlw " + Integer.toBinaryString(obj.ram.getStatus()));
         System.out.println("addlw wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
+
 
     /**
      * TODO bearbeiten mit gotoSecondCycle
@@ -414,19 +397,7 @@ public class Decoder {
         }
 
         //obj.ram.affectStatusBits(b, resultOfAdd);
-        if (resultOfAdd == 0) {
-            Decoder.obj.ram.setZeroBit(true);
-        } else {
-            Decoder.obj.ram.setZeroBit(false);
-        }
-
-        if (resultOfAdd > 255 || resultOfAdd < 0) {
-            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
-            Decoder.obj.ram.setCarryBit(true);
-        } else {
-            Decoder.obj.ram.setCarryBit(false);
-        }
-        Decoder.obj.ram.setDigitCarryBit(b);
+        affectZeroCarryDigitCarry(b, resultOfAdd);
 
         System.out.println("addwf");
     }
@@ -458,19 +429,7 @@ public class Decoder {
 
         //obj.ram.affectStatusBits(b, Ram.wRegister);
 
-        if (resultOfAnd == 0) {
-            Decoder.obj.ram.setZeroBit(true);
-        } else {
-            Decoder.obj.ram.setZeroBit(false);
-        }
-
-        if (resultOfAnd > 255 || resultOfAnd < 0) {
-            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
-            Decoder.obj.ram.setCarryBit(true);
-        } else {
-            Decoder.obj.ram.setCarryBit(false);
-        }
-        Decoder.obj.ram.setDigitCarryBit(b);
+        affectZeroCarryDigitCarry(b, resultOfAnd);
 
         System.out.println("andwf wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
@@ -654,8 +613,6 @@ public class Decoder {
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
 
-        //hier seperate bitsetzung (subtraktion)
-        //TODO addition mit 2er komplement???
         boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
 
         int result = valueOnAdress - Ram.wRegister;
@@ -663,7 +620,7 @@ public class Decoder {
         if (result >= 0) {
             Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
             Decoder.obj.ram.setCarryBit(true);
-        } else if (result < 0) {
+        } else {
             Decoder.obj.ram.setCarryBit(false);
         }
 
@@ -676,9 +633,7 @@ public class Decoder {
 
         if (result < 0) {
             result = 256 + result;
-
         }
-
 
         if (dest == 0) {
             Ram.wRegister = result;
@@ -848,7 +803,7 @@ public class Decoder {
         if (valueOnAdress != 0) {
 
             // creates assembler for loop
-            if (obj.programMemory.checkCycle(obj.ram.programmCounter)) {
+            if (obj.programMemory.checkCycle(Ram.programmCounter)) {
                 obj.programMemory.cycleList.remove(obj.programMemory.cycleList.size() - 1);
             }
         }
@@ -883,7 +838,7 @@ public class Decoder {
         if (valueOnAdress != 0) {
 
             // creates assembler for loop
-            if (obj.programMemory.checkCycle(obj.ram.programmCounter)) {
+            if (obj.programMemory.checkCycle(Ram.programmCounter)) {
                 obj.programMemory.cycleList.remove(obj.programMemory.cycleList.size() - 1);
             }
         }
