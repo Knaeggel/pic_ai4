@@ -61,6 +61,10 @@ public class Decoder {
             int iWholeInstruction = obj.alu.and(decodeList.get(i), 0xFFFF);
 
 
+
+
+
+            System.out.println("PC: "+String.format("%02X",  Ram.programmCounter));
             Ram.programmCounter++;
 
 

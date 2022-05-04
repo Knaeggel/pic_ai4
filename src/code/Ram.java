@@ -29,6 +29,14 @@ public class Ram {
     }
 
     public void printGeneralAndMapped() {
+        if (ram[0][0x4] != null) {
+            System.out.println("FSR bank 0 " +
+                    String.format("0x%02X = ", 4) + String.format("0x%02X", ram[0][4]));
+        }
+        if (ram[1][0x4] != null) {
+            System.out.println("FSR bank 1 " +
+                    String.format("0x%02X = ", 4) + String.format("0x%02X", ram[1][4]));
+        }
         for (int i = 0x0C; i < 0x4F; i++) {
             if (ram[0][i] != null) {
                 System.out.println("Val at bank 0 and adress " +
