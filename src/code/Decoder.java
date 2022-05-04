@@ -340,9 +340,9 @@ public class Decoder {
             Ram.programmCounter = obj.stack.pop();
             System.out.println("retLW: " + String.format("0x%02X", Ram.wRegister) +
                     " next instruction: " + Ram.programmCounter);
-            System.out.println("goto " + i + " cycle 1");
+            System.out.println("retlw goto 0x" + String.format("%02X", Ram.programmCounter) + " cycle 1");
         } else {
-            System.out.println("goto " + i + " cycle 2");
+            System.out.println("retlw goto 0x" + String.format("%02X", Ram.programmCounter) + " cycle 2");
         }
         obj.programMemory.cycleList.add(pcOfThisInstruction);
 
@@ -371,7 +371,7 @@ public class Decoder {
             //System.out.println("next to call " +Ram.programmCounter);
             System.out.println("return to: " + Ram.programmCounter + " cycle 1");
         } else {
-            System.out.println("retrun to cycle 2");
+            System.out.println("return to cycle 2");
         }
     }
 
