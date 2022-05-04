@@ -1,7 +1,5 @@
 package code;
 
-import gui.MainFrame;
-
 public class MyThread implements Runnable{
 
     private boolean exit;
@@ -19,7 +17,7 @@ public class MyThread implements Runnable{
     public void run()
     {
         while (!exit) {
-            Decoder.obj.mainFrame.updateLstList();
+            Decoder.obj.mainFrame.updateGui();
             Decoder.obj.decoder.nextStep();
         }
     }

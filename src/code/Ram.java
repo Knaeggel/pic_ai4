@@ -17,6 +17,13 @@ public class Ram {
 
     public Ram() {
         ram = new Integer[2][128];
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 128; j++) {
+                ram[i][j] = 0;
+            }
+        }
+
+
         setStatus(0b0001_1000);
         setPCLATH(0b0_0000);
     }
@@ -234,31 +241,18 @@ public class Ram {
 
     }
 
-    /**
-     * needs
-     * boolean b = obj.alu.isDigitCarry(Ram.wRegister, i);
-     * before wanted operation
-     * TODO Evtl fehler, doesnt affect zero if anything else then wregister operation was zero
-     *
-     * @param b = obj.alu.isDigitCarry(Ram.wRegister, i);
-     */
-    /*
-    public void affectStatusBits(boolean b, int afterInstructionVal) {
-        if (afterInstructionVal == 0) {
-            Decoder.obj.ram.setZeroBit(true);
-        } else {
-            Decoder.obj.ram.setZeroBit(false);
-        }
-
-        if (afterInstructionVal > 255 || afterInstructionVal < 0) {
-            Ram.wRegister = Decoder.obj.alu.and(Ram.wRegister, 0xFF);
-            Decoder.obj.ram.setCarryBit(true);
-        } else {
-            Decoder.obj.ram.setCarryBit(false);
-        }
-        Decoder.obj.ram.setDigitCarryBit(b);
-
+    public int getFSR(){
+        return ram[bank][0x04];
     }
-*/
+
+    public int getPCL() {
+        return ram[bank][0x02];
+    }
+    public int getOption() {
+        return ram[1][0x01];
+    }
+    public int getTMR0() {
+        return ram[0][0x01];
+    }
 
 }

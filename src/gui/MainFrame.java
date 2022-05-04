@@ -68,6 +68,14 @@ public class MainFrame extends JFrame {
     private JCheckBox pinB7;
     private JScrollPane ProtgrammLST;
     private JList lstList;
+    private JLabel wRegister;
+    private JLabel wValue;
+    private JLabel pclValue;
+    private JLabel pclathValue;
+    private JLabel statusValue;
+    private JLabel fsrValue;
+    private JLabel optionValue;
+    private JLabel timer0Value;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
 
@@ -78,6 +86,7 @@ public class MainFrame extends JFrame {
 
 
     public MainFrame() {
+
         setContentPane(panel1);
         setTitle("PIC GUI");
         setSize(1150, 700);
@@ -109,18 +118,19 @@ public class MainFrame extends JFrame {
         btnOneStep.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Decoder.obj.decoder.nextStep();
-                Decoder.obj.ram.printZDCC();
-                Decoder.obj.ram.printGeneralAndMapped();
 
-                updateLstList();
+                Decoder.obj.decoder.nextStep();
+                //Decoder.obj.ram.printZDCC();
+                //Decoder.obj.ram.printGeneralAndMapped();
+
+
                 if (!selectedLST.isEmpty()) {
                     System.out.println(Ram.programmCounter);
                     if (!vergleichen(selectedLST, Ram.programmCounter)) {
                         t1.stop();
                     }
                 }
-
+                updateGui();
             }
         });
 
@@ -143,7 +153,7 @@ public class MainFrame extends JFrame {
                 super.mouseClicked(e);
                 Color color = Color.red;
 
-                if (vergleichen(selectedLST,lstList.getSelectedIndex())) {
+                if (vergleichen(selectedLST, lstList.getSelectedIndex())) {
 
                     selectedLST.add(lstList.getSelectedIndex());
                     lstList.setSelectionForeground(color);
@@ -163,11 +173,11 @@ public class MainFrame extends JFrame {
                 }
 
 
-                if(valueList.equals(lstList.getSelectedValue())){
+                if (valueList.equals(lstList.getSelectedValue())) {
                     valueList.add(lstList.getSelectedValue());
                     int[] arr = valueList.stream().mapToInt(i -> (int) i).toArray();
                     lstList.setSelectedIndices(arr);
-                }else{
+                } else {
                     valueList.remove(lstList.getSelectedValue());
                 }
 
@@ -176,6 +186,21 @@ public class MainFrame extends JFrame {
 
     }
 
+    public void updateGui() {
+        updateLstList();
+        updateSFR();
+    }
+
+    public void updateSFR() {
+        wValue.setText("0x" + Integer.toHexString(Ram.wRegister));
+        pclValue.setText(Decoder.obj.ram.getPCL() + "");
+        pclathValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getPCLATH()));
+        statusValue.setText("0b" + Integer.toBinaryString(Decoder.obj.ram.getStatus()));
+        fsrValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getFSR()));
+        optionValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getOption()));
+        timer0Value.setText("0x" + Integer.toHexString(Decoder.obj.ram.getTMR0()));
+
+    }
 
     /**
      * Aktualisiert den Stack in der GUI
@@ -230,29 +255,28 @@ public class MainFrame extends JFrame {
         lstList.setSelectedIndices(arr);
     }
 
-public boolean vergleichen(ArrayList<Integer> arrList, int value){
+    public boolean vergleichen(ArrayList<Integer> arrList, int value) {
 
-        if(!arrList.isEmpty()){
-            for (int i = 0; i < arrList.size(); i++){
-                if(arrList.get(i) == value){
+        if (!arrList.isEmpty()) {
+            for (int i = 0; i < arrList.size(); i++) {
+                if (arrList.get(i) == value) {
                     return false;
                 }
             }
         }
         return true;
-}
+    }
 
-public int position(ArrayList<Integer> arrList, int value){
+    public int position(ArrayList<Integer> arrList, int value) {
 
-        for(int i = 0; i < arrList.size(); i++){
-            if(arrList.get(i) == value){
+        for (int i = 0; i < arrList.size(); i++) {
+            if (arrList.get(i) == value) {
                 return i;
             }
         }
 
         return 0;
-}
-
+    }
 
 
 }
