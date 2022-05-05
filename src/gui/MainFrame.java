@@ -164,8 +164,8 @@ public class MainFrame extends JFrame {
 
 
                     //
-                      valueList.add(lstList.getSelectedValue());
-                   // valueList.add(e.getPoint());
+                    valueList.add(lstList.getSelectedValuesList().get(lstList.getSelectedValuesList().size() - 1));
+
 
                 } else {
 
@@ -278,9 +278,9 @@ public class MainFrame extends JFrame {
         return 0;
     }
 
-    public void breakpoints(){
+    public void breakpoints() {
         allCommands = LSTFileReader.getCommands();
-        if(Ram.programmCounter < allCommands.size()) {
+        if (Ram.programmCounter < allCommands.size()) {
             if (!selectedLST.isEmpty()) {
                 if (valueList.contains(allCommands.get(Ram.programmCounter))) {
                     t1.stop();
@@ -288,4 +288,11 @@ public class MainFrame extends JFrame {
             }
         }
     }
+
+    public void highlightRow() {
+
+        System.out.println(lstList.getVisibleRowCount());
+    }
+
+
 }
