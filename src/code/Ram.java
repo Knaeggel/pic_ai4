@@ -22,10 +22,9 @@ public class Ram {
                 ram[i][j] = 0;
             }
         }
-
-
         setStatus(0b0001_1000);
         setPCLATH(0b0_0000);
+        setOption(0b1111_1111);
     }
 
     public void printZDCC() {
@@ -106,6 +105,10 @@ public class Ram {
 
     public Integer getPCLATH() {
         return ram[bank][0xA];
+    }
+
+    public void setOption(Integer i) {
+        ram[1][0x01] = i;
     }
 
     /**
