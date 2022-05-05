@@ -1,7 +1,7 @@
 package code;
 
 public class Ram {
-    public enum statusBits {Carry, DigitCarry, Zero}
+
 
     private static Integer[][] ram;
 
@@ -44,11 +44,11 @@ public class Ram {
     public void printGeneralAndMapped() {
         if (ram[0][0] != 0) {
             System.out.println("Indirect addr. bank 0 " +
-                    String.format("0x%02X = ", 4) + String.format("0x%02X", ram[0][0]));
+                    String.format("0x%02X", ram[0][0]));
         }
         if (ram[1][0] != 0) {
             System.out.println("Indirect addr. bank 1 " +
-                    String.format("0x%02X = ", 4) + String.format("0x%02X", ram[1][0]));
+                    String.format("0x%02X", ram[1][0]));
         }
         if (ram[0][0x4] != 0) {
             System.out.println("FSR bank 0 " +
@@ -160,6 +160,11 @@ public class Ram {
     public int getSpecificStatusBit(int n) {
         //return ((ram[bank][3] >> (n /*-1*/)) & 1);
         return getSpecificGenericBit(n, 3);
+    }
+
+    public int getSpecificOptionBit(int n) {
+        return ((ram[1][0x01] >> (n /*-1*/)) & 1);
+
     }
 
     /**

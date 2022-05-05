@@ -42,7 +42,7 @@ public class Decoder {
         functionCalls(Ram.programmCounter);
         obj.mainFrame.updateStack(obj.stack);
         obj.mainFrame.breakpoints();
-       // obj.mainFrame.highlightRow();
+        // obj.mainFrame.highlightRow();
     }
 
     /**
@@ -59,7 +59,6 @@ public class Decoder {
 
             System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
             Ram.programmCounter++;
-
 
 
             switch (iOpCode) {
@@ -902,18 +901,19 @@ public class Decoder {
      * executed instead, making this a 2TCY
      * instruction.
      * TODO possible error
+     *
      * @param f <0:6> register <7:9> selected bit to set
      */
     public void btfsc(Integer f) {
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
-        int bitToClear = obj.alu.getIntValFromBitToBit(8, 10, f);
+        int bitToCheck = obj.alu.getIntValFromBitToBit(8, 10, f);
 
-        if (obj.ram.getNthBitOfValue(bitToClear, valueOnAdress) != 1) {
+        if ((obj.ram.getNthBitOfValue(bitToCheck - 1, valueOnAdress) == 0)) {
             obj.programMemory.skipNextInstruction();
 
         }
-
+        System.out.println("btfsc wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**
@@ -930,10 +930,11 @@ public class Decoder {
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
         int bitToClear = obj.alu.getIntValFromBitToBit(8, 10, f);
 
-        if (obj.ram.getNthBitOfValue(bitToClear, valueOnAdress) == 1) {
+        if (obj.ram.getNthBitOfValue(bitToClear - 1, valueOnAdress) == 1) {
             obj.programMemory.skipNextInstruction();
 
         }
+        System.out.println("btfss wRegister: " + String.format("0x%02X", Ram.wRegister));
     }
 
     /**

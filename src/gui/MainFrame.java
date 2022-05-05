@@ -77,6 +77,22 @@ public class MainFrame extends JFrame {
     private JLabel optionValue;
     private JLabel timer0Value;
     private JLabel prescalerValue;
+    private JLabel irpValue;
+    private JLabel rp1Vlaue;
+    private JLabel rp0Value;
+    private JLabel t0Value;
+    private JLabel pdValue;
+    private JLabel zValue;
+    private JLabel dcValue;
+    private JLabel cValue;
+    private JLabel rpuValue;
+    private JLabel iegVlaue;
+    private JLabel tcsValue;
+    private JLabel tseVlaue;
+    private JLabel psaValue;
+    private JLabel ps2Value;
+    private JLabel ps1Value;
+    private JLabel ps0Value;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
     private static ArrayList<String> allCommands = LSTFileReader.getCommands();
@@ -175,7 +191,6 @@ public class MainFrame extends JFrame {
                     lstList.clearSelection();
                     lstList.setSelectedIndices(arr);
 
-                    //
                     valueList.remove(lstList.getSelectedValue());
                 }
 
@@ -188,19 +203,42 @@ public class MainFrame extends JFrame {
     public void updateGui() {
         updateLstList();
         updateSFR();
+        updateSFRBit();
     }
 
     public void updateSFR() {
-        wValue.setText("0x" + Integer.toHexString(Ram.wRegister));
-        pclValue.setText(Decoder.obj.ram.getPCL() + "");
-        pclathValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getPCLATH()));
-        statusValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getStatus()));
-        fsrValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getFSR()));
-        optionValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getOption()));
-        timer0Value.setText("0x" + Integer.toHexString(Decoder.obj.ram.getTMR0()));
+        wValue.setText(String.format("0x%02X", Ram.wRegister));
+        pclValue.setText(String.format("0x%02X", Decoder.obj.ram.getPCL()));
+        pclathValue.setText(String.format("0x%02X", Decoder.obj.ram.getPCLATH()));
+        statusValue.setText(String.format("0x%02X", Decoder.obj.ram.getStatus()));
+        fsrValue.setText(String.format("0x%02X", Decoder.obj.ram.getFSR()));
+        optionValue.setText(String.format("0x%02X", Decoder.obj.ram.getOption()));
+        timer0Value.setText(String.format("0x%02X", Decoder.obj.ram.getTMR0()));
         prescalerValue.setText("1:" + Decoder.obj.ram.getPrescalerValue());
 
     }
+
+    public void updateSFRBit() {
+        irpValue.setText(Decoder.obj.ram.getSpecificStatusBit(7) + "");
+        rp1Vlaue.setText(Decoder.obj.ram.getSpecificStatusBit(6) + "");
+        rp0Value.setText(Decoder.obj.ram.getSpecificStatusBit(5) + "");
+        t0Value.setText(Decoder.obj.ram.getSpecificStatusBit(4) + "");
+        pdValue.setText(Decoder.obj.ram.getSpecificStatusBit(3) + "");
+        zValue.setText(Decoder.obj.ram.getSpecificStatusBit(2) + "");
+        dcValue.setText(Decoder.obj.ram.getSpecificStatusBit(1) + "");
+        cValue.setText(Decoder.obj.ram.getSpecificStatusBit(0) + "");
+
+        rpuValue.setText(Decoder.obj.ram.getSpecificOptionBit(7) + "");
+        iegVlaue.setText(Decoder.obj.ram.getSpecificOptionBit(6) + "");
+        tcsValue.setText(Decoder.obj.ram.getSpecificOptionBit(5) + "");
+        tseVlaue.setText(Decoder.obj.ram.getSpecificOptionBit(4) + "");
+        psaValue.setText(Decoder.obj.ram.getSpecificOptionBit(3) + "");
+        ps2Value.setText(Decoder.obj.ram.getSpecificOptionBit(2) + "");
+        ps1Value.setText(Decoder.obj.ram.getSpecificOptionBit(1) + "");
+        ps0Value.setText(Decoder.obj.ram.getSpecificOptionBit(0) + "");
+
+    }
+
 
     /**
      * Aktualisiert den Stack in der GUI
