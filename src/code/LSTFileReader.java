@@ -103,28 +103,19 @@ public class LSTFileReader {
         return allLines;
     }
 
-    public static int readComments(String src) {
 
-        int blankCounter = 0;
+    public static ArrayList<String> getCommands() {
+        ArrayList<String> allCommands = new ArrayList<>();
+        int i = 0;
+        while (i < allLines.size()) {
 
-        try {
-            myObj = new File(src);
 
-            Scanner myReader = new Scanner(myObj);
-            myReader.reset();
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-
-                if (data.substring(0, 1).isBlank()) {
-                    blankCounter++;
-                }
+            if (!allLines.get(i).substring(0, 1).isBlank()) {
+                allCommands.add(allLines.get(i));
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            i++;
         }
-
-
-        return blankCounter;
+        return allCommands;
     }
 
 }
