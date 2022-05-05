@@ -59,7 +59,7 @@ public class Decoder {
             System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
             Ram.programmCounter++;
 
-            int prescaleValue;
+
 
             switch (iOpCode) {
                 case 0b0011_0000_0000_0000 -> movLW(iOpValue);
@@ -131,9 +131,9 @@ public class Decoder {
                 default -> System.out.println("Default");
             }
 
-            System.out.println("0b"+Integer.toBinaryString(obj.ram.getOption()));
-            prescaleValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
-            System.out.println("prescale Value "+prescaleValue);
+            obj.ram.prescalerValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
+
+            obj.timer.incrementTimer0(obj.ram.prescalerValue);
         }
     }
 

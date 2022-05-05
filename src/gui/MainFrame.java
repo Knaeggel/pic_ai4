@@ -76,6 +76,7 @@ public class MainFrame extends JFrame {
     private JLabel fsrValue;
     private JLabel optionValue;
     private JLabel timer0Value;
+    private JLabel prescalerValue;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
     private static ArrayList<String> allCommands = LSTFileReader.getCommands();
@@ -193,10 +194,11 @@ public class MainFrame extends JFrame {
         wValue.setText("0x" + Integer.toHexString(Ram.wRegister));
         pclValue.setText(Decoder.obj.ram.getPCL() + "");
         pclathValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getPCLATH()));
-        statusValue.setText("0b" + Integer.toBinaryString(Decoder.obj.ram.getStatus()));
+        statusValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getStatus()));
         fsrValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getFSR()));
-        optionValue.setText("0b" + Integer.toBinaryString(Decoder.obj.ram.getOption()));
+        optionValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getOption()));
         timer0Value.setText("0x" + Integer.toHexString(Decoder.obj.ram.getTMR0()));
+        prescalerValue.setText("1:" + Decoder.obj.ram.getPrescalerValue());
 
     }
 

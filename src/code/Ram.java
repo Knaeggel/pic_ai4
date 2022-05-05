@@ -15,9 +15,14 @@ public class Ram {
     public static int programmCounter = 0;
     public static int cycles = 0;
 
+    public static int prescalerValue;
+
+
+
 
     public Ram() {
         cycles = 0;
+        prescalerValue = 256;
         ram = new Integer[2][128];
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 128; j++) {
@@ -84,6 +89,13 @@ public class Ram {
         }
     }
 
+    public int getPrescalerValue() {
+        return prescalerValue;
+    }
+
+    public void setPrescalerValue(int prescalerValue) {
+        Ram.prescalerValue = prescalerValue;
+    }
 
     public void setStatus(Integer i) {
         ram[0][3] = i;
@@ -257,6 +269,10 @@ public class Ram {
     }
     public int getTMR0() {
         return ram[0][0x01];
+    }
+
+    public void incrementTMR0() {
+        ram[0][0x01]++;
     }
 
 
