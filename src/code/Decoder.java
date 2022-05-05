@@ -41,6 +41,7 @@ public class Decoder {
     public void nextStep() {
         functionCalls(Ram.programmCounter);
         obj.mainFrame.updateStack(obj.stack);
+        obj.mainFrame.breakpoints();
     }
 
     /**

@@ -78,7 +78,7 @@ public class MainFrame extends JFrame {
     private JLabel timer0Value;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
-
+    private static ArrayList<String> allCommands = LSTFileReader.getCommands();
 
     private static ArrayList<Object> valueList = new ArrayList<>();
 
@@ -153,7 +153,7 @@ public class MainFrame extends JFrame {
                 super.mouseClicked(e);
                 Color color = Color.red;
 
-                if (vergleichen(selectedLST, lstList.getSelectedIndex())) {
+                if (vergleichen(selectedLST,lstList.getSelectedIndex())) {
 
                     selectedLST.add(lstList.getSelectedIndex());
                     lstList.setSelectionForeground(color);
@@ -161,6 +161,10 @@ public class MainFrame extends JFrame {
                     int[] arr = selectedLST.stream().mapToInt(i -> i).toArray();
                     lstList.setSelectedIndices(arr);
 
+
+                    //
+                      valueList.add(lstList.getSelectedValue());
+                   // valueList.add(e.getPoint());
 
                 } else {
 
@@ -170,16 +174,10 @@ public class MainFrame extends JFrame {
                     lstList.clearSelection();
                     lstList.setSelectedIndices(arr);
 
-                }
-
-
-                if (valueList.equals(lstList.getSelectedValue())) {
-                    valueList.add(lstList.getSelectedValue());
-                    int[] arr = valueList.stream().mapToInt(i -> (int) i).toArray();
-                    lstList.setSelectedIndices(arr);
-                } else {
+                    //
                     valueList.remove(lstList.getSelectedValue());
                 }
+
 
             }
         });
@@ -278,5 +276,14 @@ public class MainFrame extends JFrame {
         return 0;
     }
 
-
+    public void breakpoints(){
+        allCommands = LSTFileReader.getCommands();
+        if(Ram.programmCounter < allCommands.size()) {
+            if (!selectedLST.isEmpty()) {
+                if (valueList.contains(allCommands.get(Ram.programmCounter))) {
+                    t1.stop();
+                }
+            }
+        }
+    }
 }

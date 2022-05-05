@@ -17,8 +17,7 @@ public class MyThread implements Runnable{
     public void run()
     {
         while (!exit) {
-            Decoder.obj.mainFrame.updateGui();
-            Decoder.obj.decoder.nextStep();
+                Decoder.obj.decoder.nextStep();
         }
     }
 
