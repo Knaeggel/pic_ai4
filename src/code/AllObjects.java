@@ -11,6 +11,8 @@ public class AllObjects {
     public MainFrame mainFrame;
     public Decoder decoder;
     public ProgramMemory programMemory;
+    public Prescaler prescaler;
+    public Timer timer;
 
     private static AllObjects obj;
 
@@ -21,6 +23,8 @@ public class AllObjects {
         mainFrame = new MainFrame();
         decoder = new Decoder();
         programMemory = new ProgramMemory();
+        prescaler = new Prescaler();
+        timer = new Timer();
     }
 
     public static AllObjects getAllObjectsInstance() {

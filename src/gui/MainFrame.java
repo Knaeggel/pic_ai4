@@ -195,7 +195,7 @@ public class MainFrame extends JFrame {
         pclathValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getPCLATH()));
         statusValue.setText("0b" + Integer.toBinaryString(Decoder.obj.ram.getStatus()));
         fsrValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getFSR()));
-        optionValue.setText("0x" + Integer.toHexString(Decoder.obj.ram.getOption()));
+        optionValue.setText("0b" + Integer.toBinaryString(Decoder.obj.ram.getOption()));
         timer0Value.setText("0x" + Integer.toHexString(Decoder.obj.ram.getTMR0()));
 
     }

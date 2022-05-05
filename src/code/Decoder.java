@@ -59,6 +59,8 @@ public class Decoder {
             System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
             Ram.programmCounter++;
 
+            int prescaleValue;
+
             switch (iOpCode) {
                 case 0b0011_0000_0000_0000 -> movLW(iOpValue);
                 case 0b0011_1001_0000_0000 -> andLW(iOpValue);
@@ -82,7 +84,7 @@ public class Decoder {
                     }
                     if (obj.ram.getNthBitOfValue(7, iOpValue) == 1) {
                         int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
-                        movWF(newOpval);
+                        movWF(iOpValue);
                     }
                 }
                 case 0b0000_0111_0000_0000 -> addWF(iOpValue);
@@ -128,6 +130,10 @@ public class Decoder {
 
                 default -> System.out.println("Default");
             }
+
+            System.out.println("0b"+Integer.toBinaryString(obj.ram.getOption()));
+            prescaleValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
+            System.out.println("prescale Value "+prescaleValue);
         }
     }
 
