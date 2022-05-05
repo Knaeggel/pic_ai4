@@ -93,6 +93,9 @@ public class MainFrame extends JFrame {
     private JLabel ps2Value;
     private JLabel ps1Value;
     private JLabel ps0Value;
+    private JScrollPane b0Pannel;
+    private JScrollPane b1Pannel;
+    private JPanel Timing;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
     private static ArrayList<String> allCommands = LSTFileReader.getCommands();
