@@ -13,9 +13,11 @@ public class Ram {
 
     public static int wRegister;
     public static int programmCounter = 0;
+    public static int cycles = 0;
 
 
     public Ram() {
+        cycles = 0;
         ram = new Integer[2][128];
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 128; j++) {
@@ -247,7 +249,6 @@ public class Ram {
     public int getFSR(){
         return ram[bank][0x04];
     }
-
     public int getPCL() {
         return ram[bank][0x02];
     }
@@ -257,5 +258,7 @@ public class Ram {
     public int getTMR0() {
         return ram[0][0x01];
     }
+
+
 
 }
