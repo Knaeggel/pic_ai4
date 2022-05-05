@@ -122,7 +122,7 @@ public class MainFrame extends JFrame {
 
                 Decoder.obj.decoder.nextStep();
                 //Decoder.obj.ram.printZDCC();
-                //Decoder.obj.ram.printGeneralAndMapped();
+                Decoder.obj.ram.printGeneralAndMapped();
 
 
                 if (!selectedLST.isEmpty()) {

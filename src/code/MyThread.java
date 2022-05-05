@@ -1,5 +1,7 @@
 package code;
 
+import gui.MainFrame;
+
 public class MyThread implements Runnable{
 
     private boolean exit;
@@ -8,6 +10,7 @@ public class MyThread implements Runnable{
 
     public MyThread()
     {
+
         t = new Thread(this);
         exit = false;
         t.start(); // Starting the thread
@@ -17,6 +20,7 @@ public class MyThread implements Runnable{
     public void run()
     {
         while (!exit) {
+            Decoder.obj .mainFrame.updateGui();
                 Decoder.obj.decoder.nextStep();
         }
     }

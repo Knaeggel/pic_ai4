@@ -85,7 +85,7 @@ public class Decoder {
                     }
                     if (obj.ram.getNthBitOfValue(7, iOpValue) == 1) {
                         int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
-                        movWF(iOpValue);
+                        movWF(newOpval);
                     }
                 }
                 case 0b0000_0111_0000_0000 -> addWF(iOpValue);
@@ -901,7 +901,7 @@ public class Decoder {
      * instruction is discarded, and a NOP is
      * executed instead, making this a 2TCY
      * instruction.
-     *
+     * TODO possible error
      * @param f <0:6> register <7:9> selected bit to set
      */
     public void btfsc(Integer f) {
