@@ -43,6 +43,8 @@ public class Ram {
     }
 
     public void printGeneralAndMapped() {
+        System.out.println("\nwRegister: " + String.format("0x%02X", Ram.wRegister)+ "\n");
+
         if (ram[0][0] != 0) {
             System.out.println("Indirect addr. bank 0: " +
                     String.format("0x%02X", ram[0][0]));
@@ -72,7 +74,7 @@ public class Ram {
                 System.out.print( String.format(" 0x%02X = ", i) + String.format("0x%02X,", ram[1][i]));
             }
         }
-        System.out.println();
+        System.out.println("\n");
     }
 
     public Integer[][] getRam() {

@@ -80,7 +80,7 @@ public class Decoder {
                         0b0010_0011_0000_0000,
                         0b0010_0100_0000_0000,
                         0b0010_0101_0000_0000,
-                        0b0010_0111_0000_0000-> call(last11Bits.get(i));
+                        0b0010_0111_0000_0000 -> call(last11Bits.get(i));
                 case 0b0011_0100_0000_0000 -> retLW(iOpValue);
                 case 0b0000_0000_0000_0000 -> {
                     if (iOpValue == 0b0000_0000) {
@@ -173,7 +173,7 @@ public class Decoder {
 
         Ram.wRegister = i;
         //System.out.println("In movlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("movlw wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("movlw");
     }
 
     /**
@@ -185,7 +185,7 @@ public class Decoder {
     public void andLW(Integer i) {
         Ram.wRegister = obj.alu.and(Ram.wRegister, i);
         //System.out.println("In andlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("andlw wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("andlw");
     }
 
     /**
@@ -203,7 +203,7 @@ public class Decoder {
 
         }
         //System.out.println("In iorlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("iorlw wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("iorlw");
     }
 
 
@@ -231,7 +231,7 @@ public class Decoder {
         } else {
             obj.ram.setCarryBit(false);
         }
-        System.out.println("sublw wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("sublw");
     }
 
     /**
@@ -250,7 +250,7 @@ public class Decoder {
         }
 
         //System.out.println("in xorlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("xorlw wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("xorlw");
     }
 
     /**
@@ -272,7 +272,7 @@ public class Decoder {
         affectZeroCarryDigitCarry(b, resultOfAdd);
 
         //System.out.println("in addlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("addlw wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("addlw");
     }
 
 
@@ -293,8 +293,6 @@ public class Decoder {
         } else {
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 2");
         }
-
-
 
 
     }
@@ -385,12 +383,16 @@ public class Decoder {
     /**
      * Move data from W register to register
      * 'f' in the ram section
-     *
+     * TODO indirect addr.
      * @param f 7bit literal
      */
     public void movWF(Integer f) {
 
-        obj.ram.setRamAt(f, Ram.wRegister);
+        if (f != 0) {
+            obj.ram.setRamAt(f, Ram.wRegister);
+        } else if (f == 0) {
+            obj.ram.setRamAt(obj.ram.getFSR() ,Ram.wRegister);
+        }
         System.out.println("movwf saved in " + String.format("0x%02X", f));
     }
 
@@ -400,14 +402,19 @@ public class Decoder {
      * stored in the W register. If ’d’ is 1 the result is
      * stored back in register ’f’.
      * TODO look if status bits are affected the right way
-     *
+     * TODO indirect addr.
      * @param i 7bit literal
      */
     public void addWF(Integer i) {
         int dest = obj.ram.getNthBitOfValue(7, i);
         int addressInRam = obj.alu.and(i, 0b0111_1111);
 
-        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+        int valueOnAdress = 0;
+        if (addressInRam != 0) {
+            valueOnAdress = obj.ram.getRamAt(addressInRam);
+        } else if (addressInRam == 0) {
+            valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+        }
 
         boolean b = obj.alu.isDigitCarry(Ram.wRegister, valueOnAdress);
 
@@ -455,7 +462,7 @@ public class Decoder {
 
         affectZeroCarryDigitCarry(b, resultOfAnd);
 
-        System.out.println("andwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("andwf");
     }
 
     /**
@@ -498,7 +505,7 @@ public class Decoder {
             obj.ram.setZeroBit(false);
         }
 
-        System.out.println("comf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("comf");
     }
 
     /**
@@ -528,7 +535,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
-        System.out.println("decf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("decf");
     }
 
     /**
@@ -559,7 +566,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
-        System.out.println("incf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("incf");
     }
 
     /**
@@ -587,7 +594,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
-        System.out.println("movf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("movf");
     }
 
     /**
@@ -616,7 +623,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
-        System.out.println("iorwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("iorwf");
     }
 
     /**
@@ -664,7 +671,7 @@ public class Decoder {
         } else if (dest == 1) {
             obj.ram.setRamAt(addressInRam, result);
         }
-        System.out.println("subwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("subwf");
     }
 
     /**
@@ -691,7 +698,7 @@ public class Decoder {
         } else if (dest == 1) {
             obj.ram.setRamAt(addressInRam, result);
         }
-        System.out.println("swapf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("swapf");
     }
 
     /**
@@ -721,7 +728,7 @@ public class Decoder {
             obj.ram.setZeroBit(false);
         }
 
-        System.out.println("xorwf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("xorwf");
     }
 
     /**
@@ -730,7 +737,7 @@ public class Decoder {
     public void clrw() {
         Ram.wRegister = 0;
         obj.ram.setZeroBit(true);
-        System.out.println("clrw wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("clrw");
     }
 
     /**
@@ -768,7 +775,7 @@ public class Decoder {
         }
 
         //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("rlf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("rlf");
     }
 
     /**
@@ -806,7 +813,7 @@ public class Decoder {
         }
 
         //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("rrf wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("rrf");
     }
 
     /**
@@ -835,10 +842,12 @@ public class Decoder {
 
             //TODO remove all cycles between goto and adress of goto
             for (int i = Ram.programmCounter; i > 1; i--) {
-                if (obj.programMemory.checkCycle(i)){
+                if (obj.programMemory.checkCycle(i)) {
                     obj.programMemory.cycleList.remove(Integer.valueOf(i));
                 }
             }
+        } else {
+            obj.programMemory.skipNextInstruction();
         }
 
         if (dest == 0) {
@@ -879,10 +888,12 @@ public class Decoder {
              */
             //TODO remove all cycles between goto and adress of goto
             for (int i = Ram.programmCounter; i > 1; i--) {
-                if (obj.programMemory.checkCycle(i)){
+                if (obj.programMemory.checkCycle(i)) {
                     obj.programMemory.cycleList.remove(Integer.valueOf(i));
                 }
             }
+        } else {
+            obj.programMemory.skipNextInstruction();
         }
 
         if (dest == 0) {
@@ -948,7 +959,7 @@ public class Decoder {
             obj.programMemory.skipNextInstruction();
 
         }
-        System.out.println("btfsc wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("btfsc");
     }
 
     /**
@@ -969,7 +980,7 @@ public class Decoder {
             obj.programMemory.skipNextInstruction();
 
         }
-        System.out.println("btfss wRegister: " + String.format("0x%02X", Ram.wRegister));
+        System.out.println("btfss");
     }
 
     /**
