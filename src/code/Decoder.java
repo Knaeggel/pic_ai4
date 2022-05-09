@@ -13,6 +13,7 @@ public class Decoder {
 
     ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
     ArrayList<Integer> last11Bits = LSTFileReader.getLast11Bits();
+    ArrayList<String> allLines = LSTFileReader.getWholeLine();
 
 
     /**
@@ -55,6 +56,7 @@ public class Decoder {
             int iOpCode = obj.alu.and(decodeList.get(i), 0xFF00);
             int iOpValue = obj.alu.and(decodeList.get(i), 0x00FF);
             int iWholeInstruction = obj.alu.and(decodeList.get(i), 0xFFFF);
+            String endlessLoop = allLines.get(i);
 
 
             System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
@@ -68,8 +70,14 @@ public class Decoder {
                 case 0b0011_1100_0000_0000 -> subLW(iOpValue);
                 case 0b0011_1010_0000_0000 -> xorLW(iOpValue);
                 case 0b0011_1110_0000_0000 -> addLW(iOpValue);
-                case 0b0010_1000_0000_0000 -> goTO(last11Bits.get(i));
-                case 0b0010_0000_0000_0000 -> call(last11Bits.get(i));
+                case 0b0010_1000_0000_0000 -> goTO(last11Bits.get(i), endlessLoop);
+                case 0b0010_0000_0000_0000,
+                        0b0010_0001_0000_0000,
+                        0b0010_0010_0000_0000,
+                        0b0010_0011_0000_0000,
+                        0b0010_0100_0000_0000,
+                        0b0010_0101_0000_0000,
+                        0b0010_0111_0000_0000-> call(last11Bits.get(i));
                 case 0b0011_0100_0000_0000 -> retLW(iOpValue);
                 case 0b0000_0000_0000_0000 -> {
                     if (iOpValue == 0b0000_0000) {
@@ -136,6 +144,7 @@ public class Decoder {
             obj.timer.incrementTimer0(obj.ram.prescalerValue);
         }
     }
+
 
     private void affectZeroCarryDigitCarry(boolean b, int resultOfAdd) {
         if (resultOfAdd == 0) {
@@ -269,7 +278,7 @@ public class Decoder {
      *
      * @param i number of the next code segment
      */
-    public void goTO(Integer i) {
+    public void goTO(Integer i, String s) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
         if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             Ram.programmCounter = i;
@@ -277,10 +286,16 @@ public class Decoder {
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
+            obj.programMemory.cycleList.add(pcOfThisInstruction);
         } else {
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 2");
         }
-        obj.programMemory.cycleList.add(pcOfThisInstruction);
+
+        if (s.contains("ende")){
+            obj.programMemory.cycleList.remove(Integer.valueOf(pcOfThisInstruction));
+            System.out.println("ende");
+        }
+
 
     }
 
@@ -306,10 +321,11 @@ public class Decoder {
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
             System.out.println("call " + i + " cycle 1");
+            obj.programMemory.cycleList.add(pcOfThisInstruction);
         } else {
             System.out.println("call " + i + " cycle 2");
         }
-        obj.programMemory.cycleList.add(pcOfThisInstruction);
+
     }
 
     /**
@@ -331,10 +347,11 @@ public class Decoder {
             System.out.println("retLW: " + String.format("0x%02X", Ram.wRegister) +
                     " next instruction: " + Ram.programmCounter);
             System.out.println("retlw goto 0x" + String.format("%02X", Ram.programmCounter) + " cycle 1");
+            obj.programMemory.cycleList.add(pcOfThisInstruction);
         } else {
             System.out.println("retlw goto 0x" + String.format("%02X", Ram.programmCounter) + " cycle 2");
         }
-        obj.programMemory.cycleList.add(pcOfThisInstruction);
+
 
     }
 
@@ -810,8 +827,17 @@ public class Decoder {
         if (valueOnAdress != 0) {
 
             // creates assembler for loop
+            /*
             if (obj.programMemory.checkCycle(Ram.programmCounter)) {
                 obj.programMemory.cycleList.remove(obj.programMemory.cycleList.size() - 1);
+            }
+            */
+
+            //TODO remove all cycles between goto and adress of goto
+            for (int i = Ram.programmCounter; i > 1; i--) {
+                if (obj.programMemory.checkCycle(i)){
+                    obj.programMemory.cycleList.remove(Integer.valueOf(i));
+                }
             }
         }
 
@@ -845,8 +871,17 @@ public class Decoder {
         if (valueOnAdress != 0) {
 
             // creates assembler for loop
+            /*
             if (obj.programMemory.checkCycle(Ram.programmCounter)) {
                 obj.programMemory.cycleList.remove(obj.programMemory.cycleList.size() - 1);
+            }
+
+             */
+            //TODO remove all cycles between goto and adress of goto
+            for (int i = Ram.programmCounter; i > 1; i--) {
+                if (obj.programMemory.checkCycle(i)){
+                    obj.programMemory.cycleList.remove(Integer.valueOf(i));
+                }
             }
         }
 

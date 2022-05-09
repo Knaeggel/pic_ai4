@@ -32,6 +32,7 @@ public class Ram {
         setStatus(0b0001_1000);
         setPCLATH(0b0_0000);
         setOption(0b1111_1111);
+        setIntcon(0b0000_0000);
     }
 
     public void printZDCC() {
@@ -58,14 +59,17 @@ public class Ram {
             System.out.println("FSR bank 1 " +
                     String.format("0x%02X = ", 4) + String.format("0x%02X", ram[1][4]));
         }
+        System.out.print("Val at bank 0 and adress");
         for (int i = 0x0C; i < 0x4F; i++) {
             if (ram[0][i] != 0) {
-                System.out.println("Val at bank 0 and adress " +
-                        String.format("0x%02X = ", i) + String.format("0x%02X", ram[0][i]));
+                System.out.print(String.format(" 0x%02X = ", i) + String.format("0x%02X,", ram[0][i]));
             }
+
+        }
+        System.out.print("\nVal at bank 1 and adress");
+        for (int i = 0x0C; i < 0x4F; i++) {
             if (ram[1][i] != 0) {
-                System.out.println("Val at bank 1 and adress " +
-                        String.format("0x%02X = ", i) + String.format("0x%02X", ram[1][i]));
+                System.out.print( String.format(" 0x%02X = ", i) + String.format("0x%02X,", ram[1][i]));
             }
         }
         System.out.println();
@@ -219,7 +223,7 @@ public class Ram {
         if (b) {
             if (getSpecificStatusBit(2) != 1) {
                 iRet += 0b100;
-                System.out.println(";Z set;");
+                //System.out.println(";Z set;");
             }
         } else {
             if (getSpecificStatusBit(2) == 1) {
@@ -239,7 +243,7 @@ public class Ram {
         if (b) {
             if (getSpecificStatusBit(0) != 1) {
                 iRet += 0b1;
-                System.out.println(";C set;");
+                //System.out.println(";C set;");
             }
         } else {
             if (getSpecificStatusBit(0) == 1) {
@@ -259,7 +263,7 @@ public class Ram {
         if (b) {
             if (getSpecificStatusBit(1) != 1) {
                 iRet += 0b10;
-                System.out.println(";DC set;");
+                //System.out.println(";DC set;");
             }
         } else {
             if (getSpecificStatusBit(1) == 1) {
@@ -286,6 +290,11 @@ public class Ram {
 
     public void incrementTMR0() {
         ram[0][0x01]++;
+    }
+
+    public void setIntcon(int i) {
+        ram[0][0x0B] = i;
+        ram[1][0x0B] = i;
     }
 
 
