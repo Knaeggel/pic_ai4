@@ -291,10 +291,7 @@ public class Decoder {
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 2");
         }
 
-        if (s.contains("ende")){
-            obj.programMemory.cycleList.remove(Integer.valueOf(pcOfThisInstruction));
-            System.out.println("ende");
-        }
+
 
 
     }
