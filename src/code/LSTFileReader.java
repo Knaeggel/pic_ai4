@@ -2,6 +2,7 @@ package code;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class LSTFileReader {
@@ -23,19 +24,25 @@ public class LSTFileReader {
 
     private static ArrayList<String> wholeLine = new ArrayList<>();
 
+    public static HashMap<Integer,Integer> lineNumber = new HashMap<>();
+
     public static void read(String src) {
 
         // File
         try {
             myObj = new File(src);
-
+            int counter = 0;
+            int key = 0;
             Scanner myReader = new Scanner(myObj);
             myReader.reset();
 
             while (myReader.hasNextLine()) {
+
                 String data = myReader.nextLine();
                 allLines.add(data);
                 if (!data.substring(0, 1).isBlank()) {
+
+                    lineNumber.put(key++,counter);
 
                     decodeList.add(Integer.decode("0x" + data.substring(5, 9)));
                     opcode.add(Integer.decode("0x" + data.substring(5, 7)));
@@ -53,6 +60,7 @@ public class LSTFileReader {
 
 
                 }
+                counter++;
             }
 
 

@@ -1,10 +1,6 @@
 package gui;
 
-import code.Decoder;
-import code.LSTFileReader;
-import code.Stack;
-import code.MyThread;
-import code.Ram;
+import code.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -104,7 +100,6 @@ public class MainFrame extends JFrame {
 
     MyThread t1;
 
-
     public MainFrame() {
 
         setContentPane(panel1);
@@ -143,6 +138,10 @@ public class MainFrame extends JFrame {
                 //Decoder.obj.ram.printZDCC();
                 Decoder.obj.ram.printGeneralAndMapped();
 
+                lstList.setSelectedIndex(LSTFileReader.lineNumber.get(Ram.programmCounter-1).intValue());
+                lstList.ensureIndexIsVisible(lstList.getSelectedIndex()+5);
+
+                lstList.setCellRenderer(new CellRenderer());
 
                 if (!selectedLST.isEmpty()) {
                     System.out.println(Ram.programmCounter);
