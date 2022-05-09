@@ -51,6 +51,9 @@ public class Decoder {
      */
     public void functionCalls(Integer i) {
 
+        obj.ram.updateBank();
+
+
         if (i < decodeList.size()) {
 
             int iOpCode = obj.alu.and(decodeList.get(i), 0xFF00);

@@ -84,12 +84,18 @@ public class Ram {
      * @param value
      */
     public void setRamAt(int position, int value) {
+        /*
         if (position <= 0x7F) {
             ram[0][position] = value;
         } else {
             int newPos = Decoder.obj.alu.and(position, 0b0111_1111);
             ram[1][newPos] = value;
         }
+         */
+        ram[bank][position] = value;
+    }
+    public void updateBank(){
+        bank = getSpecificStatusBit(5);
     }
 
     public int getRamAt(int pos) {
