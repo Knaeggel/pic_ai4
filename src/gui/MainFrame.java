@@ -173,7 +173,7 @@ public class MainFrame extends JFrame {
                 super.mouseClicked(e);
                 Color color = Color.red;
 
-                if (vergleichen(selectedLST,lstList.getSelectedIndex())) {
+                if (vergleichen(selectedLST, lstList.getSelectedIndex())) {
 
                     selectedLST.add(lstList.getSelectedIndex());
                     lstList.setSelectionForeground(color);

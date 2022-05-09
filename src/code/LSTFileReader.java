@@ -1,7 +1,6 @@
 package code;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,8 +15,13 @@ public class LSTFileReader {
     private static ArrayList<Integer> operationValue = new ArrayList<>();
     private static ArrayList<Integer> opcode = new ArrayList<>();
     private static ArrayList<Integer> last11Bits = new ArrayList<>();
-
     private static ArrayList<String> allLines = new ArrayList<>();
+
+    public static ArrayList<String> getWholeLine() {
+        return wholeLine;
+    }
+
+    private static ArrayList<String> wholeLine = new ArrayList<>();
 
     public static void read(String src) {
 
@@ -37,6 +41,7 @@ public class LSTFileReader {
                     opcode.add(Integer.decode("0x" + data.substring(5, 7)));
                     operationValue.add(Integer.decode("0x" + data.substring(7, 9)));
                     pcList.add(Integer.decode("0x" + data.substring(0, 4)));
+                    wholeLine.add(data);
 
                     Integer iVal = Integer.decode("0x" + data.substring(6, 9));
                     if (iVal > 0x7FF) {
@@ -47,10 +52,8 @@ public class LSTFileReader {
                     }
 
 
-
                 }
             }
-
 
 
             myReader.close();
@@ -93,6 +96,7 @@ public class LSTFileReader {
 
     /**
      * no safety if 12th bit is 1
+     *
      * @return the last 11 bits
      */
     public static ArrayList<Integer> getLast11Bits() {
