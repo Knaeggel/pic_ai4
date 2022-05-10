@@ -3,9 +3,6 @@ package code;
 import java.util.ArrayList;
 
 
-/**
- * TODO jede instruction per functioncall einzeln ausführen lassen
- */
 @SuppressWarnings({"RedundantIfStatement", "DuplicatedCode"})
 public class Decoder {
 
@@ -277,7 +274,7 @@ public class Decoder {
 
 
     /**
-     * TODO bearbeiten mit gotoSecondCycle
+     *
      *
      * @param i number of the next code segment
      */
@@ -305,8 +302,6 @@ public class Decoder {
      * into PC bits <10:0>. The upper bits of
      * the PC are loaded from PCLATH. CALL
      * is a two cycle instruction.
-     * TODO (PCLATH<4:3>) → PC<12:11> ?????????
-     * TODO cycles nachfragen
      *
      * @param i 11bit address
      */
@@ -402,7 +397,7 @@ public class Decoder {
      * contents of register ’f’. If ’d’ is 0 the result is
      * stored in the W register. If ’d’ is 1 the result is
      * stored back in register ’f’.
-     * TODO look if status bits are affected the right way
+     *
      *
      * @param i 7bit literal
      */
@@ -786,7 +781,7 @@ public class Decoder {
      * Flag. If ’d’ is 0 the result is placed in the
      * W register. If ’d’ is 1 the result is stored
      * back in register ’f’.
-     *
+     * TODO posible error output not right
      * @param f 7bit literal, 8th bit=destination
      */
     public void rlf(Integer f) {
@@ -816,7 +811,12 @@ public class Decoder {
         if (dest == 0) {
             Ram.wRegister = valueOnAdress;
         } else if (dest == 1) {
-            obj.ram.setRamAt(addressInRam, valueOnAdress);
+            if (addressInRam != 0) {
+                obj.ram.setRamAt(addressInRam, valueOnAdress);
+                //indirect addr.
+            } else if (addressInRam == 0) {
+                obj.ram.setRamAt(obj.ram.getFSR(), valueOnAdress);
+            }
         }
 
         //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
@@ -918,8 +918,7 @@ public class Decoder {
     }
 
     /**
-     * TODO bits richtig setzen
-     * he contents of register ’f’ are incremented. If ’d’ is 0 the result is placed in
+     * The contents of register ’f’ are incremented. If ’d’ is 0 the result is placed in
      * the W register. If ’d’ is 1 the result is
      * placed back in register ’f’.
      * If the result is not 0, the next instruction is
@@ -1029,7 +1028,7 @@ public class Decoder {
      * instruction is discarded, and a NOP is
      * executed instead, making this a 2TCY
      * instruction.
-     * TODO possible error
+     *
      *
      * @param f <0:6> register <7:9> selected bit to set
      */

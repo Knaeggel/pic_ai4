@@ -128,7 +128,6 @@ public class Ram {
 
     /**
      * cant be more than 31
-     * TODO should be set on the selected bank?
      *
      * @param i < 32
      */

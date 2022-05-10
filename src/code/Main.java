@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
 
 
-        Decoder.obj.decoder.decodeString(".\\res\\Sim7.txt");
+        Decoder.obj.decoder.decodeString(".\\res\\Sim6.txt");
 
         /*
         System.out.println(Integer.toBinaryString(0x9A));
