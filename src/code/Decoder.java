@@ -743,12 +743,23 @@ public class Decoder {
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
 
+        //idirect addr.
+        if (addressInRam == 0) {
+            valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+        }
+
         int result = obj.alu.xor(Ram.wRegister, valueOnAdress);
 
         if (dest == 0) {
             Ram.wRegister = result;
         } else if (dest == 1) {
-            obj.ram.setRamAt(addressInRam, result);
+            if (addressInRam != 0) {
+                obj.ram.setRamAt(addressInRam, result);
+
+                //idirect addr.
+            } else if (addressInRam == 0) {
+                obj.ram.setRamAt(obj.ram.getFSR(), result);
+            }
         }
 
         if (result == 0) {
