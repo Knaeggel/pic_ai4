@@ -763,6 +763,11 @@ public class Decoder {
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
 
+        //indirect addr.
+        if (addressInRam == 0) {
+            valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+        }
+
         int carry = obj.ram.getSpecificStatusBit(0);
 
         if (obj.ram.getNthBitOfValue(7, valueOnAdress) == 1) {
