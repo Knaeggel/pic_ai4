@@ -178,6 +178,11 @@ public class Ram {
 
     }
 
+    public int getSpecificIntconBit(int n) {
+        return ((ram[bank][0x0B] >> (n /*-1*/)) & 1);
+
+    }
+
     /**
      * @param n the specific bits value (starts with 0)
      * @return value of the n-th bit

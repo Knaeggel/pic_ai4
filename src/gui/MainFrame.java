@@ -92,6 +92,14 @@ public class MainFrame extends JFrame {
     private JScrollPane b0Pannel;
     private JScrollPane b1Pannel;
     private JPanel Timing;
+    private JLabel rifValue;
+    private JLabel ifValue;
+    private JLabel tifValue;
+    private JLabel rieValue;
+    private JLabel ieValue;
+    private JLabel tieValue;
+    private JLabel eieValue;
+    private JLabel gieValue;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
     private static ArrayList<String> allCommands = LSTFileReader.getCommands();
@@ -138,8 +146,8 @@ public class MainFrame extends JFrame {
                 //Decoder.obj.ram.printZDCC();
                 Decoder.obj.ram.printGeneralAndMapped();
 
-                lstList.setSelectedIndex(LSTFileReader.lineNumber.get(Ram.programmCounter-1).intValue());
-                lstList.ensureIndexIsVisible(lstList.getSelectedIndex()+5);
+                lstList.setSelectedIndex(LSTFileReader.lineNumber.get(Ram.programmCounter - 1).intValue());
+                lstList.ensureIndexIsVisible(lstList.getSelectedIndex() + 5);
 
                 lstList.setCellRenderer(new CellRenderer());
 
@@ -238,6 +246,15 @@ public class MainFrame extends JFrame {
         ps2Value.setText(Decoder.obj.ram.getSpecificOptionBit(2) + "");
         ps1Value.setText(Decoder.obj.ram.getSpecificOptionBit(1) + "");
         ps0Value.setText(Decoder.obj.ram.getSpecificOptionBit(0) + "");
+
+        rifValue.setText(Decoder.obj.ram.getSpecificIntconBit(0) + "");
+        ifValue.setText(Decoder.obj.ram.getSpecificIntconBit(1) + "");
+        tifValue.setText(Decoder.obj.ram.getSpecificIntconBit(2) + "");
+        rieValue.setText(Decoder.obj.ram.getSpecificIntconBit(3) + "");
+        ieValue.setText(Decoder.obj.ram.getSpecificIntconBit(4) + "");
+        tieValue.setText(Decoder.obj.ram.getSpecificIntconBit(5) + "");
+        eieValue.setText(Decoder.obj.ram.getSpecificIntconBit(6) + "");
+        gieValue.setText(Decoder.obj.ram.getSpecificIntconBit(7) + "");
 
     }
 

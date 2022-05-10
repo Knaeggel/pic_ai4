@@ -690,7 +690,7 @@
                   <text value="IF"/>
                 </properties>
               </component>
-              <component id="929ce" class="javax.swing.JLabel">
+              <component id="929ce" class="javax.swing.JLabel" binding="gieValue">
                 <constraints>
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -698,7 +698,7 @@
                   <text value="0"/>
                 </properties>
               </component>
-              <component id="44fac" class="javax.swing.JLabel">
+              <component id="44fac" class="javax.swing.JLabel" binding="eieValue">
                 <constraints>
                   <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -706,7 +706,7 @@
                   <text value="0"/>
                 </properties>
               </component>
-              <component id="7ea52" class="javax.swing.JLabel">
+              <component id="7ea52" class="javax.swing.JLabel" binding="tieValue">
                 <constraints>
                   <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -714,7 +714,7 @@
                   <text value="0"/>
                 </properties>
               </component>
-              <component id="28206" class="javax.swing.JLabel">
+              <component id="28206" class="javax.swing.JLabel" binding="ieValue">
                 <constraints>
                   <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -722,7 +722,7 @@
                   <text value="0"/>
                 </properties>
               </component>
-              <component id="d0b67" class="javax.swing.JLabel">
+              <component id="d0b67" class="javax.swing.JLabel" binding="rieValue">
                 <constraints>
                   <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -730,7 +730,7 @@
                   <text value="0"/>
                 </properties>
               </component>
-              <component id="996ba" class="javax.swing.JLabel">
+              <component id="996ba" class="javax.swing.JLabel" binding="tifValue">
                 <constraints>
                   <grid row="1" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -738,7 +738,7 @@
                   <text value="0"/>
                 </properties>
               </component>
-              <component id="a5c0d" class="javax.swing.JLabel">
+              <component id="a5c0d" class="javax.swing.JLabel" binding="ifValue">
                 <constraints>
                   <grid row="1" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -746,7 +746,7 @@
                   <text value="0"/>
                 </properties>
               </component>
-              <component id="a26f8" class="javax.swing.JLabel">
+              <component id="a26f8" class="javax.swing.JLabel" binding="rifValue">
                 <constraints>
                   <grid row="1" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
