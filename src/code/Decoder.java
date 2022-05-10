@@ -426,7 +426,11 @@ public class Decoder {
         if (dest == 0) {
             Ram.wRegister = resultOfAdd;
         } else if (dest == 1) {
-            obj.ram.setRamAt(addressInRam, resultOfAdd);
+            if (addressInRam != 0) {
+                obj.ram.setRamAt(addressInRam, resultOfAdd);
+            } else if (addressInRam == 0) {
+                obj.ram.setRamAt(obj.ram.getFSR(), resultOfAdd);
+            }
         }
 
         //obj.ram.affectStatusBits(b, resultOfAdd);
@@ -568,7 +572,12 @@ public class Decoder {
         if (dest == 0) {
             Ram.wRegister = valueOnAdress;
         } else if (dest == 1) {
-            obj.ram.setRamAt(addressInRam, valueOnAdress);
+            if (addressInRam != 0) {
+                obj.ram.setRamAt(addressInRam, valueOnAdress);
+                //indirect addr.
+            } else if (addressInRam == 0) {
+                obj.ram.setRamAt(obj.ram.getFSR(), valueOnAdress);
+            }
         }
         if (valueOnAdress == 0) {
             obj.ram.setZeroBit(true);
@@ -696,6 +705,11 @@ public class Decoder {
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
 
+        //indirect addr.
+        if (addressInRam == 0) {
+            valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+        }
+
         int lownibble = valueOnAdress & 0x0F;
         int uppernibble = (valueOnAdress & 0XF0) >> 4;
 
@@ -705,7 +719,13 @@ public class Decoder {
         if (dest == 0) {
             Ram.wRegister = result;
         } else if (dest == 1) {
-            obj.ram.setRamAt(addressInRam, result);
+            if (addressInRam != 0) {
+                obj.ram.setRamAt(addressInRam, result);
+                //indirect addr.
+            } else if (addressInRam == 0) {
+                obj.ram.setRamAt(obj.ram.getFSR(), result);
+            }
+
         }
         System.out.println("swapf");
     }
@@ -830,7 +850,13 @@ public class Decoder {
         if (dest == 0) {
             Ram.wRegister = valueOnAdress;
         } else if (dest == 1) {
-            obj.ram.setRamAt(addressInRam, valueOnAdress);
+            if (addressInRam != 0) {
+                obj.ram.setRamAt(addressInRam, valueOnAdress);
+                //indirect addr.
+            } else if (addressInRam == 0) {
+                obj.ram.setRamAt(obj.ram.getFSR(), valueOnAdress);
+            }
+
         }
 
         //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
@@ -948,7 +974,7 @@ public class Decoder {
         obj.ram.setRamAt(addressInRam, valueOnAdress);
 
         //indirect addr.
-        if (addressInRam == 0){
+        if (addressInRam == 0) {
             obj.ram.setRamAt(obj.ram.getFSR(), valueOnAdress);
         }
 
