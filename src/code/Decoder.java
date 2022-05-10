@@ -898,7 +898,7 @@ public class Decoder {
             }
             */
 
-            //TODO remove all cycles between goto and adress of goto
+            //TODO remove all cycles between goto and adress of goto change i
             for (int i = Ram.programmCounter; i > 1; i--) {
                 if (obj.programMemory.checkCycle(i)) {
                     obj.programMemory.cycleList.remove(Integer.valueOf(i));
@@ -1074,7 +1074,7 @@ public class Decoder {
         }
 
         //TODO delete goto in cyclelist
-        if (obj.ram.getNthBitOfValue(bitToClear - 1, valueOnAdress) == 0){
+        if (obj.ram.getNthBitOfValue(bitToClear - 1, valueOnAdress) == 0) {
 
         }
 
