@@ -1042,6 +1042,10 @@ public class Decoder {
         if (addressInRam == 0) {
             valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
         }
+        //TODO delete goto in cyclelist
+        if (obj.ram.getNthBitOfValue(bitToCheck - 1, valueOnAdress) == 0){
+
+        }
 
         if ((obj.ram.getNthBitOfValue(bitToCheck - 1, valueOnAdress) == 0)) {
             obj.programMemory.skipNextInstruction();
@@ -1067,6 +1071,11 @@ public class Decoder {
         //indirecr addr.
         if (addressInRam == 0) {
             valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+        }
+
+        //TODO delete goto in cyclelist
+        if (obj.ram.getNthBitOfValue(bitToClear - 1, valueOnAdress) == 0){
+
         }
 
         if (obj.ram.getNthBitOfValue(bitToClear - 1, valueOnAdress) == 1) {
