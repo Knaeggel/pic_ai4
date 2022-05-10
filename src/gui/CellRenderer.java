@@ -12,10 +12,13 @@ public class CellRenderer implements ListCellRenderer {
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        if(index == LSTFileReader.lineNumber.get(Ram.programmCounter-1).intValue()) {
-            defaultCell.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).setBackground(Color.LIGHT_GRAY);
-        }else{
-            defaultCell.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).setBackground(Color.WHITE);
+        //TODO gui bug
+        if (Ram.programmCounter < LSTFileReader.getPcList().size()){
+            if(index == LSTFileReader.lineNumber.get(Ram.programmCounter).intValue()) {
+                defaultCell.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).setBackground(Color.LIGHT_GRAY);
+            }else{
+                defaultCell.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus).setBackground(Color.WHITE);
+            }
         }
         return defaultCell;
     }
