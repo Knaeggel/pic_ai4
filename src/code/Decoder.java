@@ -383,7 +383,7 @@ public class Decoder {
     /**
      * Move data from W register to register
      * 'f' in the ram section
-     * TODO indirect addr.
+     *
      * @param f 7bit literal
      */
     public void movWF(Integer f) {
@@ -391,7 +391,9 @@ public class Decoder {
         if (f != 0) {
             obj.ram.setRamAt(f, Ram.wRegister);
         } else if (f == 0) {
-            obj.ram.setRamAt(obj.ram.getFSR() ,Ram.wRegister);
+            //TODO indirect addr.
+
+            obj.ram.setRamAt(obj.ram.getFSR(), Ram.wRegister);
         }
         System.out.println("movwf saved in " + String.format("0x%02X", f));
     }
@@ -402,7 +404,7 @@ public class Decoder {
      * stored in the W register. If ’d’ is 1 the result is
      * stored back in register ’f’.
      * TODO look if status bits are affected the right way
-     * TODO indirect addr.
+     *
      * @param i 7bit literal
      */
     public void addWF(Integer i) {
@@ -413,6 +415,7 @@ public class Decoder {
         if (addressInRam != 0) {
             valueOnAdress = obj.ram.getRamAt(addressInRam);
         } else if (addressInRam == 0) {
+            //TODO indirect addr.
             valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
         }
 
