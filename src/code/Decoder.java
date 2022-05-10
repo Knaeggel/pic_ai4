@@ -931,10 +931,22 @@ public class Decoder {
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
         int bitToSet = obj.alu.getIntValFromBitToBit(8, 10, f);
 
+        //indirect addr.
+        if (addressInRam == 0) {
+            valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+            bitToSet = obj.alu.getIntValFromBitToBit(8, 10, f);
+        }
+
         if (obj.ram.getNthBitOfValue(bitToSet, valueOnAdress) != 1) {
             valueOnAdress = obj.ram.setBit(bitToSet, valueOnAdress, 1);
         }
         obj.ram.setRamAt(addressInRam, valueOnAdress);
+
+        //indirect addr.
+        if (addressInRam == 0){
+            obj.ram.setRamAt(obj.ram.getFSR(), valueOnAdress);
+        }
+
         System.out.println("bsf newVal: " + String.format("0x%02X", valueOnAdress));
     }
 
