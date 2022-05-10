@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * TODO jede instruction per functioncall einzeln ausführen lassen
  */
-@SuppressWarnings("RedundantIfStatement")
+@SuppressWarnings({"RedundantIfStatement", "DuplicatedCode"})
 public class Decoder {
 
     public static AllObjects obj = AllObjects.getAllObjectsInstance();
@@ -391,8 +391,7 @@ public class Decoder {
         if (f != 0) {
             obj.ram.setRamAt(f, Ram.wRegister);
         } else if (f == 0) {
-            //TODO indirect addr.
-
+            //indirect addr.
             obj.ram.setRamAt(obj.ram.getFSR(), Ram.wRegister);
         }
         System.out.println("movwf saved in " + String.format("0x%02X", f));
@@ -415,7 +414,7 @@ public class Decoder {
         if (addressInRam != 0) {
             valueOnAdress = obj.ram.getRamAt(addressInRam);
         } else if (addressInRam == 0) {
-            //TODO indirect addr.
+            //indirect addr.
             valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
         }
 
@@ -793,7 +792,14 @@ public class Decoder {
     public void rrf(Integer f) {
         int dest = obj.ram.getNthBitOfValue(7, f);
         int addressInRam = obj.alu.and(f, 0b0111_1111);
-        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+        int valueOnAdress = 0;
+        if (addressInRam != 0) {
+            valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+            //indirect addr.
+        } else if (addressInRam == 0) {
+            valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+        }
 
         int carry = obj.ram.getSpecificStatusBit(0);
 
