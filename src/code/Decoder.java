@@ -1027,6 +1027,11 @@ public class Decoder {
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
         int bitToCheck = obj.alu.getIntValFromBitToBit(8, 10, f);
 
+        //indirect addr.
+        if (addressInRam == 0) {
+            valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+        }
+
         if ((obj.ram.getNthBitOfValue(bitToCheck - 1, valueOnAdress) == 0)) {
             obj.programMemory.skipNextInstruction();
 
@@ -1047,6 +1052,11 @@ public class Decoder {
         int addressInRam = obj.alu.and(f, 0b0111_1111);
         int valueOnAdress = obj.ram.getRamAt(addressInRam);
         int bitToClear = obj.alu.getIntValFromBitToBit(8, 10, f);
+
+        //indirecr addr.
+        if (addressInRam == 0) {
+            valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+        }
 
         if (obj.ram.getNthBitOfValue(bitToClear - 1, valueOnAdress) == 1) {
             obj.programMemory.skipNextInstruction();
