@@ -551,7 +551,14 @@ public class Decoder {
     public void incf(Integer f) {
         int dest = obj.ram.getNthBitOfValue(7, f);
         int addressInRam = obj.alu.and(f, 0b0111_1111);
-        int valueOnAdress = obj.ram.getRamAt(addressInRam);
+        int valueOnAdress = 0;
+        if (addressInRam != 0) {
+            valueOnAdress = obj.ram.getRamAt(addressInRam);
+
+            //indirect addr.
+        } else if (addressInRam == 0) {
+            valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
+        }
 
         valueOnAdress += 1;
         if (valueOnAdress > 0xFF) {
