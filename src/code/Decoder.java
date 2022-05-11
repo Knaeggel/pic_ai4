@@ -166,6 +166,9 @@ public class Decoder {
             if (rb0Int == 1) {
                 executeRB0Interrupt();
             }
+            if (obj.mainFrame.RB4toRB7Checked()){
+                executeRB4toRB7Interrupt();
+            }
         }
 
     }
@@ -185,7 +188,23 @@ public class Decoder {
 
     public void executeRB0Interrupt() {
         if (obj.ram.getSpecificPortBBit(0) == 1) {
+            obj.mainFrame.resetUsedPortBPin(0);
             obj.ram.setINTF(true);
+            if (blockPushOnStack == false) {
+                obj.stack.pushOnStack(Ram.programmCounter +2);
+                blockPushOnStack = true;
+            }
+            Ram.programmCounter = 4;
+        }
+    }
+
+    public void executeRB4toRB7Interrupt() {
+        if (Decoder.obj.ram.getSpecificIntconBit(3) == 1) {
+            obj.mainFrame.resetUsedPortBPin(4);
+            obj.mainFrame.resetUsedPortBPin(5);
+            obj.mainFrame.resetUsedPortBPin(6);
+            obj.mainFrame.resetUsedPortBPin(7);
+            obj.ram.setRBIF(true);
             if (blockPushOnStack == false) {
                 obj.stack.pushOnStack(Ram.programmCounter +2);
                 blockPushOnStack = true;

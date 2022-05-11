@@ -248,6 +248,32 @@ public class MainFrame extends JFrame {
         updateSFRBit();
     }
 
+    public boolean RB4toRB7Checked() {
+        if (pinB4.isSelected() || pinB5.isSelected() || pinB6.isSelected() || pinB7.isSelected()) {
+            return true;
+        }
+        return false;
+    }
+
+    public void resetUsedPortBPin(int pin) {
+        if (pin == 0) {
+            pinB0.setSelected(false);
+        }
+        if (pin == 4) {
+            pinB4.setSelected(false);
+        }
+        if (pin == 5) {
+            pinB5.setSelected(false);
+        }
+        if (pin == 6) {
+            pinB6.setSelected(false);
+        }
+        if (pin == 7) {
+            pinB7.setSelected(false);
+        }
+
+    }
+
     /**
      * RBPU: PORTB Pull-up Enable bit
      * 1 = PORTB pull-ups are disabled
@@ -271,10 +297,23 @@ public class MainFrame extends JFrame {
             pinB1.setEnabled(true);
             pinB2.setEnabled(true);
             pinB3.setEnabled(true);
-            pinB4.setEnabled(true);
-            pinB5.setEnabled(true);
-            pinB6.setEnabled(true);
-            pinB7.setEnabled(true);
+
+            /**
+             * bit 3: RBIE: RB Port Change Interrupt Enable bit
+             * 1 = Enables the RB port change interrupt
+             * 0 = Disables the RB port change interrupt
+             */
+            if (Decoder.obj.ram.getSpecificIntconBit(3) == 1) {
+                pinB4.setEnabled(true);
+                pinB5.setEnabled(true);
+                pinB6.setEnabled(true);
+                pinB7.setEnabled(true);
+            } else if (Decoder.obj.ram.getSpecificIntconBit(3) == 0) {
+                pinB4.setEnabled(false);
+                pinB5.setEnabled(false);
+                pinB6.setEnabled(false);
+                pinB7.setEnabled(false);
+            }
             return true;
         }
         return false;

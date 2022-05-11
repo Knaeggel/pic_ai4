@@ -364,6 +364,27 @@ public class Ram {
         setIntcon(set);
     }
 
+    /**
+     * RBIF: RB Port Change Interrupt Flag bit
+     * 1 = When at least one of the RB7:RB4 pins changed state (must be cleared in software)
+     * 0 = None of the RB7:RB4 pins have changed state
+     *
+     * @param b flag
+     */
+    public void setRBIF(boolean b) {
+        int set = getIntcon();
+        if (b) {
+            if (getSpecificIntconBit(0) == 0) {
+                set += 0b1;
+            }
+        } else {
+            if (getSpecificIntconBit(0) == 1) {
+                set -= 0b1;
+            }
+        }
+        setIntcon(set);
+    }
+
 
     public int getSpecificPortBBit(int n) {
         //return ((ram[bank][3] >> (n /*-1*/)) & 1);
