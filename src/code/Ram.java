@@ -308,7 +308,7 @@ public class Ram {
 
     public void incrementTMR0() {
         ram[0][0x01]++;
-        if (ram[0][0x01]>0xFF){
+        if (ram[0][0x01]>=0xFF){ //TODO look if >= is right
             ram[0][0x01]=0;
             Decoder.obj.ram.setZeroBit(true);
         }

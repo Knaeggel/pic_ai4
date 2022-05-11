@@ -64,11 +64,12 @@ public class Decoder {
 
             System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
 
-
+            //timer
             obj.ram.prescalerValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
-
             obj.timer.incrementTimer0(obj.ram.prescalerValue);
+
             Ram.programmCounter++;
+
             switch (iOpCode) {
                 case 0b0011_0000_0000_0000 -> movLW(iOpValue);
                 case 0b0011_1001_0000_0000 -> andLW(iOpValue);
@@ -145,6 +146,8 @@ public class Decoder {
                 default -> System.out.println("Default");
             }
 
+
+            Timer.cycle++;
 
         }
     }
@@ -282,12 +285,20 @@ public class Decoder {
      */
     public void goTO(Integer i, String s) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
+
+        Timer.timerIncrementCount--;
+
         if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             Ram.programmCounter = i;
             Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
+
+
+            if (s.contains("goto ende           ;")){
+                Timer.disableTimer = true;
+            }
 
             //TODO look if ok
             //obj.programMemory.cycleList.add(pcOfThisInstruction);
@@ -311,6 +322,7 @@ public class Decoder {
      */
     public void call(Integer i) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
+        Timer.timerIncrementCount--;
         if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             obj.stack.pushOnStack(Ram.programmCounter);
             Ram.programmCounter = i;
@@ -338,6 +350,7 @@ public class Decoder {
     public void retLW(Integer i) {
 
 
+        Timer.timerIncrementCount--;
         int pcOfThisInstruction = Ram.programmCounter - 1;
         if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             Ram.wRegister = i;
@@ -361,6 +374,7 @@ public class Decoder {
      * is a two cycle instruction.
      */
     public void returnToTos() {
+        Timer.timerIncrementCount--;
         Integer[] localStack = obj.stack.getStack();
         //System.out.println("next to call " +Ram.programmCounter);
 
