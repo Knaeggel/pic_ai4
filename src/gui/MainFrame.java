@@ -146,7 +146,7 @@ public class MainFrame extends JFrame {
                 //Decoder.obj.ram.printZDCC();
                 Decoder.obj.ram.printGeneralAndMapped();
 
-                lstList.setSelectedIndex(LSTFileReader.lineNumber.get(Ram.programmCounter - 1).intValue());
+                lstList.setSelectedIndex(LSTFileReader.lineNumber.get(Ram.programmCounter).intValue());
                 lstList.ensureIndexIsVisible(lstList.getSelectedIndex() + 5);
 
                 lstList.setCellRenderer(new CellRenderer());

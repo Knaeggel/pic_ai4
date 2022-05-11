@@ -8,6 +8,7 @@ public class Timer {
     public void incrementTimer0(int prescalerValue) {
 
         if (initPrescalerVal != prescalerValue) {
+            Decoder.obj.ram.setTMR0(0);
             initPrescalerVal = prescalerValue;
             timerIncrementCount = prescalerValue;
         }

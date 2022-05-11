@@ -18,8 +18,6 @@ public class Ram {
     public static int prescalerValue;
 
 
-
-
     public Ram() {
         cycles = 0;
         prescalerValue = 256;
@@ -43,7 +41,7 @@ public class Ram {
     }
 
     public void printGeneralAndMapped() {
-        System.out.println("\nwRegister: " + String.format("0x%02X", Ram.wRegister)+ "\n");
+        System.out.println("\nwRegister: " + String.format("0x%02X", Ram.wRegister) + "\n");
 
         if (ram[0][0] != 0) {
             System.out.println("Indirect addr. bank 0: " +
@@ -71,7 +69,7 @@ public class Ram {
         System.out.print("\nVal at bank 1 and adress:");
         for (int i = 0x0C; i < 0x4F; i++) {
             if (ram[1][i] != 0) {
-                System.out.print( String.format(" 0x%02X = ", i) + String.format("0x%02X,", ram[1][i]));
+                System.out.print(String.format(" 0x%02X = ", i) + String.format("0x%02X,", ram[1][i]));
             }
         }
         System.out.println("\n");
@@ -96,7 +94,8 @@ public class Ram {
          */
         ram[bank][position] = value;
     }
-    public void updateBank(){
+
+    public void updateBank() {
         bank = getSpecificStatusBit(5);
     }
 
@@ -287,28 +286,38 @@ public class Ram {
 
     }
 
-    public int getFSR(){
+    public int getFSR() {
         return ram[bank][0x04];
     }
+
     public int getPCL() {
         return ram[bank][0x02];
     }
+
     public int getOption() {
         return ram[1][0x01];
     }
+
     public int getTMR0() {
         return ram[0][0x01];
     }
 
+    public void setTMR0(int i) {
+        ram[0][0x01] = i;
+    }
+
     public void incrementTMR0() {
         ram[0][0x01]++;
+        if (ram[0][0x01]>0xFF){
+            ram[0][0x01]=0;
+            Decoder.obj.ram.setZeroBit(true);
+        }
     }
 
     public void setIntcon(int i) {
         ram[0][0x0B] = i;
         ram[1][0x0B] = i;
     }
-
 
 
 }

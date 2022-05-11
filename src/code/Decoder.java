@@ -58,11 +58,17 @@ public class Decoder {
             int iWholeInstruction = obj.alu.and(decodeList.get(i), 0xFFFF);
             String endlessLoop = allLines.get(i);
 
+            if (iOpValue == 0) {
+                iOpValue = obj.ram.getFSR();
+            }
 
             System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
+
+
+            obj.ram.prescalerValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
+
+            obj.timer.incrementTimer0(obj.ram.prescalerValue);
             Ram.programmCounter++;
-
-
             switch (iOpCode) {
                 case 0b0011_0000_0000_0000 -> movLW(iOpValue);
                 case 0b0011_1001_0000_0000 -> andLW(iOpValue);
@@ -139,9 +145,9 @@ public class Decoder {
                 default -> System.out.println("Default");
             }
 
-            obj.ram.prescalerValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
+            //TODO indirect addr. fix destination bits sim6
+            //TODO inc timer bevore switch
 
-            obj.timer.incrementTimer0(obj.ram.prescalerValue);
         }
     }
 
@@ -274,8 +280,6 @@ public class Decoder {
 
 
     /**
-     *
-     *
      * @param i number of the next code segment
      */
     public void goTO(Integer i, String s) {
@@ -286,7 +290,7 @@ public class Decoder {
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
-            obj.programMemory.cycleList.add(pcOfThisInstruction);
+            //obj.programMemory.cycleList.add(pcOfThisInstruction);
         } else {
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 2");
         }
@@ -397,7 +401,6 @@ public class Decoder {
      * contents of register ’f’. If ’d’ is 0 the result is
      * stored in the W register. If ’d’ is 1 the result is
      * stored back in register ’f’.
-     *
      *
      * @param i 7bit literal
      */
@@ -782,6 +785,7 @@ public class Decoder {
      * W register. If ’d’ is 1 the result is stored
      * back in register ’f’.
      * TODO posible error output not right
+     *
      * @param f 7bit literal, 8th bit=destination
      */
     public void rlf(Integer f) {
@@ -1029,7 +1033,6 @@ public class Decoder {
      * executed instead, making this a 2TCY
      * instruction.
      *
-     *
      * @param f <0:6> register <7:9> selected bit to set
      */
     public void btfsc(Integer f) {
@@ -1040,10 +1043,6 @@ public class Decoder {
         //indirect addr.
         if (addressInRam == 0) {
             valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
-        }
-        //TODO delete goto in cyclelist
-        if (obj.ram.getNthBitOfValue(bitToCheck - 1, valueOnAdress) == 0){
-
         }
 
         if ((obj.ram.getNthBitOfValue(bitToCheck - 1, valueOnAdress) == 0)) {
@@ -1072,11 +1071,7 @@ public class Decoder {
             valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
         }
 
-        //TODO delete goto in cyclelist
-        if (obj.ram.getNthBitOfValue(bitToClear - 1, valueOnAdress) == 0) {
-
-        }
-
+        //TODO doesnt skip in programm6 ?
         if (obj.ram.getNthBitOfValue(bitToClear - 1, valueOnAdress) == 1) {
             obj.programMemory.skipNextInstruction();
 
