@@ -33,6 +33,9 @@ public class Ram {
         setIntcon(0b0000_0000);
     }
 
+    /**
+     * debug
+     */
     public void printZDCC() {
         System.out.print("DC=" + Decoder.obj.ram.getSpecificStatusBit(1));
         System.out.print(" C=" + Decoder.obj.ram.getSpecificStatusBit(0));
@@ -40,6 +43,10 @@ public class Ram {
         System.out.println(" Z=" + Decoder.obj.ram.getSpecificStatusBit(2));
     }
 
+    /**
+     * prints general and mapped register
+     * debug
+     */
     public void printGeneralAndMapped() {
         System.out.println("\nwRegister: " + String.format("0x%02X", Ram.wRegister) + "\n");
 
@@ -91,11 +98,18 @@ public class Ram {
         ram[bank][position] = value;
     }
 
+    /**
+     * updates bank
+     */
     public void updateBank() {
         bank = getSpecificStatusBit(5);
     }
 
 
+    /**
+     * @param pos position in ram
+     * @return value at position
+     */
     public int getRamAt(int pos) {
         if (pos <= 0x7F) {
             return ram[0][pos];
@@ -105,6 +119,9 @@ public class Ram {
         }
     }
 
+    /**
+     * @return assigned prescaler value
+     */
     public int getPrescalerValue() {
         return prescalerValue;
     }
@@ -113,11 +130,17 @@ public class Ram {
         Ram.prescalerValue = prescalerValue;
     }
 
+    /**
+     * @param i new value
+     */
     public void setStatus(Integer i) {
         ram[0][3] = i;
         ram[1][3] = i;
     }
 
+    /**
+     * @return status of selected bank
+     */
     public Integer getStatus() {
         return ram[bank][3];
     }
@@ -136,6 +159,11 @@ public class Ram {
         return ram[bank][0xA];
     }
 
+    /**
+     * sets option register
+     *
+     * @param i new value
+     */
     public void setOption(Integer i) {
         ram[1][0x01] = i;
     }
@@ -169,11 +197,19 @@ public class Ram {
         return getSpecificGenericBit(n, 3);
     }
 
+    /**
+     * @param n bit
+     * @return n-th bit of Option
+     */
     public int getSpecificOptionBit(int n) {
         return ((ram[1][0x01] >> (n /*-1*/)) & 1);
 
     }
 
+    /**
+     * @param n bit
+     * @return n-th bit of intcon
+     */
     public int getSpecificIntconBit(int n) {
         return ((ram[bank][0x0B] >> (n /*-1*/)) & 1);
 
@@ -283,26 +319,46 @@ public class Ram {
 
     }
 
+    /**
+     * @return FSR value
+     */
     public int getFSR() {
         return ram[bank][0x04];
     }
 
+    /**
+     * @return PCL value
+     */
     public int getPCL() {
         return ram[bank][0x02];
     }
 
+    /**
+     * @return Option value
+     */
     public int getOption() {
         return ram[1][0x01];
     }
 
+    /**
+     * @return Timer0 value
+     */
     public int getTMR0() {
         return ram[0][0x01];
     }
 
+    /**
+     * sets Timer0
+     *
+     * @param i new Value
+     */
     public void setTMR0(int i) {
         ram[0][0x01] = i;
     }
 
+    /**
+     * increments Timer0
+     */
     public void incrementTMR0() {
         ram[0][0x01]++;
         if (ram[0][0x01] >= 0xFF) { //TODO look if >= is right
@@ -311,6 +367,11 @@ public class Ram {
         }
     }
 
+    /**
+     * sets Intcon value
+     *
+     * @param i new value
+     */
     public void setIntcon(int i) {
         ram[0][0x0B] = i;
         ram[1][0x0B] = i;
@@ -386,11 +447,29 @@ public class Ram {
     }
 
 
+    /**
+     * gets a specific bit from PortB
+     *
+     * @param n bit
+     * @return 1 if set 0 if clear
+     */
     public int getSpecificPortBBit(int n) {
         //return ((ram[bank][3] >> (n /*-1*/)) & 1);
         return getSpecificGenericBit(n, 0x06);
     }
 
+    /**
+     * sets the value of PortB
+     *
+     * @param b0 bit 0 val
+     * @param b1 bit 1 val
+     * @param b2 bit 2 val
+     * @param b3 bit 3 val
+     * @param b4 bit 4 val
+     * @param b5 bit 5 val
+     * @param b6 bit 6 val
+     * @param b7 bit 7 val
+     */
     public void setPortB(boolean b0, boolean b1, boolean b2, boolean b3, boolean b4, boolean b5, boolean b6, boolean b7) {
         int set = getPortB();
         if (b0) {

@@ -14,12 +14,12 @@ public class Stack {
     static int pointer = 0;
 
     public Stack() {
-         stack = new Integer[8];
+        stack = new Integer[8];
     }
 
-    public void printStack(){
+    public void printStack() {
         for (Integer integer : stack) {
-            System.out.println(String.format("0x%02X",integer));
+            System.out.println(String.format("0x%02X", integer));
         }
     }
 
@@ -28,7 +28,6 @@ public class Stack {
     }
 
     /**
-     *
      * @param iVal value to push on stack
      */
     public void pushOnStack(Integer iVal) {
@@ -39,6 +38,11 @@ public class Stack {
         }
     }
 
+    /**
+     * deletes tos and returns that value
+     *
+     * @return top of the stack
+     */
     public Integer pop() {
         Integer iRet = 0;
         pointer--;

@@ -15,14 +15,6 @@ public class ALU {
             bRet = false;
         }
 
-        /*
-        wRegBeforeSub = xor(wRegBeforeSub, 0xFF) + 1;
-        if (((i & 0xF) + (wRegBeforeSub & 0xF) ) > 15) {
-            bRet = true;
-        } else {
-            bRet = false;
-        }
-        */
         return bRet;
     }
 
@@ -38,7 +30,7 @@ public class ALU {
     /**
      * 8Bit compliments of two
      *
-     * @param i
+     * @param i complements of two
      * @return
      */
     public int getTwoCompliment(int i) {
@@ -63,9 +55,8 @@ public class ALU {
     }
 
     /**
-     *
      * @param startBit startbit
-     * @param endBit includingEndbit
+     * @param endBit   includingEndbit
      * @param inputVal instructioonVal
      * @return added number
      */

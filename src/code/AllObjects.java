@@ -27,6 +27,11 @@ public class AllObjects {
         timer = new Timer();
     }
 
+    /**
+     * creates singleton instance of AllObjects
+     *
+     * @return singleton instance
+     */
     public static AllObjects getAllObjectsInstance() {
         if (obj == null) {
             obj = new AllObjects();

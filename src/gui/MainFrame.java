@@ -239,6 +239,9 @@ public class MainFrame extends JFrame {
         }
     };
 
+    /**
+     * TODO addidtions need to be made
+     */
     public void updateGui() {
         if (checkEnablePortB() == true) {
             Decoder.obj.ram.setPortB(pinB0.isSelected(), pinB1.isSelected(), pinB2.isSelected(), pinB3.isSelected(), pinB4.isSelected(), pinB5.isSelected(), pinB6.isSelected(), pinB7.isSelected());
@@ -248,6 +251,10 @@ public class MainFrame extends JFrame {
         updateSFRBit();
     }
 
+    /**
+     * checks if one of the pins from RB4 to RB7 is checked
+     * @return true if one is checked
+     */
     public boolean RB4toRB7Checked() {
         if (pinB4.isSelected() || pinB5.isSelected() || pinB6.isSelected() || pinB7.isSelected()) {
             return true;
@@ -255,6 +262,11 @@ public class MainFrame extends JFrame {
         return false;
     }
 
+    /**
+     * resets a selected pin
+     *
+     * @param pin pin you want to reset
+     */
     public void resetUsedPortBPin(int pin) {
         if (pin == 0) {
             pinB0.setSelected(false);

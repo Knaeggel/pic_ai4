@@ -24,8 +24,13 @@ public class LSTFileReader {
 
     private static ArrayList<String> wholeLine = new ArrayList<>();
 
-    public static HashMap<Integer,Integer> lineNumber = new HashMap<>();
+    public static HashMap<Integer, Integer> lineNumber = new HashMap<>();
 
+    /**
+     * reads simulator files line by line
+     *
+     * @param src source sting of file
+     */
     public static void read(String src) {
 
         // File
@@ -42,7 +47,7 @@ public class LSTFileReader {
                 allLines.add(data);
                 if (!data.substring(0, 1).isBlank()) {
 
-                    lineNumber.put(key++,counter);
+                    lineNumber.put(key++, counter);
 
                     decodeList.add(Integer.decode("0x" + data.substring(5, 9)));
                     opcode.add(Integer.decode("0x" + data.substring(5, 7)));

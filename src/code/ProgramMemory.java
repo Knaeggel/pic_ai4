@@ -36,6 +36,9 @@ public class ProgramMemory {
         return bRet;
     }
 
+    /**
+     * skips next instruction
+     */
     public void skipNextInstruction() {
         Ram.programmCounter++;
     }

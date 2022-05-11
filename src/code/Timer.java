@@ -8,6 +8,11 @@ public class Timer {
 
     public static boolean timerInterrupt = false;
 
+    /**
+     * icrements TMR0 considering the assigned prescaler value
+     *
+     * @param prescalerValue prescaling value
+     */
     public void incrementTimer0(int prescalerValue) {
 
         if (disableTimer == false) {
@@ -34,7 +39,6 @@ public class Timer {
             }
         }
     }
-
 
 
 }
