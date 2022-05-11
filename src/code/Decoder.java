@@ -145,8 +145,6 @@ public class Decoder {
                 default -> System.out.println("Default");
             }
 
-            //TODO indirect addr. fix destination bits sim6
-            //TODO inc timer bevore switch
 
         }
     }
@@ -290,6 +288,8 @@ public class Decoder {
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
+
+            //TODO look if ok
             //obj.programMemory.cycleList.add(pcOfThisInstruction);
         } else {
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 2");
@@ -318,7 +318,8 @@ public class Decoder {
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
             System.out.println("call " + i + " cycle 1");
-            obj.programMemory.cycleList.add(pcOfThisInstruction);
+            //TODO look if ok
+            //obj.programMemory.cycleList.add(pcOfThisInstruction);
         } else {
             System.out.println("call " + i + " cycle 2");
         }
@@ -1045,7 +1046,7 @@ public class Decoder {
             valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
         }
 
-        if ((obj.ram.getNthBitOfValue(bitToCheck - 1, valueOnAdress) == 0)) {
+        if ((obj.ram.getNthBitOfValue(bitToCheck, valueOnAdress) == 0)) {
             obj.programMemory.skipNextInstruction();
 
         }
@@ -1071,8 +1072,7 @@ public class Decoder {
             valueOnAdress = obj.ram.getRamAt(obj.ram.getFSR());
         }
 
-        //TODO doesnt skip in programm6 ?
-        if (obj.ram.getNthBitOfValue(bitToClear - 1, valueOnAdress) == 1) {
+        if (obj.ram.getNthBitOfValue(bitToClear, valueOnAdress) == 1) {
             obj.programMemory.skipNextInstruction();
 
         }
