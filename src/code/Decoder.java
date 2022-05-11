@@ -6,6 +6,7 @@ import java.util.ArrayList;
 @SuppressWarnings({"RedundantIfStatement", "DuplicatedCode"})
 public class Decoder {
 
+    public static boolean blockPushOnStack = false;
     public static AllObjects obj = AllObjects.getAllObjectsInstance();
 
     ArrayList<Integer> decodeList = LSTFileReader.getDecodeList();
@@ -70,6 +71,7 @@ public class Decoder {
 
             Ram.programmCounter++;
 
+
             switch (iOpCode) {
                 case 0b0011_0000_0000_0000 -> movLW(iOpValue);
                 case 0b0011_1001_0000_0000 -> andLW(iOpValue);
@@ -94,8 +96,7 @@ public class Decoder {
                         returnToTos();
                     }
                     if (iOpValue == 0b0000_1001) {
-                        //TODO RETFIE
-                        System.out.println("retfie");
+                        retfie();
                     }
                     if (obj.ram.getNthBitOfValue(7, iOpValue) == 1) {
                         int newOpval = obj.alu.and(iOpValue, 0b0111_1111);
@@ -146,12 +147,52 @@ public class Decoder {
                 default -> System.out.println("Default");
             }
 
-
+            checkForInterrupt();
             Timer.cycle++;
 
         }
     }
 
+
+    public void checkForInterrupt() {
+        int tie = obj.ram.getSpecificIntconBit(5);
+        int rb0Int = obj.ram.getSpecificPortBBit(0);
+
+        //global interrupt enable
+        if (obj.ram.getSpecificIntconBit(7) == 1) {
+            if (tie == 1) {
+                executeTimerInterrupt();
+            }
+            if (rb0Int == 1) {
+                executeRB0Interrupt();
+            }
+        }
+
+    }
+
+    public void executeTimerInterrupt() {
+        if (obj.ram.getTMR0() == 0 && Ram.programmCounter - 1 != 0) {
+            if (Timer.timerInterrupt == true) {
+                obj.ram.setT0IF(true);
+                if (blockPushOnStack == false) {
+                    obj.stack.pushOnStack(Ram.programmCounter +2);
+                    blockPushOnStack = true;
+                }
+                Ram.programmCounter = 4;
+            }
+        }
+    }
+
+    public void executeRB0Interrupt() {
+        if (obj.ram.getSpecificPortBBit(0) == 1) {
+            obj.ram.setINTF(true);
+            if (blockPushOnStack == false) {
+                obj.stack.pushOnStack(Ram.programmCounter +2);
+                blockPushOnStack = true;
+            }
+            Ram.programmCounter = 4;
+        }
+    }
 
     private void affectZeroCarryDigitCarry(boolean b, int resultOfAdd) {
         if (resultOfAdd == 0) {
@@ -296,7 +337,7 @@ public class Decoder {
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
 
 
-            if (s.contains("goto ende           ;")){
+            if (s.contains("goto ende           ;")) {
                 Timer.disableTimer = true;
             }
 
@@ -1091,6 +1132,23 @@ public class Decoder {
 
         }
         System.out.println("btfss");
+    }
+
+    /**
+     * Return from Interrupt. Stack is POPed
+     * and Top of Stack (TOS) is loaded in the
+     * PC. Interrupts are enabled by setting
+     * Global Interrupt Enable bit, GIE
+     * (INTCON<7>). This is a two cycle
+     * instruction
+     */
+    public void retfie() {
+        Timer.timerIncrementCount--;
+        blockPushOnStack = false;
+        //gie set ?
+        if (obj.ram.getSpecificIntconBit(7) == 1) {
+            Ram.programmCounter = obj.stack.pop();
+        }
     }
 
     /**

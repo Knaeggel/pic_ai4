@@ -44,20 +44,16 @@ public class Ram {
         System.out.println("\nwRegister: " + String.format("0x%02X", Ram.wRegister) + "\n");
 
         if (ram[0][0] != 0) {
-            System.out.println("Indirect addr. bank 0: " +
-                    String.format("0x%02X", ram[0][0]));
+            System.out.println("Indirect addr. bank 0: " + String.format("0x%02X", ram[0][0]));
         }
         if (ram[1][0] != 0) {
-            System.out.println("Indirect addr. bank 1: " +
-                    String.format("0x%02X", ram[1][0]));
+            System.out.println("Indirect addr. bank 1: " + String.format("0x%02X", ram[1][0]));
         }
         if (ram[0][0x4] != 0) {
-            System.out.println("FSR bank 0: " +
-                    String.format("0x%02X = ", 4) + String.format("0x%02X", ram[0][4]));
+            System.out.println("FSR bank 0: " + String.format("0x%02X = ", 4) + String.format("0x%02X", ram[0][4]));
         }
         if (ram[1][0x4] != 0) {
-            System.out.println("FSR bank 1: " +
-                    String.format("0x%02X = ", 4) + String.format("0x%02X", ram[1][4]));
+            System.out.println("FSR bank 1: " + String.format("0x%02X = ", 4) + String.format("0x%02X", ram[1][4]));
         }
         System.out.print("Val at bank 0 and adress:");
         for (int i = 0x0C; i < 0x4F; i++) {
@@ -98,6 +94,7 @@ public class Ram {
     public void updateBank() {
         bank = getSpecificStatusBit(5);
     }
+
 
     public int getRamAt(int pos) {
         if (pos <= 0x7F) {
@@ -308,8 +305,8 @@ public class Ram {
 
     public void incrementTMR0() {
         ram[0][0x01]++;
-        if (ram[0][0x01]>=0xFF){ //TODO look if >= is right
-            ram[0][0x01]=0;
+        if (ram[0][0x01] >= 0xFF) { //TODO look if >= is right
+            ram[0][0x01] = 0;
             Decoder.obj.ram.setZeroBit(true);
         }
     }
@@ -319,5 +316,139 @@ public class Ram {
         ram[1][0x0B] = i;
     }
 
+    public int getIntcon() {
+        return ram[bank][0x0B];
+    }
+
+    /**
+     * sets tmr0 interrupt flag
+     * T0IF: TMR0 overflow interrupt flag bit
+     * 1 = TMR0 has overflowed (must be cleared in software)
+     * 0 = TMR0 did not overflow
+     *
+     * @param b flag
+     */
+    public void setT0IF(boolean b) {
+        int set = getIntcon();
+        if (b) {
+            if (getSpecificIntconBit(2) == 0) {
+                set += 0b100;
+            }
+        } else {
+            if (getSpecificIntconBit(2) == 1) {
+                set -= 0b100;
+            }
+        }
+        setIntcon(set);
+    }
+
+    /**
+     * sets rb0 interrupt flag
+     * INTF: RB0/INT Interrupt Flag bit
+     * 1 = The RB0/INT interrupt occurred
+     * 0 = The RB0/INT interrupt did not occur
+     *
+     * @param b flag
+     */
+    public void setINTF(boolean b) {
+        int set = getIntcon();
+        if (b) {
+            if (getSpecificIntconBit(1) == 0) {
+                set += 0b10;
+            }
+        } else {
+            if (getSpecificIntconBit(1) == 1) {
+                set -= 0b10;
+            }
+        }
+        setIntcon(set);
+    }
+
+
+    public int getSpecificPortBBit(int n) {
+        //return ((ram[bank][3] >> (n /*-1*/)) & 1);
+        return getSpecificGenericBit(n, 0x06);
+    }
+
+    public void setPortB(boolean b0, boolean b1, boolean b2, boolean b3, boolean b4, boolean b5, boolean b6, boolean b7) {
+        int set = 0;
+        if (b0) {
+            if (getSpecificPortBBit(0) != 1) {
+                set += 0b1;
+            }
+        } else {
+            if (getSpecificPortBBit(0) == 1) {
+                set -= 0b1;
+            }
+        }
+        if (b1) {
+            if (getSpecificPortBBit(1) != 1) {
+                set += 0b10;
+            }
+        } else {
+            if (getSpecificPortBBit(1) == 1) {
+                set -= 0b10;
+            }
+        }
+        if (b2) {
+            if (getSpecificPortBBit(2) != 1) {
+                set += 0b100;
+            }
+        } else {
+            if (getSpecificPortBBit(2) == 1) {
+                set -= 0b100;
+            }
+        }
+        if (b3) {
+            if (getSpecificPortBBit(3) != 1) {
+                set += 0b100;
+            }
+        } else {
+            if (getSpecificPortBBit(3) == 1) {
+                set -= 0b100;
+            }
+        }
+        if (b4) {
+            if (getSpecificPortBBit(4) != 1) {
+                set += 0b1000;
+            }
+        } else {
+            if (getSpecificPortBBit(4) == 1) {
+                set -= 0b1000;
+            }
+        }
+        if (b5) {
+            if (getSpecificPortBBit(5) != 1) {
+                set += 0b10000;
+            }
+        } else {
+            if (getSpecificPortBBit(5) == 1) {
+                set -= 0b10000;
+            }
+        }
+        if (b6) {
+            if (getSpecificPortBBit(6) != 1) {
+                set += 0b100000;
+            }
+        } else {
+            if (getSpecificPortBBit(6) == 1) {
+                set -= 0b100000;
+            }
+        }
+        if (b7) {
+            if (getSpecificPortBBit(7) != 1) {
+                set += 0b1000000;
+            }
+        } else {
+            if (getSpecificPortBBit(7) == 1) {
+                set -= 0b1000000;
+            }
+        }
+        ram[0][0x06] = set;
+    }
+
+    public int getPortB() {
+        return ram[0][0x06];
+    }
 
 }

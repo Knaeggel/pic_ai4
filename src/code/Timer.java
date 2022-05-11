@@ -6,6 +6,8 @@ public class Timer {
     public static boolean disableTimer = false;
     public static int cycle = 0;
 
+    public static boolean timerInterrupt = false;
+
     public void incrementTimer0(int prescalerValue) {
 
         if (disableTimer == false) {
@@ -19,6 +21,7 @@ public class Timer {
             if (timerIncrementCount == 0) {
                 Decoder.obj.ram.incrementTMR0();
                 timerIncrementCount = initPrescalerVal;
+                timerInterrupt = true;
             } else if (timerIncrementCount < 0) {
                 int ilocal = timerIncrementCount;
                 if (ilocal < 0) {
@@ -26,10 +29,18 @@ public class Timer {
                 }
                 timerIncrementCount = initPrescalerVal;
                 timerIncrementCount -= ilocal;
-
+                timerInterrupt = true;
                 Decoder.obj.ram.incrementTMR0();
             }
         }
+    }
+
+    public boolean checkForInterrupt() {
+        boolean ret = false;
+        if (Decoder.obj.ram.getTMR0() == 0 && Decoder.obj.ram.getSpecificStatusBit(2) == 1) {
+            return true;
+        }
+        return ret;
     }
 
 

@@ -100,6 +100,7 @@ public class MainFrame extends JFrame {
     private JLabel tieValue;
     private JLabel eieValue;
     private JLabel gieValue;
+    private JLabel portB;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
     private static ArrayList<String> allCommands = LSTFileReader.getCommands();
@@ -208,7 +209,33 @@ public class MainFrame extends JFrame {
             }
         });
 
+        pinB0.addActionListener(listenerPinPortB);
+        pinB1.addActionListener(listenerPinPortB);
+        pinB2.addActionListener(listenerPinPortB);
+        pinB3.addActionListener(listenerPinPortB);
+        pinB4.addActionListener(listenerPinPortB);
+        pinB5.addActionListener(listenerPinPortB);
+        pinB6.addActionListener(listenerPinPortB);
+        pinB7.addActionListener(listenerPinPortB);
     }
+
+    ActionListener listenerPinPortB = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if (Decoder.obj.ram.getSpecificOptionBit(7) == 0){
+                Decoder.obj.ram.setPortB(
+                        pinB0.isSelected(),
+                        pinB1.isSelected(),
+                        pinB2.isSelected(),
+                        pinB3.isSelected(),
+                        pinB4.isSelected(),
+                        pinB5.isSelected(),
+                        pinB6.isSelected(),
+                        pinB7.isSelected());
+            }
+        }
+    };
 
     public void updateGui() {
         updateLstList();
