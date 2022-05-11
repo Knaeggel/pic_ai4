@@ -208,7 +208,7 @@ public class MainFrame extends JFrame {
 
             }
         });
-
+/*
         pinB0.addActionListener(listenerPinPortB);
         pinB1.addActionListener(listenerPinPortB);
         pinB2.addActionListener(listenerPinPortB);
@@ -217,13 +217,15 @@ public class MainFrame extends JFrame {
         pinB5.addActionListener(listenerPinPortB);
         pinB6.addActionListener(listenerPinPortB);
         pinB7.addActionListener(listenerPinPortB);
+
+ */
     }
 
     ActionListener listenerPinPortB = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if (Decoder.obj.ram.getSpecificOptionBit(7) == 0){
+            if (Decoder.obj.ram.getSpecificOptionBit(7) == 0) {
                 Decoder.obj.ram.setPortB(
                         pinB0.isSelected(),
                         pinB1.isSelected(),
@@ -238,9 +240,44 @@ public class MainFrame extends JFrame {
     };
 
     public void updateGui() {
+        if (checkEnablePortB() == true) {
+            Decoder.obj.ram.setPortB(pinB0.isSelected(), pinB1.isSelected(), pinB2.isSelected(), pinB3.isSelected(), pinB4.isSelected(), pinB5.isSelected(), pinB6.isSelected(), pinB7.isSelected());
+        }
         updateLstList();
         updateSFR();
         updateSFRBit();
+    }
+
+    /**
+     * RBPU: PORTB Pull-up Enable bit
+     * 1 = PORTB pull-ups are disabled
+     * 0 = PORTB pull-ups are enabled (by individual port latch values)
+     *
+     * @return if enabled or not
+     */
+    public boolean checkEnablePortB() {
+        if (Decoder.obj.ram.getSpecificOptionBit(7) == 1) {
+            pinB0.setEnabled(false);
+            pinB1.setEnabled(false);
+            pinB2.setEnabled(false);
+            pinB3.setEnabled(false);
+            pinB4.setEnabled(false);
+            pinB5.setEnabled(false);
+            pinB6.setEnabled(false);
+            pinB7.setEnabled(false);
+            return false;
+        } else if (Decoder.obj.ram.getSpecificOptionBit(7) == 0) {
+            pinB0.setEnabled(true);
+            pinB1.setEnabled(true);
+            pinB2.setEnabled(true);
+            pinB3.setEnabled(true);
+            pinB4.setEnabled(true);
+            pinB5.setEnabled(true);
+            pinB6.setEnabled(true);
+            pinB7.setEnabled(true);
+            return true;
+        }
+        return false;
     }
 
     public void updateSFR() {

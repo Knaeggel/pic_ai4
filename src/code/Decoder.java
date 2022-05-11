@@ -327,22 +327,27 @@ public class Decoder {
     public void goTO(Integer i, String s) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
 
+        if (i == 0xB){
+            System.out.println();
+        }
         Timer.timerIncrementCount--;
 
+        Ram.programmCounter = i;
+        Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
+        Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
+
+        System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
+
+
+        if (s.contains("goto ende           ;")) {
+            Timer.disableTimer = true;
+        }
+
+        //TODO look if ok
+        //obj.programMemory.cycleList.add(pcOfThisInstruction);
+
         if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
-            Ram.programmCounter = i;
-            Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
-            Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
-            System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
-
-
-            if (s.contains("goto ende           ;")) {
-                Timer.disableTimer = true;
-            }
-
-            //TODO look if ok
-            //obj.programMemory.cycleList.add(pcOfThisInstruction);
         } else {
             System.out.println("goto " + String.format("0x%02X", i) + " cycle 2");
         }

@@ -371,7 +371,7 @@ public class Ram {
     }
 
     public void setPortB(boolean b0, boolean b1, boolean b2, boolean b3, boolean b4, boolean b5, boolean b6, boolean b7) {
-        int set = 0;
+        int set = getPortB();
         if (b0) {
             if (getSpecificPortBBit(0) != 1) {
                 set += 0b1;

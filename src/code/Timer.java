@@ -35,13 +35,6 @@ public class Timer {
         }
     }
 
-    public boolean checkForInterrupt() {
-        boolean ret = false;
-        if (Decoder.obj.ram.getTMR0() == 0 && Decoder.obj.ram.getSpecificStatusBit(2) == 1) {
-            return true;
-        }
-        return ret;
-    }
 
 
 }
