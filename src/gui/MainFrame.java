@@ -3,8 +3,6 @@ package gui;
 import code.*;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -229,20 +227,9 @@ public class MainFrame extends JFrame {
         pinB7.addActionListener(listenerPinPortB);
 
  */
-        pinB0.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (rb0RisingFlank == false) {
-                    rb0RisingFlank = true;
-                }
-                if (pinB0.isSelected() == false) {
-                    rb0RisingFlank = false;
-                }
-            }
-        });
+
     }
 
-    public static boolean rb0RisingFlank = false;
 
     ActionListener listenerPinPortB = new ActionListener() {
         @Override
@@ -267,13 +254,22 @@ public class MainFrame extends JFrame {
      */
     public void updateGui() {
         if (checkEnablePortB() == true) {
-            Decoder.obj.ram.setPortB(pinB0.isSelected(), pinB1.isSelected(), pinB2.isSelected(), pinB3.isSelected(), pinB4.isSelected(), pinB5.isSelected(), pinB6.isSelected(), pinB7.isSelected());
+            Decoder.obj.ram.setPortB(pinB0.isSelected(), pinB1.isSelected(),
+                    pinB2.isSelected(), pinB3.isSelected(),
+                    pinB4.isSelected(), pinB5.isSelected(),
+                    pinB6.isSelected(), pinB7.isSelected());
         }
+
+
         updateLstList();
         updateSFR();
         updateSFRBit();
         updateBanks();
         syncronizeScrollbar();
+    }
+
+    public boolean RB0Checked() {
+        return pinB0.isSelected();
     }
 
     /**
@@ -320,6 +316,7 @@ public class MainFrame extends JFrame {
      * @return if enabled or not
      */
     public boolean checkEnablePortB() {
+/*
         if (Decoder.obj.ram.getSpecificOptionBit(7) == 1) {
             pinB0.setEnabled(false);
             pinB1.setEnabled(false);
@@ -337,11 +334,7 @@ public class MainFrame extends JFrame {
             pinB3.setEnabled(true);
 
             if (Decoder.obj.ram.getSpecificIntconBit(3) == 5) {
-                /**
-                 * bit 3: RBIE: RB Port Change Interrupt Enable bit
-                 * 1 = Enables the RB port change interrupt
-                 * 0 = Disables the RB port change interrupt
-                 */
+
                 if (Decoder.obj.ram.getSpecificIntconBit(3) == 1) {
                     pinB4.setEnabled(true);
                     pinB5.setEnabled(true);
@@ -355,54 +348,68 @@ public class MainFrame extends JFrame {
                     pinB7.setEnabled(false);
                 }
             }
-            updatePortBByTrisB();
-
-
 
             return true;
+
         }
+
         return false;
+*/
+
+        updatePortBByTrisB();
+        return true;
     }
 
     public void updatePortBByTrisB() {
-        if (Decoder.obj.ram.getSpecificTrisBBit(0) == 1) {
-            pinB0.setEnabled(true);
+        if (Decoder.obj.ram.getSpecificOptionBit(7) == 0) {
+            if (Decoder.obj.ram.getSpecificTrisBBit(0) == 1) {
+                pinB0.setEnabled(true);
+            } else {
+                pinB0.setEnabled(false);
+            }
+            if (Decoder.obj.ram.getSpecificTrisBBit(1) == 1) {
+                pinB1.setEnabled(true);
+            } else {
+                pinB1.setEnabled(false);
+            }
+            if (Decoder.obj.ram.getSpecificTrisBBit(2) == 1) {
+                pinB2.setEnabled(true);
+            } else {
+                pinB2.setEnabled(false);
+            }
+            if (Decoder.obj.ram.getSpecificTrisBBit(3) == 1) {
+                pinB3.setEnabled(true);
+            } else {
+                pinB3.setEnabled(false);
+            }
+            if (Decoder.obj.ram.getSpecificTrisBBit(4) == 1) {
+                pinB4.setEnabled(true);
+            } else {
+                pinB4.setEnabled(false);
+            }
+            if (Decoder.obj.ram.getSpecificTrisBBit(5) == 1) {
+                pinB5.setEnabled(true);
+            } else {
+                pinB5.setEnabled(false);
+            }
+            if (Decoder.obj.ram.getSpecificTrisBBit(6) == 1) {
+                pinB6.setEnabled(true);
+            } else {
+                pinB6.setEnabled(false);
+            }
+            if (Decoder.obj.ram.getSpecificTrisBBit(7) == 1) {
+                pinB7.setEnabled(true);
+            } else {
+                pinB7.setEnabled(false);
+            }
         } else {
             pinB0.setEnabled(false);
-        }
-        if (Decoder.obj.ram.getSpecificTrisBBit(1) == 1) {
-            pinB1.setEnabled(true);
-        } else {
             pinB1.setEnabled(false);
-        }
-        if (Decoder.obj.ram.getSpecificTrisBBit(2) == 1) {
-            pinB2.setEnabled(true);
-        } else {
             pinB2.setEnabled(false);
-        }
-        if (Decoder.obj.ram.getSpecificTrisBBit(3) == 1) {
-            pinB3.setEnabled(true);
-        } else {
             pinB3.setEnabled(false);
-        }
-        if (Decoder.obj.ram.getSpecificTrisBBit(4) == 1) {
-            pinB4.setEnabled(true);
-        } else {
             pinB4.setEnabled(false);
-        }
-        if (Decoder.obj.ram.getSpecificTrisBBit(5) == 1) {
-            pinB5.setEnabled(true);
-        } else {
             pinB5.setEnabled(false);
-        }
-        if (Decoder.obj.ram.getSpecificTrisBBit(6) == 1) {
-            pinB6.setEnabled(true);
-        } else {
             pinB6.setEnabled(false);
-        }
-        if (Decoder.obj.ram.getSpecificTrisBBit(7) == 1) {
-            pinB7.setEnabled(true);
-        } else {
             pinB7.setEnabled(false);
         }
 
@@ -579,7 +586,7 @@ public class MainFrame extends JFrame {
         indexAddressB[0x0A] += " PCLATH";
         indexAddressB[0x0B] += " INTCON";
 
-        indexlist1.setListData(indexAddress);
+        indexlist1.setListData(indexAddressB);
         valuelist1.setListData(indexValueB);
 
     }

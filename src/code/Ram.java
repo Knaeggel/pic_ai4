@@ -431,6 +431,20 @@ public class Ram {
         setIntcon(set);
     }
 
+    public void setINTE(boolean b) {
+        int set = getIntcon();
+        if (b) {
+            if (getSpecificIntconBit(4) == 0) {
+                set += 0b10000;
+            }
+        } else {
+            if (getSpecificIntconBit(4) == 1) {
+                set -= 0b10000;
+            }
+        }
+        setIntcon(set);
+    }
+
     /**
      * RBIF: RB Port Change Interrupt Flag bit
      * 1 = When at least one of the RB7:RB4 pins changed state (must be cleared in software)
@@ -452,6 +466,20 @@ public class Ram {
         setIntcon(set);
     }
 
+    public void setGIE(boolean b) {
+        int set = getIntcon();
+        if (b) {
+            if (getSpecificIntconBit(2) == 0) {
+                set += 0b1000_0000;
+            }
+        } else {
+            if (getSpecificIntconBit(2) == 1) {
+                set -= 0b1000_0000;
+            }
+        }
+        setIntcon(set);
+    }
+
 
     /**
      * gets a specific bit from PortB
@@ -466,7 +494,8 @@ public class Ram {
 
     public int getSpecificTrisBBit(int n) {
         //return ((ram[bank][3] >> (n /*-1*/)) & 1);
-        return getSpecificGenericBit(n, 0x06, 1);
+        //return getSpecificGenericBit(n, 0x06, 1);
+        return ram[1][6] >> n &1;
     }
 
     public void setTrisA(int val) {

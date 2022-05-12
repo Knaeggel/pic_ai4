@@ -1,7 +1,5 @@
 package code;
 
-import gui.MainFrame;
-
 import java.util.ArrayList;
 
 //TODO inc tmr0 bei stimulation von porta ra4
@@ -74,7 +72,7 @@ public class Decoder {
 
 
             Ram.programmCounter++;
-            if (!endlessLoop.contains("goto ende           ;")){
+            if (!endlessLoop.contains("goto ende           ;")) {
 
             }
 
@@ -153,13 +151,13 @@ public class Decoder {
                 default -> System.out.println("Default");
             }
 
-            checkForInterrupt();
+            checkForInterrupt(iOpCode);
             Timer.cycle++;
 
         }
     }
 
-    public void updatePC(){
+    public void updatePC() {
         if (obj.ram.getPCL() != 0) {
             Ram.programmCounter = obj.ram.getPCL();
         }
@@ -169,23 +167,42 @@ public class Decoder {
     /**
      * checks if any interrupts needs to be executed
      */
-    public void checkForInterrupt() {
-        int tie = obj.ram.getSpecificIntconBit(5);
-        int rb0Int = obj.ram.getSpecificPortBBit(0);
+    public void checkForInterrupt(int iOpVal) {
+    /*
+        int gie = obj.ram.getSpecificIntconBit(7);
 
-        //global interrupt enable
-        if (obj.ram.getSpecificIntconBit(7) == 1) {
+        if (gie == 1) {
+
+            obj.ram.setGIE(false);
+
+            int tie = obj.ram.getSpecificIntconBit(5);
+            int rb0Int = obj.ram.getSpecificPortBBit(0);
+
             if (tie == 1) {
                 executeTimerInterrupt();
             }
-            if (rb0Int == 1) {
+            if (obj.mainFrame.RB0Checked()) {
                 executeRB0Interrupt();
             }
             if (obj.mainFrame.RB4toRB7Checked()) {
                 executeRB4toRB7Interrupt();
+
+        }
+        */
+        //gie enable
+        if (obj.ram.getSpecificIntconBit(7) == 1) {
+            if (obj.timer.timerInterrupt && obj.ram.getSpecificIntconBit(5) == 1) {
+                executeTimerInterrupt();
             }
         }
-
+        if (obj.mainFrame.RB0Checked()) {
+            executeRB0Interrupt();
+        }
+        if (obj.ram.getSpecificIntconBit(3) == 1) {
+            if (obj.mainFrame.RB4toRB7Checked()) {
+                executeRB4toRB7Interrupt(iOpVal);
+            }
+        }
     }
 
     /**
@@ -193,6 +210,7 @@ public class Decoder {
      */
     public void executeTimerInterrupt() {
         if (obj.ram.getTMR0() == 0 && Ram.programmCounter - 1 != 0) {
+
             if (Timer.timerInterrupt) {
                 obj.ram.setT0IF(true);
                 if (!blockPushOnStack) {
@@ -208,11 +226,16 @@ public class Decoder {
      * executes the Interrupt on change of RB0 checkbox
      */
     public void executeRB0Interrupt() {
-        if (obj.ram.getSpecificPortBBit(0) == 1 && MainFrame.rb0RisingFlank == true) {
-            obj.mainFrame.resetUsedPortBPin(0);
+        if (obj.ram.getSpecificPortBBit(0) == 1) {
+            //obj.ram.setINTE(false);
             obj.ram.setINTF(true);
+            //obj.mainFrame.resetUsedPortBPin(0);
             if (!blockPushOnStack) {
-                obj.stack.pushOnStack(Ram.programmCounter + 2);
+                if (Ram.programmCounter % 2 == 0) {
+                    obj.stack.pushOnStack(Ram.programmCounter + 2);
+                } else {
+                    obj.stack.pushOnStack(Ram.programmCounter + 1);
+                }
                 blockPushOnStack = true;
             }
             Ram.programmCounter = 4;
@@ -222,25 +245,31 @@ public class Decoder {
     /**
      * executes the rb4 to rb7 interrupt on change of one of that pins
      */
-    public void executeRB4toRB7Interrupt() {
-        if (Decoder.obj.ram.getSpecificIntconBit(3) == 1) {
-            obj.mainFrame.resetUsedPortBPin(4);
-            obj.mainFrame.resetUsedPortBPin(5);
-            obj.mainFrame.resetUsedPortBPin(6);
-            obj.mainFrame.resetUsedPortBPin(7);
-            obj.ram.setRBIF(true);
-            if (!blockPushOnStack) {
-                obj.stack.pushOnStack(Ram.programmCounter + 2);
-                blockPushOnStack = true;
+    public void executeRB4toRB7Interrupt(int iOpval) {
+        if (obj.ram.getSpecificPortBBit(4) == 1 ||
+                obj.ram.getSpecificPortBBit(5) == 1 ||
+                obj.ram.getSpecificPortBBit(6) == 1 ||
+                obj.ram.getSpecificPortBBit(7) == 1) {
+
+            if (Decoder.obj.ram.getSpecificIntconBit(3) == 1) {
+                obj.ram.setRBIF(true);
+                if (!blockPushOnStack) {
+                    if (iOpval == 0b0010_1000_0000_0000) {
+                        obj.stack.pushOnStack(Ram.programmCounter + 2);
+                    } else {
+                        obj.stack.pushOnStack(Ram.programmCounter + 2);
+                    }
+                    blockPushOnStack = true;
+                }
+                Ram.programmCounter = 4;
             }
-            Ram.programmCounter = 4;
         }
     }
 
     /**
      * checks if any of the Carry DigitCarry or Zerobit has to be set
      *
-     * @param b if dc is affected or not
+     * @param b           if dc is affected or not
      * @param resultOfAdd result of addition
      */
     private void affectZeroCarryDigitCarry(boolean b, int resultOfAdd) {
@@ -1192,10 +1221,9 @@ public class Decoder {
     public void retfie() {
         Timer.timerIncrementCount--;
         blockPushOnStack = false;
-        //gie set ?
-        if (obj.ram.getSpecificIntconBit(7) == 1) {
-            Ram.programmCounter = obj.stack.pop();
-        }
+        obj.ram.setGIE(true);
+        Ram.programmCounter = obj.stack.pop();
+
     }
 
     /**
