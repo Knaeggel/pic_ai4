@@ -1,7 +1,10 @@
 package code;
 
+import gui.MainFrame;
+
 import java.util.ArrayList;
 
+//TODO inc tmr0 bei stimulation von porta ra4
 
 @SuppressWarnings({"RedundantIfStatement", "DuplicatedCode"})
 public class Decoder {
@@ -66,11 +69,14 @@ public class Decoder {
             System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
 
             //timer
-            obj.ram.prescalerValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
-            obj.timer.incrementTimer0(obj.ram.prescalerValue);
+            Ram.prescalerValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
+            obj.timer.incrementTimer0(Ram.prescalerValue);
+
 
             Ram.programmCounter++;
+            if (!endlessLoop.contains("goto ende           ;")){
 
+            }
 
             switch (iOpCode) {
                 case 0b0011_0000_0000_0000 -> movLW(iOpValue);
@@ -153,6 +159,12 @@ public class Decoder {
         }
     }
 
+    public void updatePC(){
+        if (obj.ram.getPCL() != 0) {
+            Ram.programmCounter = obj.ram.getPCL();
+        }
+
+    }
 
     /**
      * checks if any interrupts needs to be executed
@@ -181,9 +193,9 @@ public class Decoder {
      */
     public void executeTimerInterrupt() {
         if (obj.ram.getTMR0() == 0 && Ram.programmCounter - 1 != 0) {
-            if (Timer.timerInterrupt == true) {
+            if (Timer.timerInterrupt) {
                 obj.ram.setT0IF(true);
-                if (blockPushOnStack == false) {
+                if (!blockPushOnStack) {
                     obj.stack.pushOnStack(Ram.programmCounter + 2);
                     blockPushOnStack = true;
                 }
@@ -196,10 +208,10 @@ public class Decoder {
      * executes the Interrupt on change of RB0 checkbox
      */
     public void executeRB0Interrupt() {
-        if (obj.ram.getSpecificPortBBit(0) == 1) {
+        if (obj.ram.getSpecificPortBBit(0) == 1 && MainFrame.rb0RisingFlank == true) {
             obj.mainFrame.resetUsedPortBPin(0);
             obj.ram.setINTF(true);
-            if (blockPushOnStack == false) {
+            if (!blockPushOnStack) {
                 obj.stack.pushOnStack(Ram.programmCounter + 2);
                 blockPushOnStack = true;
             }
@@ -217,7 +229,7 @@ public class Decoder {
             obj.mainFrame.resetUsedPortBPin(6);
             obj.mainFrame.resetUsedPortBPin(7);
             obj.ram.setRBIF(true);
-            if (blockPushOnStack == false) {
+            if (!blockPushOnStack) {
                 obj.stack.pushOnStack(Ram.programmCounter + 2);
                 blockPushOnStack = true;
             }
@@ -228,8 +240,8 @@ public class Decoder {
     /**
      * checks if any of the Carry DigitCarry or Zerobit has to be set
      *
-     * @param b
-     * @param resultOfAdd
+     * @param b if dc is affected or not
+     * @param resultOfAdd result of addition
      */
     private void affectZeroCarryDigitCarry(boolean b, int resultOfAdd) {
         if (resultOfAdd == 0) {

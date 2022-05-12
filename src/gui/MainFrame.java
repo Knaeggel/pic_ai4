@@ -3,6 +3,8 @@ package gui;
 import code.*;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -219,7 +221,20 @@ public class MainFrame extends JFrame {
         pinB7.addActionListener(listenerPinPortB);
 
  */
+        pinB0.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (rb0RisingFlank == false){
+                    rb0RisingFlank = true;
+                }
+                if (pinB0.isSelected() == false) {
+                    rb0RisingFlank = false;
+                }
+            }
+        });
     }
+
+    public static boolean rb0RisingFlank = false;
 
     ActionListener listenerPinPortB = new ActionListener() {
         @Override
