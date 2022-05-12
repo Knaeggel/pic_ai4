@@ -228,7 +228,7 @@ public class MainFrame extends JFrame {
         pinB0.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                if (rb0RisingFlank == false){
+                if (rb0RisingFlank == false) {
                     rb0RisingFlank = true;
                 }
                 if (pinB0.isSelected() == false) {
@@ -269,11 +269,13 @@ public class MainFrame extends JFrame {
         updateSFR();
         updateSFRBit();
         updateBanks();
+
         syncronizeScrollbar();
     }
 
     /**
      * checks if one of the pins from RB4 to RB7 is checked
+     *
      * @return true if one is checked
      */
     public boolean RB4toRB7Checked() {
@@ -341,15 +343,62 @@ public class MainFrame extends JFrame {
                 pinB5.setEnabled(true);
                 pinB6.setEnabled(true);
                 pinB7.setEnabled(true);
-            } else if (Decoder.obj.ram.getSpecificIntconBit(3) == 0) {
+            }
+            if (Decoder.obj.ram.getSpecificIntconBit(3) == 0) {
                 pinB4.setEnabled(false);
                 pinB5.setEnabled(false);
                 pinB6.setEnabled(false);
                 pinB7.setEnabled(false);
             }
+
+
             return true;
         }
         return false;
+    }
+
+    public void updatePortBByTrisB() {
+        if (Decoder.obj.ram.getSpecificTrisBBit(0) == 1) {
+            pinB0.setEnabled(true);
+        } else {
+            pinB0.setEnabled(false);
+        }
+        if (Decoder.obj.ram.getSpecificTrisBBit(1) == 1) {
+            pinB1.setEnabled(true);
+        } else {
+            pinB1.setEnabled(false);
+        }
+        if (Decoder.obj.ram.getSpecificTrisBBit(2) == 1) {
+            pinB2.setEnabled(true);
+        } else {
+            pinB2.setEnabled(false);
+        }
+        if (Decoder.obj.ram.getSpecificTrisBBit(3) == 1) {
+            pinB3.setEnabled(true);
+        } else {
+            pinB3.setEnabled(false);
+        }
+        if (Decoder.obj.ram.getSpecificTrisBBit(4) == 1) {
+            pinB4.setEnabled(true);
+        } else {
+            pinB4.setEnabled(false);
+        }
+        if (Decoder.obj.ram.getSpecificTrisBBit(5) == 1) {
+            pinB5.setEnabled(true);
+        } else {
+            pinB5.setEnabled(false);
+        }
+        if (Decoder.obj.ram.getSpecificTrisBBit(6) == 1) {
+            pinB6.setEnabled(true);
+        } else {
+            pinB6.setEnabled(false);
+        }
+        if (Decoder.obj.ram.getSpecificTrisBBit(7) == 1) {
+            pinB7.setEnabled(true);
+        } else {
+            pinB7.setEnabled(false);
+        }
+
     }
 
     public void updateSFR() {
@@ -482,24 +531,57 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public void updateBanks(){
+    public void updateBanks() {
         // Bank0
         String[] indexAddress = new String[128];
-        Integer[][] ram2 = Decoder.obj.ram.getRam();
-        for(int i = 0; i < 128; i++){
-            indexAddress[i] =  String.format("0x%02X",i);
-        }
-        indexlist0.setListData(indexAddress);
-        valuelist0.setListData(ram2[0]);
+        String[] indexValue = new String[128];
+        String[] indexValueB = new String[128];
+        String[] indexAddressB = new String[128];
 
+        Integer[][] ram2 = Decoder.obj.ram.getRam();
+        for (int i = 0; i < 128; i++) {
+            indexAddress[i] = String.format("0x%02X", i);
+            indexValue[i] = String.format("0x%02X", ram2[0][i]);
+            indexAddressB[i] = String.format("0x%02X", i);
+            indexValueB[i] = String.format("0x%02X", ram2[1][i]);
+        }
+
+        indexAddress[0] += " INDF";
+        indexAddress[1] += " TMR0";
+        indexAddress[2] += " PCL";
+        indexAddress[3] += " STATUS";
+        indexAddress[4] += " FSR";
+        indexAddress[5] += " PORTA";
+        indexAddress[6] += " PORTB";
+        indexAddress[8] += " EEDATA";
+        indexAddress[9] += " EEADR";
+        indexAddress[0x0A] += " PCLATH";
+        indexAddress[0x0B] += " INTCON";
+        indexlist0.setListData(indexAddress);
+        valuelist0.setListData(indexValue);
         // Bank1
+        indexAddressB[0] += " INDF";
+        indexAddressB[1] += " OPTION_REG";
+        indexAddressB[2] += " PCL";
+        indexAddressB[3] += " STATUS";
+        indexAddressB[4] += " FSR";
+        indexAddressB[5] += " TRISA";
+        indexAddressB[6] += " TRISB";
+        indexAddressB[8] += " EECON1";
+        indexAddressB[9] += " EECON2";
+        indexAddressB[0x0A] += " PCLATH";
+        indexAddressB[0x0B] += " INTCON";
+
+        indexlist1.setListData(indexAddress);
+        valuelist1.setListData(indexValueB);
 
     }
 
-    public void syncronizeScrollbar(){
+    public void syncronizeScrollbar() {
         JScrollBar sBar1 = bank0address.getVerticalScrollBar();
         JScrollBar sBar2 = bank0value.getVerticalScrollBar();
         sBar2.setModel(sBar1.getModel());
+
     }
 
 }

@@ -31,6 +31,8 @@ public class Ram {
         setPCLATH(0b0_0000);
         setOption(0b1111_1111);
         setIntcon(0b0000_0000);
+        setTrisA(0b1_1111);
+        setTrisB(0b1111_1111);
     }
 
     /**
@@ -175,6 +177,10 @@ public class Ram {
      */
     public int getSpecificGenericBit(int n, int addressOfRegister) {
         return ((ram[bank][addressOfRegister] >> (n /*-1*/)) & 1);
+    }
+
+    public int getSpecificGenericBit(int n, int addressOfRegister, int selectBank) {
+        return ((ram[selectBank][addressOfRegister] >> (n /*-1*/)) & 1);
     }
 
     /**
@@ -455,7 +461,19 @@ public class Ram {
      */
     public int getSpecificPortBBit(int n) {
         //return ((ram[bank][3] >> (n /*-1*/)) & 1);
-        return getSpecificGenericBit(n, 0x06);
+        return getSpecificGenericBit(n, 0x06, 0);
+    }
+
+    public int getSpecificTrisBBit(int n) {
+        //return ((ram[bank][3] >> (n /*-1*/)) & 1);
+        return getSpecificGenericBit(n, 0x06, 1);
+    }
+
+    public void setTrisA(int val) {
+        ram[1][0x05] = val;
+    }
+    public void setTrisB(int val) {
+        ram[1][0x06] = val;
     }
 
     /**
