@@ -1211,7 +1211,7 @@
             <properties/>
             <border type="none" title="Bank1"/>
             <children>
-              <scrollpane id="1001b">
+              <scrollpane id="1001b" binding="bank1value">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -1228,7 +1228,7 @@
                   </component>
                 </children>
               </scrollpane>
-              <scrollpane id="6af58">
+              <scrollpane id="6af58" binding="bank1address">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>

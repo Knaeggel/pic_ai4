@@ -108,6 +108,8 @@ public class MainFrame extends JFrame {
     private JList valuelist1;
     private JPanel Bank1;
     private JPanel Bank0;
+    private JScrollPane bank1address;
+    private JScrollPane bank1value;
     private JLabel portB;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
@@ -271,7 +273,6 @@ public class MainFrame extends JFrame {
         updateSFR();
         updateSFRBit();
         updateBanks();
-
         syncronizeScrollbar();
     }
 
@@ -584,10 +585,15 @@ public class MainFrame extends JFrame {
     }
 
     public void syncronizeScrollbar() {
+        // Bank0
         JScrollBar sBar1 = bank0address.getVerticalScrollBar();
         JScrollBar sBar2 = bank0value.getVerticalScrollBar();
         sBar2.setModel(sBar1.getModel());
 
+        // Bank1
+        JScrollBar sBar3 = bank1address.getVerticalScrollBar();
+        JScrollBar sBar4 = bank1value.getVerticalScrollBar();
+        sBar4.setModel(sBar3.getModel());
     }
 
 }
