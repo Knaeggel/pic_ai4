@@ -106,6 +106,8 @@ public class MainFrame extends JFrame {
     private JScrollPane bank0value;
     private JList indexlist1;
     private JList valuelist1;
+    private JPanel Bank1;
+    private JPanel Bank0;
     private JLabel portB;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
@@ -333,23 +335,27 @@ public class MainFrame extends JFrame {
             pinB2.setEnabled(true);
             pinB3.setEnabled(true);
 
-            /**
-             * bit 3: RBIE: RB Port Change Interrupt Enable bit
-             * 1 = Enables the RB port change interrupt
-             * 0 = Disables the RB port change interrupt
-             */
-            if (Decoder.obj.ram.getSpecificIntconBit(3) == 1) {
-                pinB4.setEnabled(true);
-                pinB5.setEnabled(true);
-                pinB6.setEnabled(true);
-                pinB7.setEnabled(true);
+            if (Decoder.obj.ram.getSpecificIntconBit(3) == 5) {
+                /**
+                 * bit 3: RBIE: RB Port Change Interrupt Enable bit
+                 * 1 = Enables the RB port change interrupt
+                 * 0 = Disables the RB port change interrupt
+                 */
+                if (Decoder.obj.ram.getSpecificIntconBit(3) == 1) {
+                    pinB4.setEnabled(true);
+                    pinB5.setEnabled(true);
+                    pinB6.setEnabled(true);
+                    pinB7.setEnabled(true);
+                }
+                if (Decoder.obj.ram.getSpecificIntconBit(3) == 0) {
+                    pinB4.setEnabled(false);
+                    pinB5.setEnabled(false);
+                    pinB6.setEnabled(false);
+                    pinB7.setEnabled(false);
+                }
             }
-            if (Decoder.obj.ram.getSpecificIntconBit(3) == 0) {
-                pinB4.setEnabled(false);
-                pinB5.setEnabled(false);
-                pinB6.setEnabled(false);
-                pinB7.setEnabled(false);
-            }
+            updatePortBByTrisB();
+
 
 
             return true;
