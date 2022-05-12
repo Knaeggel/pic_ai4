@@ -89,8 +89,6 @@ public class MainFrame extends JFrame {
     private JLabel ps2Value;
     private JLabel ps1Value;
     private JLabel ps0Value;
-    private JScrollPane b0Pannel;
-    private JScrollPane b1Pannel;
     private JPanel Timing;
     private JLabel rifValue;
     private JLabel ifValue;
@@ -100,6 +98,12 @@ public class MainFrame extends JFrame {
     private JLabel tieValue;
     private JLabel eieValue;
     private JLabel gieValue;
+    private JList indexlist0;
+    private JList valuelist0;
+    private JScrollPane bank0address;
+    private JScrollPane bank0value;
+    private JList indexlist1;
+    private JList valuelist1;
     private JLabel portB;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
@@ -249,6 +253,8 @@ public class MainFrame extends JFrame {
         updateLstList();
         updateSFR();
         updateSFRBit();
+        updateBanks();
+        syncronizeScrollbar();
     }
 
     /**
@@ -461,10 +467,24 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public void highlightRow() {
+    public void updateBanks(){
+        // Bank0
+        String[] indexAddress = new String[128];
+        Integer[][] ram2 = Decoder.obj.ram.getRam();
+        for(int i = 0; i < 128; i++){
+            indexAddress[i] =  String.format("0x%02X",i);
+        }
+        indexlist0.setListData(indexAddress);
+        valuelist0.setListData(ram2[0]);
 
-        System.out.println(lstList.getVisibleRowCount());
+        // Bank1
+
     }
 
+    public void syncronizeScrollbar(){
+        JScrollBar sBar1 = bank0address.getVerticalScrollBar();
+        JScrollBar sBar2 = bank0value.getVerticalScrollBar();
+        sBar2.setModel(sBar1.getModel());
+    }
 
 }

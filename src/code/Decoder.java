@@ -41,7 +41,7 @@ public class Decoder {
         functionCalls(Ram.programmCounter);
         obj.mainFrame.updateStack(obj.stack);
         obj.mainFrame.breakpoints();
-        // obj.mainFrame.highlightRow();
+        obj.mainFrame.updateGui();
     }
 
     /**
