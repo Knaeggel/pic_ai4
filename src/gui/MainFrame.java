@@ -593,6 +593,7 @@ public class MainFrame extends JFrame {
         // Bank1
         JScrollBar sBar3 = bank1address.getVerticalScrollBar();
         JScrollBar sBar4 = bank1value.getVerticalScrollBar();
+        sBar3.setModel(sBar2.getModel());
         sBar4.setModel(sBar3.getModel());
     }
 
