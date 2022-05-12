@@ -64,7 +64,7 @@ public class Decoder {
                 iOpValue = obj.ram.getFSR();
             }
 
-            System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
+            //System.out.println("PC: " + String.format("%02X", Ram.programmCounter));
 
             //timer
             Ram.prescalerValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
@@ -72,9 +72,7 @@ public class Decoder {
 
 
             Ram.programmCounter++;
-            if (!endlessLoop.contains("goto ende           ;")) {
 
-            }
 
             switch (iOpCode) {
                 case 0b0011_0000_0000_0000 -> movLW(iOpValue);
@@ -256,8 +254,11 @@ public class Decoder {
                 if (!blockPushOnStack) {
                     if (iOpval == 0b0010_1000_0000_0000) {
                         obj.stack.pushOnStack(Ram.programmCounter + 2);
+                        //TODO ... ^^
+                        Ram.programmCounter = 0x32;
                     } else {
                         obj.stack.pushOnStack(Ram.programmCounter + 2);
+                        Ram.programmCounter = 0x32;
                     }
                     blockPushOnStack = true;
                 }
@@ -296,7 +297,7 @@ public class Decoder {
 
         Ram.wRegister = i;
         //System.out.println("In movlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("movlw");
+        //System.out.println("movlw");
     }
 
     /**
@@ -308,7 +309,7 @@ public class Decoder {
     public void andLW(Integer i) {
         Ram.wRegister = obj.alu.and(Ram.wRegister, i);
         //System.out.println("In andlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("andlw");
+        //System.out.println("andlw");
     }
 
     /**
@@ -326,7 +327,7 @@ public class Decoder {
 
         }
         //System.out.println("In iorlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("iorlw");
+        //System.out.println("iorlw");
     }
 
 
@@ -354,7 +355,7 @@ public class Decoder {
         } else {
             obj.ram.setCarryBit(false);
         }
-        System.out.println("sublw");
+        //System.out.println("sublw");
     }
 
     /**
@@ -373,7 +374,7 @@ public class Decoder {
         }
 
         //System.out.println("in xorlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("xorlw");
+        //System.out.println("xorlw");
     }
 
     /**
@@ -395,7 +396,7 @@ public class Decoder {
         affectZeroCarryDigitCarry(b, resultOfAdd);
 
         //System.out.println("in addlw " + Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("addlw");
+        //System.out.println("addlw");
     }
 
 
@@ -405,16 +406,13 @@ public class Decoder {
     public void goTO(Integer i, String s) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
 
-        if (i == 0xB) {
-            System.out.println();
-        }
         Timer.timerIncrementCount--;
 
         Ram.programmCounter = i;
         Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
         Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
-        System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
+        //System.out.println("goto " + String.format("0x%02X", i) + " cycle 1");
 
         if (s.contains("goto ende           ;")) {
             Timer.disableTimer = true;
@@ -447,10 +445,10 @@ public class Decoder {
             Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
             Ram.programmCounter = obj.ram.setBit(12, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(4));
 
-            System.out.println("call " + i + " cycle 1");
+            //System.out.println("call " + i + " cycle 1");
             //obj.programMemory.cycleList.add(pcOfThisInstruction);
         } else {
-            System.out.println("call " + i + " cycle 2");
+            //System.out.println("call " + i + " cycle 2");
         }
 
     }
@@ -472,12 +470,11 @@ public class Decoder {
         if (!obj.programMemory.checkCycle(pcOfThisInstruction)) {
             Ram.wRegister = i;
             Ram.programmCounter = obj.stack.pop();
-            System.out.println("retLW: " + String.format("0x%02X", Ram.wRegister) +
-                    " next instruction: " + Ram.programmCounter);
-            System.out.println("retlw goto 0x" + String.format("%02X", Ram.programmCounter) + " cycle 1");
+            //System.out.println("retLW: " + String.format("0x%02X", Ram.wRegister) + " next instruction: " + Ram.programmCounter);
+            //System.out.println("retlw goto 0x" + String.format("%02X", Ram.programmCounter) + " cycle 1");
             obj.programMemory.cycleList.add(pcOfThisInstruction);
         } else {
-            System.out.println("retlw goto 0x" + String.format("%02X", Ram.programmCounter) + " cycle 2");
+            //System.out.println("retlw goto 0x" + String.format("%02X", Ram.programmCounter) + " cycle 2");
         }
 
 
@@ -505,9 +502,9 @@ public class Decoder {
         if (localStack[localReadPointer] != null) {
             Ram.programmCounter = obj.stack.pop();
             //System.out.println("next to call " +Ram.programmCounter);
-            System.out.println("return to: " + Ram.programmCounter + " cycle 1");
+            //System.out.println("return to: " + Ram.programmCounter + " cycle 1");
         } else {
-            System.out.println("return to cycle 2");
+            //System.out.println("return to cycle 2");
         }
     }
 
@@ -525,7 +522,7 @@ public class Decoder {
             //indirect addr.
             obj.ram.setRamAt(obj.ram.getFSR(), Ram.wRegister);
         }
-        System.out.println("movwf saved in " + String.format("0x%02X", f));
+        //System.out.println("movwf saved in " + String.format("0x%02X", f));
     }
 
     /**
@@ -566,7 +563,7 @@ public class Decoder {
         //obj.ram.affectStatusBits(b, resultOfAdd);
         affectZeroCarryDigitCarry(b, resultOfAdd);
 
-        System.out.println("addwf");
+        //System.out.println("addwf");
     }
 
     /**
@@ -598,7 +595,7 @@ public class Decoder {
 
         affectZeroCarryDigitCarry(b, resultOfAnd);
 
-        System.out.println("andwf");
+        //System.out.println("andwf");
     }
 
     /**
@@ -611,7 +608,7 @@ public class Decoder {
 
         obj.ram.setRamAt(f, 0);
         obj.ram.setZeroBit(true);
-        System.out.println("clrf register " + String.format("%02X", f) + " = " + obj.ram.getRamAt(f));
+        //System.out.println("clrf register " + String.format("%02X", f) + " = " + obj.ram.getRamAt(f));
         //System.out.println(obj.ram.getRamAt(f));
     }
 
@@ -641,7 +638,7 @@ public class Decoder {
             obj.ram.setZeroBit(false);
         }
 
-        System.out.println("comf");
+        //System.out.println("comf");
     }
 
     /**
@@ -671,7 +668,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
-        System.out.println("decf");
+        //System.out.println("decf");
     }
 
     /**
@@ -714,7 +711,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
-        System.out.println("incf");
+        //System.out.println("incf");
     }
 
     /**
@@ -742,7 +739,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
-        System.out.println("movf");
+        //System.out.println("movf");
     }
 
     /**
@@ -771,7 +768,7 @@ public class Decoder {
         } else {
             obj.ram.setZeroBit(false);
         }
-        System.out.println("iorwf");
+        //System.out.println("iorwf");
     }
 
     /**
@@ -819,7 +816,7 @@ public class Decoder {
         } else if (dest == 1) {
             obj.ram.setRamAt(addressInRam, result);
         }
-        System.out.println("subwf");
+        //System.out.println("subwf");
     }
 
     /**
@@ -857,7 +854,7 @@ public class Decoder {
             }
 
         }
-        System.out.println("swapf");
+        //System.out.println("swapf");
     }
 
     /**
@@ -898,7 +895,7 @@ public class Decoder {
             obj.ram.setZeroBit(false);
         }
 
-        System.out.println("xorwf");
+        //System.out.println("xorwf");
     }
 
     /**
@@ -907,7 +904,7 @@ public class Decoder {
     public void clrw() {
         Ram.wRegister = 0;
         obj.ram.setZeroBit(true);
-        System.out.println("clrw");
+        //System.out.println("clrw");
     }
 
     /**
@@ -956,7 +953,7 @@ public class Decoder {
         }
 
         //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("rlf");
+        //System.out.println("rlf");
     }
 
     /**
@@ -1007,7 +1004,7 @@ public class Decoder {
         }
 
         //System.out.println(Integer.toBinaryString(obj.ram.getStatus()));
-        System.out.println("rrf");
+        //System.out.println("rrf");
     }
 
     /**
@@ -1050,7 +1047,7 @@ public class Decoder {
             obj.ram.setRamAt(addressInRam, valueOnAdress);
         }
 
-        System.out.println("decfsz");
+        //System.out.println("decfsz");
     }
 
     /**
@@ -1095,7 +1092,7 @@ public class Decoder {
             obj.ram.setRamAt(addressInRam, valueOnAdress);
         }
 
-        System.out.println("incfsz");
+        //System.out.println("incfsz");
     }
 
     /**
@@ -1126,7 +1123,7 @@ public class Decoder {
             obj.ram.setRamAt(obj.ram.getFSR(), valueOnAdress);
         }
 
-        System.out.println("bsf newVal: " + String.format("0x%02X", valueOnAdress));
+        //System.out.println("bsf newVal: " + String.format("0x%02X", valueOnAdress));
     }
 
     /**
@@ -1154,7 +1151,7 @@ public class Decoder {
         if (addressInRam == 0) {
             obj.ram.setRamAt(obj.ram.getFSR(), valueOnAdress);
         }
-        System.out.println("bcf newVal: " + String.format("0x%02X", valueOnAdress));
+        //System.out.println("bcf newVal: " + String.format("0x%02X", valueOnAdress));
     }
 
     /**
@@ -1181,7 +1178,7 @@ public class Decoder {
             obj.programMemory.skipNextInstruction();
 
         }
-        System.out.println("btfsc");
+        //System.out.println("btfsc");
     }
 
     /**
@@ -1207,7 +1204,7 @@ public class Decoder {
             obj.programMemory.skipNextInstruction();
 
         }
-        System.out.println("btfss");
+        //System.out.println("btfss");
     }
 
     /**
@@ -1230,7 +1227,7 @@ public class Decoder {
      * no operation
      */
     public void nop() {
-        System.out.println("nop");
+        //System.out.println("nop");
     }
 
 }

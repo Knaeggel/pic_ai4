@@ -575,7 +575,7 @@ public class MainFrame extends JFrame {
         valuelist0.setListData(indexValue);
         // Bank1
         indexAddressB[0] += " INDF";
-        indexAddressB[1] += " OPTION_REG";
+        indexAddressB[1] += " OPTION";
         indexAddressB[2] += " PCL";
         indexAddressB[3] += " STATUS";
         indexAddressB[4] += " FSR";
