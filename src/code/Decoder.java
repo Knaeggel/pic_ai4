@@ -165,7 +165,7 @@ public class Decoder {
     /**
      * checks if any interrupts needs to be executed
      */
-    public void checkForInterrupt(int iOpVal) {
+    public void checkForInterrupt(int iOpCode) {
     /*
         int gie = obj.ram.getSpecificIntconBit(7);
 
@@ -190,29 +190,42 @@ public class Decoder {
         //gie enable
         if (obj.ram.getSpecificIntconBit(7) == 1) {
             if (obj.timer.timerInterrupt && obj.ram.getSpecificIntconBit(5) == 1) {
-                executeTimerInterrupt();
+                executeTimerInterrupt(iOpCode);
+            }
+            if (obj.ram.getSpecificIntconBit(4) == 1) {
+                if (obj.mainFrame.RB0Checked()) {
+                    executeRB0Interrupt(iOpCode);
+                }
+            }
+
+            if (obj.ram.getSpecificIntconBit(3) == 1) {
+                if (obj.mainFrame.RB4toRB7Checked()) {
+                    executeRB4toRB7Interrupt(iOpCode);
+                }
             }
         }
-        if (obj.mainFrame.RB0Checked()) {
-            executeRB0Interrupt();
-        }
-        if (obj.ram.getSpecificIntconBit(3) == 1) {
-            if (obj.mainFrame.RB4toRB7Checked()) {
-                executeRB4toRB7Interrupt(iOpVal);
-            }
-        }
+
     }
 
     /**
      * executes interrupt on timeroverflow
      */
-    public void executeTimerInterrupt() {
+    public void executeTimerInterrupt(int iOpCode) {
         if (obj.ram.getTMR0() == 0 && Ram.programmCounter - 1 != 0) {
 
             if (Timer.timerInterrupt) {
                 obj.ram.setT0IF(true);
                 if (!blockPushOnStack) {
-                    obj.stack.pushOnStack(Ram.programmCounter + 2);
+
+                    if (iOpCode == 0x2800) {
+                        obj.stack.pushOnStack(Ram.programmCounter + 2);
+                    } else {
+                        int maskedOpcode = iOpCode & 0b1111_1100_0000_0000;
+                        if (maskedOpcode == 0b0001_1000_0000_0000) {
+                            obj.stack.pushOnStack(Ram.programmCounter + 1);
+                        }
+                    }
+
                     blockPushOnStack = true;
                 }
                 Ram.programmCounter = 4;
@@ -223,16 +236,20 @@ public class Decoder {
     /**
      * executes the Interrupt on change of RB0 checkbox
      */
-    public void executeRB0Interrupt() {
+    public void executeRB0Interrupt(int iOpCode) {
         if (obj.ram.getSpecificPortBBit(0) == 1) {
             //obj.ram.setINTE(false);
             obj.ram.setINTF(true);
             //obj.mainFrame.resetUsedPortBPin(0);
             if (!blockPushOnStack) {
-                if (Ram.programmCounter % 2 == 0) {
+
+                if (iOpCode == 0x2800) {
                     obj.stack.pushOnStack(Ram.programmCounter + 2);
                 } else {
-                    obj.stack.pushOnStack(Ram.programmCounter + 1);
+                    int maskedOpcode = iOpCode & 0b1111_1100_0000_0000;
+                    if (maskedOpcode == 0b0001_1000_0000_0000) {
+                        obj.stack.pushOnStack(Ram.programmCounter + 1);
+                    }
                 }
                 blockPushOnStack = true;
             }
@@ -243,7 +260,7 @@ public class Decoder {
     /**
      * executes the rb4 to rb7 interrupt on change of one of that pins
      */
-    public void executeRB4toRB7Interrupt(int iOpval) {
+    public void executeRB4toRB7Interrupt(int iOpCode) {
         if (obj.ram.getSpecificPortBBit(4) == 1 ||
                 obj.ram.getSpecificPortBBit(5) == 1 ||
                 obj.ram.getSpecificPortBBit(6) == 1 ||
@@ -252,13 +269,13 @@ public class Decoder {
             if (Decoder.obj.ram.getSpecificIntconBit(3) == 1) {
                 obj.ram.setRBIF(true);
                 if (!blockPushOnStack) {
-                    if (iOpval == 0b0010_1000_0000_0000) {
+                    if (iOpCode == 0x2800) {
                         obj.stack.pushOnStack(Ram.programmCounter + 2);
-                        //TODO ... ^^
-                        Ram.programmCounter = 0x32;
                     } else {
-                        obj.stack.pushOnStack(Ram.programmCounter + 2);
-                        Ram.programmCounter = 0x32;
+                        int maskedOpcode = iOpCode & 0b1111_1100_0000_0000;
+                        if (maskedOpcode == 0b0001_1000_0000_0000) {
+                            obj.stack.pushOnStack(Ram.programmCounter + 1);
+                        }
                     }
                     blockPushOnStack = true;
                 }
