@@ -43,7 +43,7 @@ public class MainFrame extends JFrame {
     private JCheckBox pinA1;
     private JCheckBox pinA2;
     private JCheckBox pinA3;
-    private JCheckBox pinA5;
+    private JCheckBox pinA4;
     private JLabel TrisB;
     private JCheckBox checkBoxB3;
     private JCheckBox checkBoxB2;
@@ -229,11 +229,11 @@ public class MainFrame extends JFrame {
 
  */
 
-        pinA5.addActionListener(new ActionListener() {
+        pinA4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (pinA5.isSelected() == true)
-                Decoder.obj.timer.incrementTimer0WithRa4(Decoder.obj.ram.getPrescalerValue());
+                if (pinA4.isSelected() == true)
+                    Decoder.obj.timer.incrementTimer0WithRa4(Decoder.obj.ram.getPrescalerValue());
             }
         });
     }
@@ -261,12 +261,17 @@ public class MainFrame extends JFrame {
      * TODO addidtions need to be made
      */
     public void updateGui() {
+        updatePortAByTrisA();
+        updatePortBByTrisB();
+        /*
         if (checkEnablePortB() == true) {
             Decoder.obj.ram.setPortB(pinB0.isSelected(), pinB1.isSelected(),
                     pinB2.isSelected(), pinB3.isSelected(),
                     pinB4.isSelected(), pinB5.isSelected(),
                     pinB6.isSelected(), pinB7.isSelected());
         }
+
+         */
 
 
         updateLstList();
@@ -324,48 +329,27 @@ public class MainFrame extends JFrame {
      * @return if enabled or not
      */
     public boolean checkEnablePortB() {
-/*
-        if (Decoder.obj.ram.getSpecificOptionBit(7) == 1) {
-            pinB0.setEnabled(false);
-            pinB1.setEnabled(false);
-            pinB2.setEnabled(false);
-            pinB3.setEnabled(false);
-            pinB4.setEnabled(false);
-            pinB5.setEnabled(false);
-            pinB6.setEnabled(false);
-            pinB7.setEnabled(false);
-            return false;
-        } else if (Decoder.obj.ram.getSpecificOptionBit(7) == 0) {
-            pinB0.setEnabled(true);
-            pinB1.setEnabled(true);
-            pinB2.setEnabled(true);
-            pinB3.setEnabled(true);
-
-            if (Decoder.obj.ram.getSpecificIntconBit(3) == 5) {
-
-                if (Decoder.obj.ram.getSpecificIntconBit(3) == 1) {
-                    pinB4.setEnabled(true);
-                    pinB5.setEnabled(true);
-                    pinB6.setEnabled(true);
-                    pinB7.setEnabled(true);
-                }
-                if (Decoder.obj.ram.getSpecificIntconBit(3) == 0) {
-                    pinB4.setEnabled(false);
-                    pinB5.setEnabled(false);
-                    pinB6.setEnabled(false);
-                    pinB7.setEnabled(false);
-                }
-            }
-
-            return true;
-
-        }
-
-        return false;
-*/
 
         updatePortBByTrisB();
         return true;
+    }
+
+    public void updatePortAByTrisA() {
+
+        if (Decoder.obj.ram.getSpecificPortABit(0) == 1) {
+            pinA0.setSelected(true);
+        } else pinA0.setSelected(false);
+        if (Decoder.obj.ram.getSpecificPortABit(1) == 1) {
+            pinA1.setSelected(true);
+        } else pinA1.setSelected(false);
+        if (Decoder.obj.ram.getSpecificPortABit(2) == 1) {
+            pinA2.setSelected(true);
+        } else pinA2.setSelected(false);
+        if (Decoder.obj.ram.getSpecificPortABit(3) == 1) {
+            pinA3.setSelected(true);
+        } else pinA3.setSelected(false);
+
+
     }
 
     public void updatePortBByTrisB() {
@@ -421,6 +405,10 @@ public class MainFrame extends JFrame {
             pinB7.setEnabled(false);
         }
 
+        Decoder.obj.ram.setPortB(pinB0.isSelected(), pinB1.isSelected(),
+                pinB2.isSelected(), pinB3.isSelected(),
+                pinB4.isSelected(), pinB5.isSelected(),
+                pinB6.isSelected(), pinB7.isSelected());
     }
 
     public void updateSFR() {
@@ -432,7 +420,6 @@ public class MainFrame extends JFrame {
         optionValue.setText(String.format("0x%02X", Decoder.obj.ram.getOption()));
         timer0Value.setText(String.format("0x%02X", Decoder.obj.ram.getTMR0()));
         prescalerValue.setText("1:" + Decoder.obj.ram.getPrescalerValue());
-
 
 
     }
@@ -585,7 +572,6 @@ public class MainFrame extends JFrame {
         sBar3.setModel(sBar2.getModel());
         sBar4.setModel(sBar3.getModel());
     }
-
 
 
 }

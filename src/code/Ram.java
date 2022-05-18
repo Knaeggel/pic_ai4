@@ -498,6 +498,16 @@ public class Ram {
         return ram[1][6] >> n & 1;
     }
 
+    public int getSpecificPortABit(int n) {
+        //return ((ram[bank][3] >> (n /*-1*/)) & 1);
+        //return getSpecificGenericBit(n, 0x06, 1);
+        return ram[bank][5] >> n & 1;
+    }
+
+    public int getTrisA() {
+        return ram[1][0x05];
+    }
+
     public void setTrisA(int val) {
         ram[1][0x05] = val;
     }
@@ -549,47 +559,47 @@ public class Ram {
         }
         if (b3) {
             if (getSpecificPortBBit(3) != 1) {
-                set += 0b100;
+                set += 0b1000;
             }
         } else {
             if (getSpecificPortBBit(3) == 1) {
-                set -= 0b100;
+                set -= 0b1000;
             }
         }
         if (b4) {
             if (getSpecificPortBBit(4) != 1) {
-                set += 0b1000;
+                set += 0b1_0000;
             }
         } else {
             if (getSpecificPortBBit(4) == 1) {
-                set -= 0b1000;
+                set -= 0b1_0000;
             }
         }
         if (b5) {
             if (getSpecificPortBBit(5) != 1) {
-                set += 0b10000;
+                set += 0b10_0000;
             }
         } else {
             if (getSpecificPortBBit(5) == 1) {
-                set -= 0b10000;
+                set -= 0b10_0000;
             }
         }
         if (b6) {
             if (getSpecificPortBBit(6) != 1) {
-                set += 0b100000;
+                set += 0b100_0000;
             }
         } else {
             if (getSpecificPortBBit(6) == 1) {
-                set -= 0b100000;
+                set -= 0b100_0000;
             }
         }
         if (b7) {
             if (getSpecificPortBBit(7) != 1) {
-                set += 0b1000000;
+                set += 0b1000_0000;
             }
         } else {
             if (getSpecificPortBBit(7) == 1) {
-                set -= 0b1000000;
+                set -= 0b1000_0000;
             }
         }
         ram[0][0x06] = set;
