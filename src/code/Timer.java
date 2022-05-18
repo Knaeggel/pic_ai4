@@ -44,7 +44,7 @@ public class Timer {
         }
     }
 
-    public void incrementTimer0WithRa4(int prescalerValue){
+    public void incrementTimer0WithRa4(int prescalerValue) {
         if (initPrescalerVal != prescalerValue) {
             Decoder.obj.ram.setTMR0(0);
             initPrescalerVal = prescalerValue;

@@ -75,9 +75,7 @@ public class Decoder {
             }
 
 
-
             Ram.programmCounter++;
-
 
 
             switch (iOpCode) {
@@ -589,7 +587,7 @@ public class Decoder {
         //System.out.println(Ram.programmCounter);
         if (addressInRam == 0x02) {
             int localPC = obj.ram.getPCL() + 1;
-            localPC += (obj.ram.getPCLATH()<<8);
+            localPC += (obj.ram.getPCLATH() << 8);
             Ram.programmCounter = localPC;
         }
 
