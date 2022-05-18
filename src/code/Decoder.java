@@ -51,7 +51,7 @@ public class Decoder {
     public void functionCalls(Integer i) {
 
         obj.ram.updateBank();
-
+        obj.ram.updatePCL();
 
         if (i < decodeList.size()) {
 
@@ -73,7 +73,11 @@ public class Decoder {
             if (!endlessLoop.contains("goto ende           ;Endlosschleife")) {
                 obj.timer.incrementTimer0(Ram.prescalerValue);
             }
+
+
+
             Ram.programmCounter++;
+
 
 
             switch (iOpCode) {
@@ -581,9 +585,12 @@ public class Decoder {
             }
         }
 
-        //TODO
+
+        //System.out.println(Ram.programmCounter);
         if (addressInRam == 0x02) {
-            Ram.programmCounter = 0x0F;
+            int localPC = obj.ram.getPCL() + 1;
+            localPC += (obj.ram.getPCLATH()<<8);
+            Ram.programmCounter = localPC;
         }
 
         /*

@@ -495,12 +495,13 @@ public class Ram {
     public int getSpecificTrisBBit(int n) {
         //return ((ram[bank][3] >> (n /*-1*/)) & 1);
         //return getSpecificGenericBit(n, 0x06, 1);
-        return ram[1][6] >> n &1;
+        return ram[1][6] >> n & 1;
     }
 
     public void setTrisA(int val) {
         ram[1][0x05] = val;
     }
+
     public void setTrisB(int val) {
         ram[1][0x06] = val;
     }
@@ -597,5 +598,10 @@ public class Ram {
     public int getPortB() {
         return ram[0][0x06];
     }
+
+    public void updatePCL() {
+        ram[bank][0x02] = Ram.programmCounter & 0xFF;
+    }
+
 
 }
