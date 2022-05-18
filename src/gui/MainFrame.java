@@ -466,43 +466,15 @@ public class MainFrame extends JFrame {
     public void updateStack(Stack stack) {
         Integer[] aiStack = stack.getStack();
 
-        int count = 0;
+        Stack8.setText(String.format("0x%04X", aiStack[0]));
+        Stack7.setText(String.format("0x%04X", aiStack[1]));
+        Stack6.setText(String.format("0x%04X", aiStack[2]));
+        Stack5.setText(String.format("0x%04X", aiStack[3]));
+        Stack4.setText(String.format("0x%04X", aiStack[4]));
+        Stack3.setText(String.format("0x%04X", aiStack[5]));
+        Stack2.setText(String.format("0x%04X", aiStack[6]));
+        Stack1.setText(String.format("0x%04X", aiStack[7]));
 
-
-        for (int i = 0; i < aiStack.length; i++) {
-            if (aiStack[i] != null) {
-                count++;
-                switch (count) {
-                    case 1:
-                        Stack8.setText(String.format("0x%04X", aiStack[i]));
-                        break;
-                    case 2:
-                        Stack7.setText(String.format("0x%04X", aiStack[i]));
-                        break;
-                    case 3:
-                        Stack6.setText(String.format("0x%04X", aiStack[i]));
-                        break;
-                    case 4:
-                        Stack5.setText(String.format("0x%04X", aiStack[i]));
-                        break;
-                    case 5:
-                        Stack4.setText(String.format("0x%04X", aiStack[i]));
-                        break;
-                    case 6:
-                        Stack3.setText(String.format("0x%04X", aiStack[i]));
-                        break;
-                    case 7:
-                        Stack2.setText(String.format("0x%04X", aiStack[i]));
-                        break;
-                    case 8:
-                        Stack1.setText(String.format("0x%04X", aiStack[i]));
-                        break;
-                    default:
-                        System.out.println("Default updateStack");
-                        break;
-                }
-            }
-        }
     }
 
     public void updateLstList() {

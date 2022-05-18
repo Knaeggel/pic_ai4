@@ -577,6 +577,13 @@ public class Decoder {
             }
         }
 
+        /*
+        if (addressInRam == 0x02){
+            Ram.programmCounter += obj.ram.getPCL() -1;
+        }
+
+         */
+
         //obj.ram.affectStatusBits(b, resultOfAdd);
         affectZeroCarryDigitCarry(b, resultOfAdd);
 
