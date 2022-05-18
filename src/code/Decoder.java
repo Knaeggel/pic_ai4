@@ -581,6 +581,11 @@ public class Decoder {
             }
         }
 
+        //TODO
+        if (addressInRam == 0x02) {
+            Ram.programmCounter = 0x0F;
+        }
+
         /*
         if (addressInRam == 0x02){
             Ram.programmCounter += obj.ram.getPCL() -1;
