@@ -108,6 +108,7 @@ public class MainFrame extends JFrame {
     private JPanel Bank0;
     private JScrollPane bank1address;
     private JScrollPane bank1value;
+    private JLabel timerIncrementCountField;
     private JLabel portB;
     private ArrayList<String> allLST = LSTFileReader.getAllLines();
     private static ArrayList<Integer> selectedLST = new ArrayList<>();
@@ -228,6 +229,13 @@ public class MainFrame extends JFrame {
 
  */
 
+        pinA5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (pinA5.isSelected() == true)
+                Decoder.obj.timer.incrementTimer0WithRa4(Decoder.obj.ram.getPrescalerValue());
+            }
+        });
     }
 
 
@@ -424,6 +432,8 @@ public class MainFrame extends JFrame {
         optionValue.setText(String.format("0x%02X", Decoder.obj.ram.getOption()));
         timer0Value.setText(String.format("0x%02X", Decoder.obj.ram.getTMR0()));
         prescalerValue.setText("1:" + Decoder.obj.ram.getPrescalerValue());
+
+
 
     }
 

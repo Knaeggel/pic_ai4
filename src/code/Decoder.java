@@ -68,9 +68,11 @@ public class Decoder {
 
             //timer
             Ram.prescalerValue = obj.prescaler.calcPrescaleValueFromOptionReg(obj.ram.getOption());
-            obj.timer.incrementTimer0(Ram.prescalerValue);
 
 
+            if (!endlessLoop.contains("goto ende           ;Endlosschleife")) {
+                obj.timer.incrementTimer0(Ram.prescalerValue);
+            }
             Ram.programmCounter++;
 
 
@@ -423,7 +425,9 @@ public class Decoder {
     public void goTO(Integer i, String s) {
         int pcOfThisInstruction = Ram.programmCounter - 1;
 
-        Timer.timerIncrementCount--;
+        if (!s.contains("goto ende           ;Endlosschleife")) {
+            Timer.timerIncrementCount--;
+        }
 
         Ram.programmCounter = i;
         Ram.programmCounter = obj.ram.setBit(11, Ram.programmCounter, obj.ram.getSpecificPCLATHBit(3));
