@@ -170,28 +170,7 @@ public class Decoder {
      * checks if any interrupts needs to be executed
      */
     public void checkForInterrupt(int iOpCode) {
-    /*
-        int gie = obj.ram.getSpecificIntconBit(7);
 
-        if (gie == 1) {
-
-            obj.ram.setGIE(false);
-
-            int tie = obj.ram.getSpecificIntconBit(5);
-            int rb0Int = obj.ram.getSpecificPortBBit(0);
-
-            if (tie == 1) {
-                executeTimerInterrupt();
-            }
-            if (obj.mainFrame.RB0Checked()) {
-                executeRB0Interrupt();
-            }
-            if (obj.mainFrame.RB4toRB7Checked()) {
-                executeRB4toRB7Interrupt();
-
-        }
-        */
-        //gie enable
         if (obj.ram.getSpecificIntconBit(7) == 1) {
             if (obj.timer.timerInterrupt && obj.ram.getSpecificIntconBit(5) == 1) {
                 executeTimerInterrupt(iOpCode);
@@ -1062,14 +1041,6 @@ public class Decoder {
         valueOnAdress--;
         if (valueOnAdress != 0) {
 
-            // creates assembler for loop
-            /*
-            if (obj.programMemory.checkCycle(Ram.programmCounter)) {
-                obj.programMemory.cycleList.remove(obj.programMemory.cycleList.size() - 1);
-            }
-            */
-
-            //TODO remove all cycles between goto and adress of goto change i
             for (int i = Ram.programmCounter; i > 1; i--) {
                 if (obj.programMemory.checkCycle(i)) {
                     obj.programMemory.cycleList.remove(Integer.valueOf(i));
