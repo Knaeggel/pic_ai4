@@ -1,6 +1,5 @@
 package code;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import gui.MainFrame;
 
 public class AllObjects {
@@ -25,6 +24,7 @@ public class AllObjects {
         programMemory = new ProgramMemory();
         prescaler = new Prescaler();
         timer = new Timer();
+
     }
 
     /**
@@ -35,9 +35,9 @@ public class AllObjects {
     public static AllObjects getAllObjectsInstance() {
         if (obj == null) {
             obj = new AllObjects();
-        } else {
+        } /*else {
             throw new DuplicateRequestException("Multiple instances of AllObjects");
-        }
+        }*/
         return obj;
     }
 
