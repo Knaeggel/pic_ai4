@@ -24,6 +24,7 @@ public class AllObjects {
         programMemory = new ProgramMemory();
         prescaler = new Prescaler();
         timer = new Timer();
+
     }
 
     /**
